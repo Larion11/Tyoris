@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vítejte dobrodruzi</title>
+<style>
+    * { box-sizing: border-box; }
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            radial-gradient(circle at center, #25201a 0%, #100e0c 65%, #080706 100%);
+        color: #e8dfcf;
+        font-family: Georgia, "Times New Roman", serif;
+    }
+    .page {
+        width: min(900px, 90vw);
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #6f5a3e;
+        box-shadow: 0 0 40px rgba(0,0,0,.75), inset 0 0 50px rgba(0,0,0,.4);
+        background: rgba(18,15,12,.88);
+    }
+    h1 {
+        margin: 0 0 55px;
+        font-size: clamp(42px, 7vw, 76px);
+        font-weight: normal;
+        letter-spacing: 2px;
+        text-shadow: 0 3px 8px #000;
+    }
+    button {
+        padding: 17px 34px;
+        font: inherit;
+        font-size: 22px;
+        color: #eee4d2;
+        background: #33291e;
+        border: 1px solid #8a704d;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,.5);
+        
+    }
+    button:hover {
+        background: #473827;
+        border-color: #b39468;
+        
+    }
+    button {
+    margin: 5px;
+}
+    #seznamPostav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.postava {
+    display: block;
+    min-width: 280px;
+    padding: 13px 25px;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px;
+
+    color: #eee4d2;
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+
+.postava:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+.radek-postavy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radek-postavy .postava {
+    flex: 1;
+}
+
+.smazat-postavu {
+    min-width: 42px;
+    padding: 10px 12px;
+
+    font-size: 18px;
+    color: #c9a99a;
+
+    background: #2b1d1a;
+    border: 1px solid #67453d;
+}
+
+.smazat-postavu:hover {
+    background: #4a2923;
+    border-color: #9a6255;
+}
+.hlaska-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.65);
+    z-index: 1000;
+}
+
+.hlaska-okno {
+    width: min(420px, 85vw);
+    padding: 25px;
+    text-align: center;
+
+    color: #e8dfcf;
+    background: #18130f;
+    border: 2px solid #6f5a3e;
+    box-shadow: 0 0 30px rgba(0,0,0,.8);
+}
+
+.hlaska-text {
+    margin-bottom: 22px;
+    font-size: 19px;
+    line-height: 1.5;
+}
+
+.hlaska-tlacitka {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hlaska-tlacitka button {
+    min-width: 90px;
+    padding: 9px 18px;
+    margin: 0;
+    font-size: 17px;
+}
+
+.hlaska-ne {
+    background: #2b1d1a;
+    border-color: #67453d;
+}
+
+.hlaska-ne:hover {
+    background: #4a2923;
+    border-color: #9a6255;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+</head>
+<body>
+    <main class="page">
+    <div id="prihlaseni">
+    <input
+        type="email"
+        id="email"
+        placeholder="E-mail"
+    >
+
+    <input
+        type="password"
+        id="heslo"
+        placeholder="Heslo"
+    >
+
+    <button onclick="prihlasit()">Přihlásit</button>
+
+    <div id="stavPrihlaseni"></div>
+</div>
+        <h1>Vítejte dobrodruzi</h1>
+        <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
+        <button type="button" onclick="window.open('pravidla.html', '_blank')">
+    Pravidla
+</button>
+        <div id="seznamPostav"></div>
+    </main>
+
+<script>
+
+async function vytvoritPostavu() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        alert("Nejdřív se musíš přihlásit.");
+        return;
+    }
+
+    console.log("Přihlášený uživatel:", user.id);
+
+    window.location.href = "nova_postava.html";
+}
+
+
+async function zobrazitPostavy() {
+
+    const seznam = document.getElementById("seznamPostav");
+
+    const { data: postavy, error } = await supabaseClient
+        .from("postavy")
+        .select("id, jmeno")
+        .order("id", { ascending: true });
+
+    if (error) {
+        console.error("Chyba při načítání postav:", error);
+        seznam.innerHTML = "<div>Postavy se nepodařilo načíst.</div>";
+        return;
+    }
+
+    seznam.innerHTML = "";
+
+    postavy.forEach(function(postava) {
+
+        const radek = document.createElement("div");
+        radek.className = "radek-postavy";
+
+        const odkaz = document.createElement("a");
+
+        odkaz.className = "postava";
+        odkaz.textContent = postava.jmeno;
+
+        odkaz.href =
+            "postava.html?id=" +
+            encodeURIComponent(postava.id);
+
+        const smazat = document.createElement("button");
+
+        smazat.className = "smazat-postavu";
+        smazat.textContent = "×";
+        smazat.title = "Smazat postavu";
+
+        smazat.onclick = function() {
+
+            zobrazitHlasku(
+                "Opravdu chceš smazat postavu „" +
+                postava.jmeno +
+                "“?",
+                async function(potvrdit) {
+
+                    if (!potvrdit) {
+                        return;
+                    }
+
+                    const { error } = await supabaseClient
+                        .from("postavy")
+                        .delete()
+                        .eq("id", postava.id);
+
+                    if (error) {
+                        console.error(
+                            "Chyba při mazání postavy:",
+                            error
+                        );
+                        return;
+                    }
+
+                    zobrazitPostavy();
+                }
+            );
+        };
+
+        radek.appendChild(odkaz);
+        radek.appendChild(smazat);
+
+        seznam.appendChild(radek);
+    });
+}
+function zobrazitHlasku(text, callback) {
+
+    document.getElementById("hlaskaText").textContent = text;
+    document.getElementById("hlaskaOverlay").style.display = "flex";
+
+    document.getElementById("hlaskaAno").onclick = function() {
+        document.getElementById("hlaskaOverlay").style.display = "none";
+        callback(true);
+    };
+
+    document.getElementById("hlaskaNe").onclick = function() {
+        document.getElementById("hlaskaOverlay").style.display = "none";
+        callback(false);
+    };
+}
+zobrazitPostavy();
+
+async function prihlasit() {
+
+    const email = document.getElementById("email").value;
+    const heslo = document.getElementById("heslo").value;
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: heslo
+    });
+
+    if (error) {
+        document.getElementById("stavPrihlaseni").textContent =
+            "Přihlášení se nepodařilo: " + error.message;
+
+        console.log(error);
+        return;
+    }
+
+    document.getElementById("stavPrihlaseni").textContent =
+        "Přihlášeno.";
+
+    console.log("Přihlášený uživatel:", data.user);
+}
+
+
+
+</script>
+<div id="hlaskaOverlay" class="hlaska-overlay">
+    <div class="hlaska-okno">
+        <div id="hlaskaText" class="hlaska-text"></div>
+
+        <div class="hlaska-tlacitka">
+            <button id="hlaskaAno">Ano</button>
+            <button id="hlaskaNe" class="hlaska-ne">Ne</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

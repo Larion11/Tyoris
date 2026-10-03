@@ -1,0 +1,451 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zbraně</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    background-image: url("pozadi.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.page {
+    width: min(1000px, 94vw);
+    margin: 40px auto;
+    padding: 40px;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.88);
+}
+
+h1 {
+    margin: 0 0 35px;
+    text-align: center;
+    font-size: clamp(36px, 6vw, 58px);
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+.zbrane-tabulka {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.zbrane-tabulka th,
+.zbrane-tabulka td {
+    border: 1px solid #6f5a3e;
+    padding: 7px;
+    text-align: center;
+}
+
+.zbrane-tabulka th {
+    font-weight: normal;
+    color: #b39468;
+}
+
+.zbrane-tabulka th:nth-child(1),
+.zbrane-tabulka td:nth-child(1) {
+    width: 27%;
+    text-align: left;
+}
+
+.zbrane-tabulka th:nth-child(2),
+.zbrane-tabulka td:nth-child(2) {
+    width: 17%;
+}
+
+.zbrane-tabulka th:nth-child(3),
+.zbrane-tabulka td:nth-child(3),
+.zbrane-tabulka th:nth-child(4),
+.zbrane-tabulka td:nth-child(4),
+.zbrane-tabulka th:nth-child(5),
+.zbrane-tabulka td:nth-child(5) {
+    width: 10%;
+}
+
+.zbrane-tabulka th:nth-child(6),
+.zbrane-tabulka td:nth-child(6) {
+    width: 26%;
+}
+
+@media (max-width: 700px) {
+    .page {
+        padding: 20px;
+    }
+
+    .zbrane-tabulka {
+        font-size: 14px;
+    }
+
+    .zbrane-tabulka th,
+    .zbrane-tabulka td {
+        padding: 5px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Zbraně</h1>
+
+    <table class="zbrane-tabulka">
+
+        <thead>
+            <tr>
+                <th>Název</th>
+                <th>Typ</th>
+                <th>Útok</th>
+                <th>Střelecký útok</th>
+                <th>Kryt</th>
+                <th>Poškození</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- MEČE -->
+
+            <tr>
+                <td>Krátký meč , Střední</td>
+                <td>meče</td>
+                <td>-1</td>
+                <td></td>
+                <td>0</td>
+                <td>3/7/1</td>
+            </tr>
+
+            <tr>
+                <td>meč , Střední</td>
+                <td>meče</td>
+                <td>0</td>
+                <td></td>
+                <td>0</td>
+                <td>3/9/1</td>
+            </tr>
+
+            <tr>
+                <td>Šavle , Střední</td>
+                <td>meče</td>
+                <td>0</td>
+                <td></td>
+                <td>-1</td>
+                <td>3/9/1</td>
+            </tr>
+
+            <tr>
+                <td>Tesák , Lehká</td>
+                <td>meče</td>
+                <td>1</td>
+                <td></td>
+                <td>0</td>
+                <td>2/6/0.5</td>
+            </tr>
+
+            <tr>
+                <td>1/2 Ruční meč , Střední</td>
+                <td>meče</td>
+                <td>-2</td>
+                <td></td>
+                <td>-1</td>
+                <td>4/10/1.5</td>
+            </tr>
+
+            <tr>
+                <td>Obouruční meč , Těžká</td>
+                <td>meče</td>
+                <td>-2</td>
+                <td></td>
+                <td>-3</td>
+                <td>5/12/2</td>
+            </tr>
+
+            <tr>
+                <td>Kord</td>
+                <td>meče</td>
+                <td>1</td>
+                <td></td>
+                <td>1</td>
+                <td>3/8/0.5</td>
+            </tr>
+
+            <!-- SEKERY / PALCÁTY -->
+
+            <tr>
+                <td>Sekyrka , Lehká</td>
+                <td>Sekery / palcáty</td>
+                <td>-2</td>
+                <td></td>
+                <td>-2</td>
+                <td>2/6/0.5</td>
+            </tr>
+
+            <tr>
+                <td>Válečná Sekera , Střední</td>
+                <td>Sekery / palcáty</td>
+                <td>-1</td>
+                <td></td>
+                <td>-2</td>
+                <td>4/10/1</td>
+            </tr>
+
+            <tr>
+                <td>Bradatice , Těžká</td>
+                <td>Sekery / palcáty</td>
+                <td>-3</td>
+                <td></td>
+                <td>-3</td>
+                <td>5/11/2</td>
+            </tr>
+
+            <tr>
+                <td>Kyj , Střední</td>
+                <td>Sekery / palcáty</td>
+                <td>-3</td>
+                <td></td>
+                <td>-3</td>
+                <td>2/4/1</td>
+            </tr>
+
+            <tr>
+                <td>Palcát , Střední</td>
+                <td>Sekery / palcáty</td>
+                <td>-2</td>
+                <td></td>
+                <td>-3</td>
+                <td>4/9/1.5</td>
+            </tr>
+
+            <tr>
+                <td>Řemdih , Střední</td>
+                <td>Sekery / palcáty</td>
+                <td>-4</td>
+                <td></td>
+                <td>-5</td>
+                <td>3/7/1.5</td>
+            </tr>
+
+            <tr>
+                <td>Obouruční Kladivo , Těžké</td>
+                <td>Sekery / palcáty</td>
+                <td>-5</td>
+                <td></td>
+                <td>-4</td>
+                <td>6/16/2</td>
+            </tr>
+
+            <!-- KRÁTKÉ -->
+
+            <tr>
+                <td>Nůž , Lehké</td>
+                <td>Krátké</td>
+                <td>0</td>
+                <td></td>
+                <td>1</td>
+                <td>1/3/0.5</td>
+            </tr>
+
+            <tr>
+                <td>Dýka , Lehké</td>
+                <td>Krátké</td>
+                <td>1</td>
+                <td></td>
+                <td>2</td>
+                <td>2/5/0.5</td>
+            </tr>
+
+            <tr>
+                <td>Stileto , Lehké</td>
+                <td>Krátké</td>
+                <td>2</td>
+                <td></td>
+                <td>2</td>
+                <td>2/4/0.5</td>
+            </tr>
+
+            <tr>
+                <td>Obušek , Lehké</td>
+                <td>Krátké</td>
+                <td>1</td>
+                <td></td>
+                <td>1</td>
+                <td>2/4/0.5</td>
+            </tr>
+
+            <!-- DŘEVCOVÉ -->
+
+            <tr>
+                <td>Okovaná Hůl , Lehké</td>
+                <td>Dřevcové</td>
+                <td>1</td>
+                <td></td>
+                <td>3</td>
+                <td>2/3/1</td>
+            </tr>
+
+            <tr>
+                <td>Kopí , Střední</td>
+                <td>Dřevcové</td>
+                <td>0</td>
+                <td></td>
+                <td>2</td>
+                <td>3/10/1</td>
+            </tr>
+
+            <tr>
+                <td>Píka , Těžké</td>
+                <td>Dřevcové</td>
+                <td>-1</td>
+                <td></td>
+                <td>-5</td>
+                <td>5/8/2</td>
+            </tr>
+
+            <!-- STŘELNÉ -->
+
+            <tr>
+                <td>Krátký luk</td>
+                <td>Střelné</td>
+                <td></td>
+                <td>-1</td>
+                <td></td>
+                <td>3/7/1</td>
+            </tr>
+
+            <tr>
+                <td>Dlouhý luk</td>
+                <td>Střelné</td>
+                <td></td>
+                <td>-2</td>
+                <td></td>
+                <td>5/11/2</td>
+            </tr>
+
+            <tr>
+                <td>Lehká kuše</td>
+                <td>Střelné</td>
+                <td></td>
+                <td>2</td>
+                <td></td>
+                <td>1/12/0</td>
+            </tr>
+
+            <tr>
+                <td>Páková Kuše</td>
+                <td>Střelné</td>
+                <td></td>
+                <td>1</td>
+                <td></td>
+                <td>1/18/0</td>
+            </tr>
+
+            <tr>
+                <td>Prak</td>
+                <td>Střelné</td>
+                <td></td>
+                <td>-4</td>
+                <td></td>
+                <td>1/2/1.5</td>
+            </tr>
+
+            <!-- ŠTÍTY -->
+
+            <tr>
+                <td>Pukléř , Lehké</td>
+                <td>Štít</td>
+                <td>0</td>
+                <td></td>
+                <td>1</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Dřevěný štít , Střední</td>
+                <td>Štít</td>
+                <td>-1</td>
+                <td></td>
+                <td>2</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Ocelový štít , Střední</td>
+                <td>Štít</td>
+                <td>-1</td>
+                <td></td>
+                <td>3</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Pavéza , Těžké</td>
+                <td>Štít</td>
+                <td>-3</td>
+                <td></td>
+                <td>5</td>
+                <td></td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</main>
+
+<script>
+const dataZbrani = [];
+
+document.querySelectorAll(".zbrane-tabulka tbody tr").forEach(function(radek) {
+
+    const bunky = radek.querySelectorAll("td");
+
+    if (bunky.length < 6) return;
+
+    dataZbrani.push({
+        nazev: bunky[0].textContent.trim(),
+        typ: bunky[1].textContent.trim(),
+        utok: bunky[2].textContent.trim(),
+        streleckyUtok: bunky[3].textContent.trim(),
+        kryt: bunky[4].textContent.trim(),
+        poskozeni: bunky[5].textContent.trim()
+    });
+});
+
+localStorage.setItem(
+    "draci_doupe_zbrane",
+    JSON.stringify(dataZbrani)
+);
+</script>
+
+</body>
+</html>
+

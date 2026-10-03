@@ -1,0 +1,1703 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Alchymie</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("pozadi-alchymie.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #eee4d2;
+            font-family: Georgia, serif;
+        }
+
+        .page {
+            width: min(1000px, 94vw);
+            margin: 40px auto;
+            padding: 40px;
+            box-sizing: border-box;
+            background: rgba(20, 17, 14, 0.9);
+            border: 1px solid #6f5a3e;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #d8c29d;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #d8c29d;
+        }
+
+        .info-hlavicka {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #eee4d2;
+        }
+
+        .sekce {
+            padding: 20px;
+            border: 1px solid #6f5a3e;
+            background: rgba(30, 25, 20, 0.8);
+            box-sizing: border-box;
+            margin-bottom: 30px;
+        }
+
+        .alchymie-tabulka {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .alchymie-tabulka th {
+            background: rgba(190, 165, 125, 0.75);
+            color: #1a1510;
+            border: 1px solid #6f5a3e;
+            padding: 10px;
+        }
+
+        .alchymie-tabulka td {
+            border: 1px solid #6f5a3e;
+            padding: 8px;
+        }
+
+        .alchymie-tabulka th:nth-child(1) {
+            width: 70%;
+        }
+
+        .alchymie-tabulka th:nth-child(2) {
+            width: 30%;
+        }
+
+        .mnozstvi {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mnozstvi button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .cislo {
+            min-width: 35px;
+            text-align: center;
+            font-size: 19px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font: inherit;
+            font-size: 17px;
+            color: #eee4d2;
+            background: #33291e;
+            border: 1px solid #8a704d;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,.5);
+        }
+
+        button:hover {
+            background: #473827;
+            border-color: #b39468;
+        }
+.alchymie-tabulky {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.alchymie-tabulky .sekce {
+    margin-bottom: 0;
+    padding: 15px;
+}
+
+.alchymie-tabulky h2 {
+    font-size: 21px;
+    margin-bottom: 15px;
+}
+
+.alchymie-tabulka th,
+.alchymie-tabulka td {
+    padding: 6px;
+}
+
+.mnozstvi {
+    gap: 4px;
+}
+
+.mnozstvi button {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+}
+
+.cislo {
+    min-width: 28px;
+    font-size: 17px;
+}
+        .ulozeni {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.ulozeno {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #d8c29d;
+}
+    
+.vybaveni-suroviny {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-top: 15px;
+    clear: both;
+}
+
+.tabulka-vyroba {
+    width: 50%;
+    border-collapse: collapse;
+}
+
+.tabulka-vyroba th {
+    background: rgba(190, 165, 125, 0.75);
+    color: #1a1510;
+    text-align: center;
+}
+.tabulka-vyroba td {
+    border: 1px solid #6f5a3e;
+    padding: 6px;
+}
+
+.tabulka-vyroba th {
+    text-align: center;
+}
+
+.tabulka-vyroba td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tabulka-vyroba button {
+    padding: 2px 8px;
+    margin: 0 4px;
+}
+
+.tabulka-vyroba input[type="checkbox"] {
+    accent-color: rgb(190, 165, 125);
+}      
+   
+.recepty {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    clear: both;
+}
+
+.recepty h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.tabulka-recepty {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    table-layout: fixed;
+}
+
+.tabulka-recepty th,
+.tabulka-recepty td {
+    border: 1px solid #6f5a3e;
+    padding: 8px;
+    vertical-align: top;
+}
+
+.tabulka-recepty th {
+    background: rgba(190, 165, 125, 0.75);
+    color: #1a1510;
+    text-align: center;
+}
+
+.tabulka-recepty th:nth-child(1) {
+    width: 10%;
+}
+
+.tabulka-recepty th:nth-child(2) {
+    width: 22%;
+}
+
+.tabulka-recepty th:nth-child(3) {
+    width: 19%;
+}
+
+.tabulka-recepty th:nth-child(4) {
+    width: 22%;
+}
+
+.tabulka-recepty th:nth-child(5) {
+    width: 11%;
+}
+
+.tabulka-recepty th:nth-child(6) {
+    width: 6%;
+}
+
+.tabulka-recepty th:nth-child(7) {
+    width: 8%;
+}
+
+.tabulka-recepty td:nth-child(5),
+.tabulka-recepty td:nth-child(6),
+.tabulka-recepty td:nth-child(7) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabulka-recepty button {
+    padding: 5px 8px;
+    font-size: 14px;
+} 
+/* Vlastní vyskakovací okno */
+
+.vlastni-okno-pozadi {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.vlastni-okno {
+    width: min(450px, 90vw);
+    padding: 25px;
+    background: rgba(25, 21, 17, 0.98);
+    border: 1px solid #8a704d;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+    text-align: center;
+}
+
+.vlastni-okno h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #d8c29d;
+    font-size: 22px;
+}
+
+.vlastni-okno-text {
+    margin-bottom: 25px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.vlastni-okno-tlacitka {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.vlastni-okno-tlacitka button {
+    min-width: 100px;
+}    
+    </style>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>    
+</head>
+
+<body>
+<div class="vlastni-okno-pozadi" id="vlastniOknoPozadi">
+
+    <div class="vlastni-okno">
+
+        <h3 id="vlastniOknoNadpis">Alchymie</h3>
+
+        <div class="vlastni-okno-text" id="vlastniOknoText"></div>
+
+        <div class="vlastni-okno-tlacitka" id="vlastniOknoTlacitka">
+        </div>
+
+    </div>
+
+</div>
+<div class="page">
+
+    <h1>Alchymie</h1>
+
+    <div class="info-hlavicka" id="info"></div>
+
+
+    <!-- BYLINY -->
+<div class="alchymie-tabulky">
+    <div class="sekce">
+
+        <h2>Byliny</h2>
+
+        <table class="alchymie-tabulka">
+
+            <thead>
+                <tr>
+                    <th>Surovina</th>
+                    <th>Počet</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Rudá nať</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('rudaNat', -1)">−</button>
+                            <span class="cislo" id="rudaNat">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('rudaNat', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Plyvník</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('plyvnik', -1)">−</button>
+                            <span class="cislo" id="plyvnik">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('plyvnik', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Hertel</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('hertel', -1)">−</button>
+                            <span class="cislo" id="hertel">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('hertel', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Zobatec</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('zobatec', -1)">−</button>
+                            <span class="cislo" id="zobatec">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('zobatec', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Mečovníček</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('mecovnicek', -1)">−</button>
+                            <span class="cislo" id="mecovnicek">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('mecovnicek', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Třapalka</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('trapalka', -1)">−</button>
+                            <span class="cislo" id="trapalka">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('trapalka', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Zlatníček</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('zlatnicek', -1)">−</button>
+                            <span class="cislo" id="zlatnicek">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('zlatnicek', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+<tr>
+    <td>Avelinská růže</td>
+    <td>
+        <div class="mnozstvi">
+            <button type="button" onclick="zmenitMnozstvi('avelinskaRuze', -1)">−</button>
+            <span class="cislo" id="avelinskaRuze">0</span>
+            <button type="button" onclick="zmenitMnozstvi('avelinskaRuze', 1)">+</button>
+        </div>
+    </td>
+</tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- HOUBY -->
+
+    <div class="sekce">
+
+        <h2>Houby</h2>
+
+        <table class="alchymie-tabulka">
+
+            <thead>
+                <tr>
+                    <th>Surovina</th>
+                    <th>Počet</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Dubovenka</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('dubovenka', -1)">−</button>
+                            <span class="cislo" id="dubovenka">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('dubovenka', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Smradlavka</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('smradlavka', -1)">−</button>
+                            <span class="cislo" id="smradlavka">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('smradlavka', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Skřítě</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('skrite', -1)">−</button>
+                            <span class="cislo" id="skrite">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('skrite', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Loukotník</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('loukotnik', -1)">−</button>
+                            <span class="cislo" id="loukotnik">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('loukotnik', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Kameníček</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('kamenicek', -1)">−</button>
+                            <span class="cislo" id="kamenicek">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('kamenicek', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Slizník</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('sliznik', -1)">−</button>
+                            <span class="cislo" id="sliznik">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('sliznik', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- PLODY -->
+
+    <div class="sekce">
+
+        <h2>Plody</h2>
+
+        <table class="alchymie-tabulka">
+
+            <thead>
+                <tr>
+                    <th>Surovina</th>
+                    <th>Počet</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Korálky</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('koralky', -1)">−</button>
+                            <span class="cislo" id="koralky">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('koralky', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Sladký</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('sladky', -1)">−</button>
+                            <span class="cislo" id="sladky">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('sladky', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Kysle</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('kysle', -1)">−</button>
+                            <span class="cislo" id="kysle">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('kysle', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Červenka</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('cervenka', -1)">−</button>
+                            <span class="cislo" id="cervenka">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('cervenka', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Pálivý jazyk / jazýček</td>
+                    <td>
+                        <div class="mnozstvi">
+                            <button type="button" onclick="zmenitMnozstvi('palivyJazyk', -1)">−</button>
+                            <span class="cislo" id="palivyJazyk">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('palivyJazyk', 1)">+</button>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+  </div>  
+<div class="vybaveni-suroviny">
+
+    <table class="tabulka-vyroba">
+        <thead>
+            <tr>
+                <th colspan="2">Pomůcky</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sada na vaření</td>
+                <td><input type="checkbox" id="sadaVareni"></td>
+            </tr>
+            <tr>
+                <td>Aparatura</td>
+                <td><input type="checkbox" id="aparatura"></td>
+            </tr>
+            <tr>
+                <td>Miska</td>
+                <td><input type="checkbox" id="miska"></td>
+            </tr>
+            <tr>
+                <td>Nádoba</td>
+                <td><input type="checkbox" id="nadoba"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="tabulka-vyroba">
+        <thead>
+            <tr>
+                <th colspan="2">Další suroviny</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sůl</td>
+                <td>
+                    <button type="button" onclick="zmenitMnozstvi('sul', -1)">−</button>
+                    <span id="sul">0</span>
+                    <button type="button" onclick="zmenitMnozstvi('sul', 1)">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Voda</td>
+                <td>
+                    <button type="button" onclick="zmenitMnozstvi('voda', -1)">−</button>
+                    <span id="voda">0</span>
+                    <button type="button" onclick="zmenitMnozstvi('voda', 1)">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Lůj</td>
+                <td>
+                    <button type="button" onclick="zmenitMnozstvi('luj', -1)">−</button>
+                    <span id="luj">0</span>
+                    <button type="button" onclick="zmenitMnozstvi('luj', 1)">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Alkohol</td>
+                <td>
+                    <button type="button" onclick="zmenitMnozstvi('alkohol', -1)">−</button>
+                    <span id="alkohol">0</span>
+                    <button type="button" onclick="zmenitMnozstvi('alkohol', 1)">+</button>
+                </td>
+            </tr>
+            <tr>
+    <td>Síra</td>
+    <td>
+        <button type="button" onclick="zmenitMnozstvi('sira', -1)">−</button>
+        <span id="sira">0</span>
+        <button type="button" onclick="zmenitMnozstvi('sira', 1)">+</button>
+    </td>
+</tr>
+        </tbody>
+    </table>
+
+</div>
+
+<!-- RECEPTY -->
+
+<div class="recepty">
+
+    <h2>Lektvary</h2>
+
+    <table class="tabulka-recepty">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Popis</th>
+                <th>Výroba</th>
+                <th>Účinek</th>
+                <th>Náročnost</th>
+                <th>Počet</th>
+                <th>Vyrobit</th>
+            </tr>
+        </thead>
+
+        <tbody id="receptyLektvary">
+        </tbody>
+    </table>
+
+
+    <h2>Jedy</h2>
+
+    <table class="tabulka-recepty">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Popis</th>
+                <th>Výroba</th>
+                <th>Účinek</th>
+                <th>Náročnost</th>
+                <th>Počet</th>
+                <th>Vyrobit</th>
+            </tr>
+        </thead>
+
+        <tbody id="receptyJedy">
+        </tbody>
+    </table>
+
+
+    <h2>Masti</h2>
+
+    <table class="tabulka-recepty">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Popis</th>
+                <th>Výroba</th>
+                <th>Účinek</th>
+                <th>Náročnost</th>
+                <th>Počet</th>
+                <th>Vyrobit</th>
+            </tr>
+        </thead>
+
+        <tbody id="receptyMasti">
+        </tbody>
+    </table>
+
+
+    <h2>Roztoky a ostatní</h2>
+
+    <table class="tabulka-recepty">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Popis</th>
+                <th>Výroba</th>
+                <th>Účinek</th>
+                <th>Náročnost</th>
+                <th>Počet</th>
+                <th>Vyrobit</th>
+            </tr>
+        </thead>
+
+        <tbody id="receptyOstatni">
+        </tbody>
+    </table>
+
+</div>
+<div class="ulozeni">
+    <button type="button" onclick="ulozitAlchymii()">Uložit</button>
+    <button type="button" onclick="window.close()">Zavřít</button>
+    <div id="ulozeno" class="ulozeno"></div>
+</div>
+
+</div>
+
+
+<script>
+
+
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+
+let postava = null;
+
+async function nacistPostavu() {
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("*")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání postavy:", error);
+        document.getElementById("info").textContent =
+            "Postavu se nepodařilo načíst.";
+        return;
+    }
+
+    postava = {
+        ...(radek.data || {}),
+        id: String(radek.id),
+        jmeno: radek.jmeno,
+        popis: radek.popis
+    };
+
+    document.getElementById("info").textContent =
+        postava.jmeno || "Bez jména";
+
+    nacistAlchemii();
+}
+
+nacistPostavu();
+
+
+/* Změna množství */
+
+function zmenitMnozstvi(co, zmena) {
+
+    const prvek = document.getElementById(co);
+
+    let hodnota = parseInt(prvek.textContent) || 0;
+
+    hodnota += zmena;
+
+    if (hodnota < 0) {
+        hodnota = 0;
+    }
+
+    prvek.textContent = hodnota;
+}
+
+
+/* Uložení */
+
+async function ulozitAlchymii() {
+
+    if (!postava) {
+        alert("Postava nebyla nalezena.");
+        return;
+    }
+
+    postava.alchymie = {
+
+        rudaNat: parseInt(document.getElementById("rudaNat").textContent) || 0,
+        plyvnik: parseInt(document.getElementById("plyvnik").textContent) || 0,
+        hertel: parseInt(document.getElementById("hertel").textContent) || 0,
+        zobatec: parseInt(document.getElementById("zobatec").textContent) || 0,
+        mecovnicek: parseInt(document.getElementById("mecovnicek").textContent) || 0,
+        trapalka: parseInt(document.getElementById("trapalka").textContent) || 0,
+        zlatnicek: parseInt(document.getElementById("zlatnicek").textContent) || 0,
+        avelinskaRuze: parseInt(document.getElementById("avelinskaRuze").textContent) || 0,
+
+        dubovenka: parseInt(document.getElementById("dubovenka").textContent) || 0,
+        smradlavka: parseInt(document.getElementById("smradlavka").textContent) || 0,
+        skrite: parseInt(document.getElementById("skrite").textContent) || 0,
+        loukotnik: parseInt(document.getElementById("loukotnik").textContent) || 0,
+        kamenicek: parseInt(document.getElementById("kamenicek").textContent) || 0,
+        sliznik: parseInt(document.getElementById("sliznik").textContent) || 0,
+
+        koralky: parseInt(document.getElementById("koralky").textContent) || 0,
+        sladky: parseInt(document.getElementById("sladky").textContent) || 0,
+        kysle: parseInt(document.getElementById("kysle").textContent) || 0,
+        cervenka: parseInt(document.getElementById("cervenka").textContent) || 0,
+        palivyJazyk: parseInt(document.getElementById("palivyJazyk").textContent) || 0,
+
+        sul: parseInt(document.getElementById("sul").textContent) || 0,
+        voda: parseInt(document.getElementById("voda").textContent) || 0,
+        luj: parseInt(document.getElementById("luj").textContent) || 0,
+        alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
+        sira: parseInt(document.getElementById("sira").textContent) || 0,
+
+        sadaVareni: document.getElementById("sadaVareni").checked,
+        aparatura: document.getElementById("aparatura").checked,
+        miska: document.getElementById("miska").checked,
+        nadoba: document.getElementById("nadoba").checked,
+
+        recepty: postava.alchymie && postava.alchymie.recepty
+            ? postava.alchymie.recepty
+            : {}
+    };
+
+const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", idPostavy);
+
+if (error) {
+    console.error("Chyba při ukládání alchymie:", error);
+    document.getElementById("ulozeno").textContent =
+        "Uložení se nepodařilo.";
+    return;
+}
+
+document.getElementById("ulozeno").textContent = "Uloženo.";
+
+setTimeout(function() {
+    document.getElementById("ulozeno").textContent = "";
+}, 2000);
+}
+
+
+/* Načtení */
+
+
+
+function nacistAlchemii() {
+
+    if (!postava || !postava.alchymie) {
+        return;
+    }
+
+    const alchymie = postava.alchymie;
+
+    Object.keys(alchymie).forEach(function(klic) {
+
+    const prvek = document.getElementById(klic);
+
+    if (!prvek) {
+        return;
+    }
+
+    if (prvek.type === "checkbox") {
+        prvek.checked = alchymie[klic];
+    } else {
+        prvek.textContent = alchymie[klic];
+    }
+
+});
+if (alchymie.recepty) {
+    Object.keys(alchymie.recepty).forEach(function(id) {
+        const pocet = document.getElementById("pocet-" + id);
+
+        if (pocet) {
+            pocet.textContent = alchymie.recepty[id];
+        }
+    });
+}
+}
+const receptyLektvaryData = [
+
+    {
+        id: "rudolazskeVino",
+        jmeno: "Rudolažské víno",
+        popis: "Lehce alkoholický, temně rudý a mírně léčivý lektvar. Silná kořeněná vůně a nasládlá chuť.",
+        vyroba: "3× Rudá nať, voda, sada na vaření",
+        ucinek: "Působí 2 dny. Každý den vyléčí = 1/2 OD + 1.",
+        narocnost: 15
+    },
+
+    {
+        id: "darJagaw",
+        jmeno: "Dar Jagaw",
+        popis: "Silný léčivý lektvar, žluté barvy, aromatické vůně a nahořklé chuti.",
+        vyroba: "Zlatníček, Červenka, Hertel, voda, aparatura",
+        ucinek: "Ihned vyléčí 2× OD + 4.",
+        narocnost: 30
+    },
+
+    {
+        id: "jaskovoLektvar",
+        jmeno: "Jaškovo lektvar",
+        popis: "Prastarý lektvar posilující imunitu, vytvořený jedním ze zakladatelů řádu Prozření.",
+        vyroba: "2× Kysle, Třapalka, voda, sada na vaření",
+        ucinek: "Odolnost nemoci / jedy +5, účinkuje 3–4 dny.",
+        narocnost: 20
+    },
+
+    {
+        id: "sladkyPrach",
+        jmeno: "Sladký prach",
+        popis: "Mírně návykový šnupací prášek, silně posilující.",
+        vyroba: "Sladký ořech, Dubovenka, sada na vaření",
+        ucinek: "Všechny SCH, kde je užita Hbitost +5 / ÚT/KR/UH +2, 12 hodin. Poté -3 / -1.",
+        narocnost: 18
+    },
+
+    {
+        id: "morskyZaludek",
+        jmeno: "Mořský žaludek",
+        popis: "Hustý nažloutlý nápoj velmi nepříjemné chuti.",
+        vyroba: "Kysle, Červenka, Pálivý jazyk, Sladký ořech, sada na vaření",
+        ucinek: "Na den výrazně potlačuje nevolnost a závratě způsobené plavbou a houpáním lodi.",
+        narocnost: 20
+    },
+
+    {
+        id: "silaHrysala",
+        jmeno: "Síla Hryšala",
+        popis: "Hustý hnědý lektvar s výraznou ořechovou chutí.",
+        vyroba: "Dubovenka, Sladký ořech, Zobatec, voda, sada na vaření",
+        ucinek: "Břemena +4, 6 hodin.",
+        narocnost: 22
+    },
+
+    {
+        id: "druhyDech",
+        jmeno: "Druhý dech",
+        popis: "Světle zelený lektvar s ostrou bylinnou vůní.",
+        vyroba: "Mečovníček, Třapalka, Kysle, Červenka, voda, sada na vaření",
+        ucinek: "Atletika +4, 6 hodin.",
+        narocnost: 22
+    },
+
+    {
+        id: "okoLovce",
+        jmeno: "Oko lovce",
+        popis: "Zlatavý nápoj s nahořklou chutí.",
+        vyroba: "Zlatníček, Zobatec, Korálky, voda, sada na vaření",
+        ucinek: "Všímavost +4, 6 hodin.",
+        narocnost: 24
+    },
+
+    {
+        id: "pevnePouto",
+        jmeno: "Pevné pouto",
+        popis: "Hustý jantarový lektvar s lehce kovovou chutí.",
+        vyroba: "Zobatec, Třapalka, Kameníček, voda, aparatura",
+        ucinek: "Odolnost jedy a nemoce +10 na 5 dnů.",
+        narocnost: 28
+    },
+
+    {
+        id: "serumZapomneni",
+        jmeno: "Sérum zapomnění",
+        popis: "Průhledný lektvar bez chuti a téměř bez zápachu.",
+        vyroba: "Slizník, Skřítě, 2× Kysle, Korálky, aparatura",
+        ucinek: "Po požití způsobí výpadek paměti na poslední 2 dny. Jedy 25, poté Sebeovládání 25.",
+        narocnost: 28
+    }
+
+];
+const receptyJedyData = [
+
+    {
+        id: "telomorka",
+        jmeno: "Tělomorka",
+        popis: "Silný jed napadající tělesné funkce.",
+        vyroba: "2× Červenka, Mečovníček, voda, sada na vaření",
+        ucinek: "Jedy 20. Při neúspěchu každý den − OD + 1.",
+        narocnost: 20
+    },
+
+    {
+        id: "kralovrah",
+        jmeno: "Královrah",
+        popis: "Silný jed určený k pomalému oslabení oběti.",
+        vyroba: "Skřítě, 2× Korálky, Třapalka, voda, aparatura",
+        ucinek: "OD Jedy 25. Každý den Jedy 28 = neúspěch − OD + 1.",
+        narocnost: 25
+    },
+
+    {
+        id: "polibekVdovy",
+        jmeno: "Polibek vdovy",
+        popis: "Velmi nebezpečný jed s pomalým nástupem účinku.",
+        vyroba: "3× Avelinská růže, Rudá nať, Slizník, 2× Červenka, voda, aparatura",
+        ucinek: "OD Jedy 32. Každý den Jedy −10 = neúspěch −2× OD + 5.",
+        narocnost: 35
+    },
+
+    {
+        id: "pavucinka",
+        jmeno: "Pavučinka",
+        popis: "Jed způsobující rychlou paralýzu.",
+        vyroba: "2× Loukotník, Hertel, aparatura, voda",
+        ucinek: "Jedy 30, okamžitá paralýza. Každou hodinu Jedy −5.",
+        narocnost: 25
+    },
+
+    {
+        id: "nocniMura",
+        jmeno: "Noční můra",
+        popis: "Jed způsobující uspání po vdechnutí.",
+        vyroba: "Kysle, Pálivý jazyk, Mečovníček, aparatura",
+        ucinek: "Způsobí uspání cíle po vdechnutí, Jedy 20. Každou hodinu Jedy −2.",
+        narocnost: 20
+    },
+
+    {
+        id: "cernyVdovec",
+        jmeno: "Černý vdovec",
+        popis: "Silný a nebezpečný jed.",
+        vyroba: "2× Plyvník, Slizník, Skřítě, 2× Korálky, aparatura",
+        ucinek: "Silný jed. Jedy 28. Při neúspěchu každý den − OD + 4.",
+        narocnost: 30
+    }
+
+];
+
+const receptyMastiData = [
+    {
+        id: "lecivyMed",
+        jmeno: "Léčivý med",
+        popis: "Zlatavá sladká mast urychlující léčení.",
+        vyroba: "Lůj, Mečovníček, Kysle, sada na vaření",
+        ucinek: "Působí 4 dny. Každý den vyléčí = OD + 1.",
+        narocnost: 20
+    },
+    {
+        id: "palivaMast",
+        jmeno: "Pálivá mast",
+        popis: "Hřejivá mast, užívaná vojáky na prokrvení svalů.",
+        vyroba: "Lůj, Třapalka, Pálivý jazyk, sada na vaření",
+        ucinek: "Výdrž + 5, působí 1 den.",
+        narocnost: 16
+    },
+    {
+        id: "krevniZastavovac",
+        jmeno: "Krevní zastavovač",
+        popis: "Hustá tmavě zelená mast s výraznou bylinnou vůní.",
+        vyroba: "2× Loukotník, Mečovníček, Zlatníček, Lůj, sada na vaření",
+        ucinek: "Přiložený na čerstvou ránu zastaví krvácení a urychlí její zacelení. Nevyléčí samotné zranění. (Ošetření + 7)",
+        narocnost: 22
+    },
+    {
+        id: "bezstopovyBalzam",
+        jmeno: "Bezstopový balzám",
+        popis: "Šedavá mast téměř bez vůně. Po nanesení zanechá na kůži lehce chladivý pocit.",
+        vyroba: "Smradlavka, Hertel, Sladký ořech, Lůj, sada na vaření",
+        ucinek: "Na 12 hodin výrazně potlačí přirozený pach těla. Ztíží stopování podle čichu.",
+        narocnost: 20
+    },
+    {
+        id: "certik",
+        jmeno: "Čertík",
+        popis: "Modravá mast, která při dotyku pálí jako oheň.",
+        vyroba: "Kameníček, Pálivý jazyk, Kysle, Lůj, aparatura",
+        ucinek: "10 dávek, každá dávka zvyšuje poškození zbraně +2 (pokud alespoň 1 projde zbrojí).",
+        narocnost: 23
+    }
+];
+const receptyOstatniData = [
+    {
+        id: "cichaciSul",
+        jmeno: "Čichací sůl",
+        popis: "Bílý prášek s velmi ostrým, štiplavým zápachem. Uchovává se v malé lahvičce.",
+        vyroba: "Třapalka, Smradlavka, sůl, miska",
+        ucinek: "Po přičichnutí okamžitě probere omráčeného nebo spícího člověka. Na krátkou dobu odstraní ospalost. (Výdrž +3)",
+        narocnost: 15
+    },
+    {
+        id: "kyselinaLeptava",
+        jmeno: "Kyselina leptavá",
+        popis: "Čirá až slabě nažloutlá kapalina. Silně leptá kov, dřevo i kůži.",
+        vyroba: "Hertel, Pálivý jazyk, voda, aparatura",
+        ucinek: "Dokáže naleptat měkké kovy (poškození 4 Ž).",
+        narocnost: 22
+    },
+    {
+        id: "kyselinaZrava",
+        jmeno: "Kyselina žravá",
+        popis: "Hustší tmavá kapalina, která při kontaktu s povrchem slabě kouří.",
+        vyroba: "Slizník, Plyvník, alkohol, voda, aparatura",
+        ucinek: "Silná kyselina. Dokáže rozleptat i tvrdé kovy a slitiny (poškození 10 Ž).",
+        narocnost: 30
+    },
+    {
+        id: "krevniStopar",
+        jmeno: "Krevní stopař",
+        popis: "Tmavě červený roztok, který se nanáší na předmět nebo místo, kde mohla být krev.",
+        vyroba: "Rudá nať, Červenka, Korálky, voda, sada na vaření",
+        ucinek: "Po nanesení se zbarví, pokud je v okolí krev. Čerstvá krev reaguje silněji. Funguje i na malé množství zaschlé krve.",
+        narocnost: 18
+    },
+    {
+        id: "slabyJedokaz",
+        jmeno: "Slabý jedokaz",
+        popis: "Čirá tekutina, která se po kontaktu s jedem zbarví.",
+        vyroba: "Zlatníček, Červenka, Skřítě, voda, aparatura",
+        ucinek: "Odhalí přítomnost jedů (Královrah, Tělomorka) v jídle, nápoji nebo na předmětu.",
+        narocnost: 25
+    },
+    {
+        id: "dymovaKoule",
+        jmeno: "Dýmová koule",
+        popis: "Malá keramická nádoba naplněná směsí, která po rozbití vytváří hustý šedý dým.",
+        vyroba: "Smradlavka, Třapalka, Slizník, síra, sada na vaření, nádoba",
+        ucinek: "Po rozbití vytvoří během několika okamžiků hustý dým na ploše několika metrů. Trvá přibližně 5 minut.",
+        narocnost: 20
+    },
+    {
+        id: "zlatyRytir",
+        jmeno: "Zlatý rytíř",
+        popis: "Zlatý parfém s příjemnou vůní.",
+        vyroba: "Sladký ořech, Zlatníček, Korálky, voda, aparatura",
+        ucinek: "Dovednosti, kde je užito Charisma +3, 6 hodin.",
+        narocnost: 24
+    },
+    {
+        id: "mluvka",
+        jmeno: "Mluvka",
+        popis: "Téměř bezbarvá kapalina, lehce nahořklá.",
+        vyroba: "Zlatníček, Slizník, Červenka, Kameníček, aparatura",
+        ucinek: "Po požití má postižený značně ztíženou možnost vědomě lhát. Trvá přibližně 1 hodinu.",
+        narocnost: 30
+    },
+    {
+        id: "cisticiRoztok",
+        jmeno: "Čistící roztok",
+        popis: "Průhledná tekutina s lehce antiseptickou vůní.",
+        vyroba: "Loukotník, Kameníček, Mečovníček, voda, sada na vaření",
+        ucinek: "Po vyčištění rány odstraní nečistoty a výrazně snižuje riziko zanícení. (Ošetření +5)",
+        narocnost: 19
+    }
+];
+
+/* =========================
+   VÝROBA
+========================= */
+
+const surovinyID = {
+    "Rudá nať": "rudaNat",
+    "Plyvník": "plyvnik",
+    "Hertel": "hertel",
+    "Zobatec": "zobatec",
+    "Mečovníček": "mecovnicek",
+    "Třapalka": "trapalka",
+    "Zlatníček": "zlatnicek",
+    "Avelinská růže": "avelinskaRuze",
+
+    "Dubovenka": "dubovenka",
+    "Smradlavka": "smradlavka",
+    "Skřítě": "skrite",
+    "Loukotník": "loukotnik",
+    "Kameníček": "kamenicek",
+    "Slizník": "sliznik",
+
+    "Korálky": "koralky",
+    "Sladký ořech": "sladky",
+    "Kysle": "kysle",
+    "Červenka": "cervenka",
+    "Pálivý jazyk": "palivyJazyk",
+    "Pálivý jazyk / jazýček": "palivyJazyk",
+
+    "sůl": "sul",
+    "voda": "voda",
+    "Lůj": "luj",
+    "alkohol": "alkohol",
+    "síra": "sira"
+};
+
+const pomuckyID = {
+    "sada na vaření": "sadaVareni",
+    "aparatura": "aparatura",
+    "miska": "miska",
+    "nádoba": "nadoba"
+};
+
+
+function zpracovatRecept(recept) {
+
+    const polozky = recept.vyroba
+        .split(",")
+        .map(function(polozka) {
+            return polozka.trim();
+        });
+
+    const suroviny = [];
+    const pomucky = [];
+
+    polozky.forEach(function(polozka) {
+
+        let mnozstvi = 1;
+        let nazev = polozka;
+
+        const nasobek = polozka.match(/^(\d+)×\s*(.+)$/);
+
+        if (nasobek) {
+            mnozstvi = parseInt(nasobek[1]);
+            nazev = nasobek[2].trim();
+        }
+
+        if (surovinyID[nazev]) {
+
+            suroviny.push({
+                id: surovinyID[nazev],
+                mnozstvi: mnozstvi
+            });
+
+        } else if (pomuckyID[nazev]) {
+
+            pomucky.push({
+                id: pomuckyID[nazev]
+            });
+
+        }
+    });
+
+    return {
+        suroviny: suroviny,
+        pomucky: pomucky
+    };
+}
+function zobrazitPotvrzeni(text, potvrdit, zrusit) {
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpis = document.getElementById("vlastniOknoNadpis");
+    const obsah = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpis.textContent = "Výroba";
+    obsah.textContent = text;
+
+    tlacitka.innerHTML = "";
+
+    const ano = document.createElement("button");
+    ano.type = "button";
+    ano.textContent = "ANO";
+
+    const ne = document.createElement("button");
+    ne.type = "button";
+    ne.textContent = "NE";
+
+    ano.onclick = function() {
+        pozadi.style.display = "none";
+        potvrdit();
+    };
+
+    ne.onclick = function() {
+        pozadi.style.display = "none";
+        zrusit();
+    };
+
+    tlacitka.appendChild(ano);
+    tlacitka.appendChild(ne);
+
+    pozadi.style.display = "flex";
+}
+
+async function vyrobit(recept) {
+
+    if (!postava || !postava.alchymie) {
+        zobrazitHlasku("Nejdřív ulož alchymii.");
+        return;
+    }
+
+    const receptData = zpracovatRecept(recept);
+
+    // Kontrola surovin
+    for (const surovina of receptData.suroviny) {
+
+        const prvek = document.getElementById(surovina.id);
+
+        if (!prvek) {
+            zobrazitHlasku("Surovina nebyla nalezena.");
+            return;
+        }
+
+        const mnozstvi =
+            parseInt(prvek.textContent) || 0;
+
+        if (mnozstvi < surovina.mnozstvi) {
+
+            const radek = prvek.closest("tr");
+            const nazev = radek.querySelector("td").textContent.trim();
+
+            const chybi =
+                surovina.mnozstvi - mnozstvi;
+
+            zobrazitHlasku(
+    "Na výrobu nemáš dost suroviny:\n\n" +
+    nazev +
+    " – chybí " +
+    chybi +
+    " ks."
+);
+
+            return;
+        }
+    }
+
+    // Kontrola pomůcek
+    for (const pomucka of receptData.pomucky) {
+
+        const prvek =
+            document.getElementById(pomucka.id);
+
+        if (!prvek || !prvek.checked) {
+
+            zobrazitHlasku(
+    "K výrobě potřebuješ pomůcku: " +
+    pomucka.id
+);
+
+            return;
+        }
+    }
+
+    // Vlastní potvrzovací okno
+    zobrazitPotvrzeni(
+        "Podařilo se ti vyrobit:\n" +
+        recept.jmeno +
+        "?\n\n" +
+        "Rozhodni podle výsledku svého hodu kostkou.",
+
+        // ANO
+        async function() {
+
+    // Suroviny se spotřebují vždy
+            receptData.suroviny.forEach(function(surovina) {
+
+                const prvek =
+                    document.getElementById(surovina.id);
+
+                let mnozstvi =
+                    parseInt(prvek.textContent) || 0;
+
+                mnozstvi -= surovina.mnozstvi;
+
+                prvek.textContent = mnozstvi;
+
+                postava.alchymie[surovina.id] =
+                    mnozstvi;
+            });
+
+            // Přidání vyrobeného předmětu
+            if (!postava.alchymie.recepty) {
+                postava.alchymie.recepty = {};
+            }
+
+            const id = recept.id;
+
+            postava.alchymie.recepty[id] =
+                (postava.alchymie.recepty[id] || 0) + 1;
+
+            const pocet =
+                document.getElementById("pocet-" + id);
+
+            if (pocet) {
+                pocet.textContent =
+                    postava.alchymie.recepty[id];
+            }
+
+            const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", idPostavy);
+
+if (error) {
+    console.error("Chyba při ukládání výroby:", error);
+}
+
+            zobrazitHlasku(
+    "Výroba se podařila: " +
+    recept.jmeno,
+    "Výroba"
+);
+        },
+
+        // NE
+       async function() {
+
+    // Suroviny se spotřebují i při neúspěchu
+            receptData.suroviny.forEach(function(surovina) {
+
+                const prvek =
+                    document.getElementById(surovina.id);
+
+                let mnozstvi =
+                    parseInt(prvek.textContent) || 0;
+
+                mnozstvi -= surovina.mnozstvi;
+
+                prvek.textContent = mnozstvi;
+
+                postava.alchymie[surovina.id] =
+                    mnozstvi;
+            });
+
+            const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", idPostavy);
+
+if (error) {
+    console.error("Chyba při ukládání po neúspěšné výrobě:", error);
+}
+
+            zobrazitHlasku(
+    "Výroba se nepodařila.\n\n" +
+    "Suroviny byly spotřebovány.",
+    "Výroba"
+);
+        }
+    );
+}
+
+function zobrazitHlasku(text, nadpis = "Alchymie") {
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpisPrvku = document.getElementById("vlastniOknoNadpis");
+    const obsah = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpisPrvku.textContent = nadpis;
+    obsah.textContent = text;
+
+    tlacitka.innerHTML = "";
+
+    const ok = document.createElement("button");
+    ok.type = "button";
+    ok.textContent = "OK";
+
+    ok.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(ok);
+
+    pozadi.style.display = "flex";
+}
+async function ulozitAlchymiiBezHlasky() {
+
+    if (!postava) return;
+
+    postava.alchymie = {
+
+        rudaNat: parseInt(document.getElementById("rudaNat").textContent) || 0,
+        plyvnik: parseInt(document.getElementById("plyvnik").textContent) || 0,
+        hertel: parseInt(document.getElementById("hertel").textContent) || 0,
+        zobatec: parseInt(document.getElementById("zobatec").textContent) || 0,
+        mecovnicek: parseInt(document.getElementById("mecovnicek").textContent) || 0,
+        trapalka: parseInt(document.getElementById("trapalka").textContent) || 0,
+        zlatnicek: parseInt(document.getElementById("zlatnicek").textContent) || 0,
+        avelinskaRuze: parseInt(document.getElementById("avelinskaRuze").textContent) || 0,
+
+        dubovenka: parseInt(document.getElementById("dubovenka").textContent) || 0,
+        smradlavka: parseInt(document.getElementById("smradlavka").textContent) || 0,
+        skrite: parseInt(document.getElementById("skrite").textContent) || 0,
+        loukotnik: parseInt(document.getElementById("loukotnik").textContent) || 0,
+        kamenicek: parseInt(document.getElementById("kamenicek").textContent) || 0,
+        sliznik: parseInt(document.getElementById("sliznik").textContent) || 0,
+
+        koralky: parseInt(document.getElementById("koralky").textContent) || 0,
+        sladky: parseInt(document.getElementById("sladky").textContent) || 0,
+        kysle: parseInt(document.getElementById("kysle").textContent) || 0,
+        cervenka: parseInt(document.getElementById("cervenka").textContent) || 0,
+        palivyJazyk: parseInt(document.getElementById("palivyJazyk").textContent) || 0,
+
+        sul: parseInt(document.getElementById("sul").textContent) || 0,
+        voda: parseInt(document.getElementById("voda").textContent) || 0,
+        luj: parseInt(document.getElementById("luj").textContent) || 0,
+        alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
+        sira: parseInt(document.getElementById("sira").textContent) || 0,
+
+        sadaVareni: document.getElementById("sadaVareni").checked,
+        aparatura: document.getElementById("aparatura").checked,
+        miska: document.getElementById("miska").checked,
+        nadoba: document.getElementById("nadoba").checked,
+
+        recepty: postava.alchymie.recepty || {}
+    };
+
+   const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", idPostavy);
+
+if (error) {
+    console.error("Chyba při ukládání alchymie:", error);
+}
+}
+
+function zobrazitReceptyOstatni() {
+    const tabulka = document.getElementById("receptyOstatni");
+    tabulka.innerHTML = "";
+
+    receptyOstatniData.forEach(function(recept) {
+        const radek = document.createElement("tr");
+
+        radek.innerHTML = `
+            <td>${recept.jmeno}</td>
+            <td>${recept.popis}</td>
+            <td>${recept.vyroba}</td>
+            <td>${recept.ucinek}</td>
+            <td>${recept.narocnost}</td>
+            <td id="pocet-${recept.id}">0</td>
+            <td>
+                <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
+            </td>
+        `;
+
+        tabulka.appendChild(radek);
+    });
+}
+
+zobrazitReceptyOstatni();
+
+function zobrazitReceptyMasti() {
+    const tabulka = document.getElementById("receptyMasti");
+    tabulka.innerHTML = "";
+
+    receptyMastiData.forEach(function(recept) {
+        const radek = document.createElement("tr");
+
+        radek.innerHTML = `
+            <td>${recept.jmeno}</td>
+            <td>${recept.popis}</td>
+            <td>${recept.vyroba}</td>
+            <td>${recept.ucinek}</td>
+            <td>${recept.narocnost}</td>
+            <td id="pocet-${recept.id}">0</td>
+            <td>
+                <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
+            </td>
+        `;
+
+        tabulka.appendChild(radek);
+    });
+}
+
+zobrazitReceptyMasti();
+function zobrazitReceptyJedy() {
+    const tabulka = document.getElementById("receptyJedy");
+    tabulka.innerHTML = "";
+
+    receptyJedyData.forEach(function(recept) {
+        const radek = document.createElement("tr");
+
+        radek.innerHTML = `
+            <td>${recept.jmeno}</td>
+            <td>${recept.popis}</td>
+            <td>${recept.vyroba}</td>
+            <td>${recept.ucinek}</td>
+            <td>${recept.narocnost}</td>
+            <td id="pocet-${recept.id}">0</td>
+            <td>
+                <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
+            </td>
+        `;
+
+        tabulka.appendChild(radek);
+    });
+}
+
+zobrazitReceptyJedy();
+
+function zobrazitReceptyLektvary() {
+
+    const tabulka = document.getElementById("receptyLektvary");
+
+    tabulka.innerHTML = "";
+
+    receptyLektvaryData.forEach(function(recept) {
+
+        const radek = document.createElement("tr");
+
+        radek.innerHTML = `
+            <td>${recept.jmeno}</td>
+            <td>${recept.popis}</td>
+            <td>${recept.vyroba}</td>
+            <td>${recept.ucinek}</td>
+            <td>${recept.narocnost}</td>
+            <td id="pocet-${recept.id}">0</td>
+            <td>
+                <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
+            </td>
+        `;
+
+        tabulka.appendChild(radek);
+    });
+}
+
+zobrazitReceptyLektvary();
+
+
+</script>
+
+</body>
+</html>
+

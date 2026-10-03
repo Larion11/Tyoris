@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestiář</title>
+
+<style>
+.bestiary-kategorie {
+    text-align: center;
+    color: #d8c29d;
+    font-size: 22px;
+    font-weight: bold;
+    margin: -15px 0 25px 0;
+}
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    background-image: url("pozadi-bestiar.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    font-family: Georgia, serif;
+    color: #e8dfcf;
+    padding: 30px;
+}
+
+.page {
+            width: min(1000px, 94vw);
+            margin: 40px auto;
+            padding: 40px;
+            box-sizing: border-box;
+            background: rgba(20, 17, 14, 0.9);
+            border: 1px solid #6f5a3e;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+        }
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #d8c29d;
+    font-size: 34px;
+}
+
+.bestiary-blok {
+    display: grid;
+    grid-template-columns: 1.1fr 1.3fr 1fr;
+    border: 1px solid #6f5a3e;
+    margin-bottom: 25px;
+}
+
+
+
+
+.bestiary-cast {
+    padding: 15px;
+    border-right: 1px solid #6f5a3e;
+}
+
+.bestiary-cast:last-child {
+    border-right: none;
+}
+
+.bestiary-jmeno {
+    padding: 10px;
+    background: rgba(190, 165, 125, 0.75);
+    border: 1px solid #6f5a3e;
+    color: #1a1510;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+.bestiary-radek {
+    display: flex;
+    min-height: 30px;
+    border-top: 1px solid #6f5a3e;
+    border-left: 1px solid #6f5a3e;
+    border-right: 1px solid #6f5a3e;
+}
+
+.bestiary-radek:last-child {
+    border-bottom: 1px solid #6f5a3e;
+}
+
+.bestiary-vlastnosti {
+    padding: 8px;
+    color: #d8c29d;
+    font-weight: bold;
+    text-align: center;
+    
+}
+.bestiary-vlastnosti-blok {
+    border-left: 1px solid #6f5a3e;
+    border-right: 1px solid #6f5a3e;
+    padding: 0 8px 8px 8px;
+}
+.bestiary-nadpis {
+    margin: 0;
+    padding: 5px;
+    background: #6f5a3e;
+    color: #1a1510;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    border: 1px solid #6f5a3e;
+}
+
+.bestiary-nazev {
+    width: 110px;
+    padding: 7px;
+    color: #d8c29d;
+    font-weight: bold;
+    border-right: 1px solid #6f5a3e;
+}
+
+.bestiary-hodnota {
+    flex: 1;
+    padding: 7px;
+}
+
+.bestiary-popis,
+.bestiary-poznamky {
+    color: #d8c29d;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.bestiary-text {
+    width: 100%;
+    min-height: 300px;
+    resize: vertical;
+
+    padding: 8px;
+
+    background: #17120f;
+    color: #e8dfcf;
+
+    border: 1px solid #6f5a3e;
+
+    font-family: Georgia, serif;
+    font-size: 15px;
+}
+
+.bestiary-text:focus {
+    outline: none;
+    border-color: #a8895f;
+}
+
+.tlacitka {
+    margin-top: 25px;
+    text-align: center;
+}
+
+button {
+    padding: 9px 18px;
+    margin: 5px;
+
+    background: #3a2c20;
+    color: #e8dfcf;
+
+    border: 1px solid #6f5a3e;
+
+    font-family: Georgia, serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #51402d;
+    border-color: #a8895f;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <h1>Bestiář</h1>
+    <div class="bestiary-kategorie">Obratlovci</div>
+
+    <div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+    Korgon lidožravý
+</div>
+
+       <div class="bestiary-vlastnosti-blok">
+
+    <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+    <div>Predátor</div>
+    <div>Samotář</div>
+    <div>Agresivní</div>
+    <div>Noční tvor</div>
+
+</div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">35–50</div>
+        </div>
+
+        <div class="bestiary-radek">
+    <div class="bestiary-nazev">Útok</div>
+    <div class="bestiary-hodnota">Drápy: UT 13 &nbsp; Poš: 10</div>
+</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">13</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">3</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">D</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+    <div class="bestiary-hodnota">Všímavost: 13 (zrak) 17 (čich) 12 (sluch)</div>
+</div>
+
+<div class="bestiary-radek">
+    <div class="bestiary-hodnota">Výdrž 14</div>
+</div>
+
+<div class="bestiary-radek">
+    <div class="bestiary-hodnota">Plížení 14</div>
+</div>
+
+<div class="bestiary-radek">
+    <div class="bestiary-hodnota">Běh 8</div>
+</div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+            Nejhrozivější suchozemský predátor dorůstá výšky až 150 cm v kohoutku a váhy do 350 kg.
+            Korgon žije samotářským životem, samci mají teritoria o rozloze několika desítek km a jsou
+            schopni urazit veliké vzdálenosti při hledání kořisti. Jsou aktivní hlavně za soumraku a 
+            v noci, ale občas loví i ve dne a to hlavně veliké savce ( Mataka , Bavul ).
+            Mají dobrý zrak a čich a jejich zbarvení jim umožnuje dobře se plížit ke kořisti, neumí 
+            ale moc dobře běhat a zatáčet proto se většinou snaží kořist zabít na první pokus, přičemž
+            útočí převážně skokem a kořist buď svojí vahou strnou na zem a zlámou jí kosti 
+            nebo jí mordou a drápy způsobí taková zranění že nemůže vzdorovat. Pokud Korgon 
+            potká jiného alfa samce, nebo jiného nepřítele ( např. člověk nebo Hryšal ) nikdy z boje
+             neutíkají a bojují na život a na smrt.
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="korgon"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+
+</div>
+<div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+            Šebal
+        </div>
+
+        <div class="bestiary-vlastnosti-blok">
+
+            <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+            <div>Predátor</div>
+            <div>Smečka</div>
+            <div>Dá se ochočit</div>
+
+        </div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">8–15</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Útok</div>
+            <div class="bestiary-hodnota"></div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">16</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">2</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">B</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Všímavost: 12 (čich) 18 (zrak) 19 (sluch)
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Výdrž 12</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Plížení 16</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Běh 19</div>
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+        Šebal žije ve smečce (3 - 20 členů) s dominantní samicí (Matriarchát). Samci žijí kočovným 
+        způsobec života, tráví ve smečce  čas jen při době páření a poté putují dál. Šebalí samice 
+        dorůstá velikosti až 80 cm v kohoutku a váhy do 40 kg, samec velikosti až 100 cm v kohoutku a
+         váhy až 65 kg. Na lov chodí pouze samci ve smečce snažící se obět obklíčit srazit na
+          zem a prokousnout hrdlo či poranit tak aby nemohla daleko utéct. Šebal má velmi dobrý zrak,
+           čich a sluch avšak nebývá to vytrvalý běžec. Podle domovské krajiny mají různá zbarvení a hustou srst.
+            Patří k nejrozšířenejším predátorům krajin a je velmi přizpůsobivý. Jsou i případy kdy
+             se lidem podařilo šebali ochočit     
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="sebal"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+    
+</div>
+
+<div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+            Hryšal
+        </div>
+
+        <div class="bestiary-vlastnosti-blok">
+
+            <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+            <div>Všežravec</div>
+            <div>Zimní spánek</div>
+
+        </div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">40–60</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Útok</div>
+            <div class="bestiary-hodnota"></div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">10</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">4</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">D</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Všímavost: 20 (čich) 12 (zrak) 8 (sluch)
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Výdrž 17</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Běh 8</div>
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+         Na první pohled strašlivý hrůzu nahánějící Hryšal je poměrně klidný tvor, který útočí na člověka
+          jen pokud je napaden nebo pokud brání své mladé ( v té době je velice agresivní a nebezpečný všemu
+           v okolí ), žije po celý život v páru v nějaké jeskyni nebo noře. Samec dorůstá výšky kolem 250 cm 
+           ( měřeno ve vzpřímené poloze ) a váze přesahující i 500 kg, samice je průměrně o 30 až 50 % menší.
+            jako potrava mu slouží ryby, kořínky, mršiny, ptačí vejce, ale i jiní savci. Jsou poměrně teritoriální
+             a samci svádění krvavé boje, při kterých mnokrát jeden z nich nepřežije. Pokud jeden z páru přijde o
+             partnera už si jiného nenajde, začne se bezcílně toulat a stanou se více agresivní a
+              vyhledávají potyčky jakoby chtěli zemřít ( od toho je úsloví, že ten co vyhledává problémy: hledá 
+              hryšala, čeká na hryšala, má hryšalí cestu, má hryšalí náladu atd.. ) Hryšal má poměrně dobrý čich,
+              jinak je velmi pomalý a neobratný, pokud dojde k boji postaví se na zadní aby nepřítele vystrašil 
+              a pokud to nepomůže ve svých tlapách má obrouvskou sílu a pokud se mu podaří nepřítele " obejmout "
+               může např člověku zlámat všechny kosti v těle, zbytek dokoná morda a drápy. Je aktivní po 
+               celý den jen jakmile nastanou Mrazy tak prospí 15 až 20 hodin denně.   
+        </div>
+
+    </div>
+
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="hrysal"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+</div>
+<div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+            Drápač
+        </div>
+
+        <div class="bestiary-vlastnosti-blok">
+
+            <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+            <div>Všežravec</div>
+            <div>Inteligentní</div>
+            <div>Smečka</div>
+            <div>Dá se ochočit</div>
+
+        </div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">20–30</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Útok</div>
+            <div class="bestiary-hodnota"></div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">13</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">1</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">B–C</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Všímavost: 8, 12 (zrak), 18 (čich)
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Běh 16</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Výdrž 10</div>
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+         Jeho domovem jsou nehostiné pouště a savany, kde díky svému bezkonkurenčnímu čichu najde
+          potravu tam kde nikdo jiný. Dorůstá výšky lehce přes 2 m, má silný zobák a ještě silnější nohy
+           a drápy ( od toho jméno ), dokáže vycítit potravu ( brouky a malé plazy ) několik cm pod 
+           zemí a svým zobákem nebo nohama je chytá a požírá, nepohrdne ani rostlinama nebo mršinama a
+            v případě nouze je schopen i sám zabít středně veliké zvíře nebo člověka. Žije ve společenství
+             2 - 10 členů bez přirozeného vůdce. Pouštní Šébové je ochočili a používají je na cestování
+             a vyhledávání jídla a vody ( říká se že dokáží vycítit vodu a pamatují si místa kde se vyskytuje ) 
+             Jsou  velmi schopní a vytrvalý běžci a díky svým zakrnělým křídlům dokáží skákat na veliké
+              vzdálenosti, to užívají pokud chtějí napadnout nějakého tvora .Skočí, chytnou ho do svých
+              mohutných pařátů a pak zobákem dorazí. Jsou poměrně inteligentní a samice jsou o něco agresivnější
+               než samci. Svým mocným zobákem jsou schopni rozštípout kosti aby se dostali k morku 
+               a jsou případy kdy pronikly kroužkovou košilí jako nůž máslem.   
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="drapac"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+
+</div>
+<div class="bestiary-kategorie">Bezobratlí</div>
+<div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+            Kokonatka
+        </div>
+
+        <div class="bestiary-vlastnosti-blok">
+
+            <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+            <div>Tkaní pavučin</div>
+            <div>Predátor</div>
+            <div>Kanibal</div>
+            <div>Samotář</div>
+            <div>Jedovatost</div>
+
+        </div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">20–60</div>
+        </div>
+
+        <div class="bestiary-radek">
+    <div class="bestiary-nazev">Útok</div>
+    <div class="bestiary-hodnota">
+        Pavučina<br>
+        Kousnutí<br>
+        Noha
+    </div>
+</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">15</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">1</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">C–D</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Všímavost: 4, 12 (čich), 18 (dotek pavučiny)
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Paralýza, Jedy – 8 (paralýza 1–2 hodiny)
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Poš: 1k6 + 10 každou hodinu paralýzy
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Výdrž 16</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">Běh 8</div>
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+        Kokonatka je největší pavouk v celých krajinách, měřící od 1 do 2 metrů v rozpětí nohou.
+         Žije samotářsky na temných místech, které opřede svými pavučinami do kterých chytá své oběti.
+          Je témeř slepá, okolí vnímá pomocí svých chloupků a otřesů pavučiny na které s železnou trpělivostí
+           čeká i několik dnů. Jakmile je kořist chycena do pavučiny pavouk ji musí co nejrychleji omotat
+            pavučinou a jakmile ji znehybní vstříkne do ní svoje žaludeční štávy, které ji zabijí a natráví 
+            aby ji mohl později snít. Kanibalismus je u kokonatek naprosto běžný a dá se říct že
+             hlavní jejich potravou jsou jiné kokonatky, častokrát jí i své potomstvo. 
+             Tento pavouk je velmi vzácný a je považován za téměř vyhynulý.    
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="kokonatka"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+
+</div>
+<div class="bestiary-blok">
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-jmeno">
+            Krunířník
+        </div>
+
+        <div class="bestiary-vlastnosti-blok">
+
+            <div class="bestiary-vlastnosti">Vlastnosti</div>
+
+            <div>Predátor</div>
+            <div>Jedovatost</div>
+            <div>Noční tvor</div>
+
+        </div>
+
+        <div class="bestiary-nadpis">Atributy</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Životy</div>
+            <div class="bestiary-hodnota">15–30</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Útok</div>
+            <div class="bestiary-hodnota">
+                Kousnutí<br>
+                Omotání
+            </div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Úhyb</div>
+            <div class="bestiary-hodnota">9</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Zbroj</div>
+            <div class="bestiary-hodnota">6</div>
+        </div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-nazev">Velikost</div>
+            <div class="bestiary-hodnota">C–D</div>
+        </div>
+
+        <div class="bestiary-nadpis">Schopnosti</div>
+
+        <div class="bestiary-radek">
+            <div class="bestiary-hodnota">
+                Všímavost 2, 13 (čich), 16 (otřesy)
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-popis">Popis</div>
+
+        <div>
+         Šébové toto mostrum nazývají Písečná Zhouba což dokonale vystihuje všechny jeho atributy. 
+         Krunířník je zbrojí z chitinu pokrytá stonožka s 30 až 40 cm v průměru a 2,5 až 3 metry délky, 
+         zhmotněná noční můra pro cokoli živé s čím přijde do styku. Pohybuje se rychle jak pod zemí tak
+          na povrchu, vnímá otřesy půdy a místo očí používá dlouhá makadla. Každá noha je zakončena
+           ostrým bodcem a svou oběť omotá tělem a pak do něj stříkne ze svých kusadel velmi silný jed.
+            Je aktivní hlavně v noci a živí se každým živočichem co se mu postaví do cesty, neboť její
+             jed skolí prakticky vše. Tento tvor nevyčkává, je neustále v pohybu, proto jej není težké spatřit
+              a pokusit se utéci, ikdyž je díky svému množství noh poměrně rychlý. Jako u jiného hmyzu 
+              i tento praktikuje kanibalismus.   
+        </div>
+
+    </div>
+
+    <div class="bestiary-cast">
+
+        <div class="bestiary-poznamky">Poznámky</div>
+
+        <textarea
+            class="bestiary-text poznamka"
+            data-index="krunirnik"
+            placeholder="Vlastní poznámky..."></textarea>
+
+    </div>
+
+</div>
+
+
+
+    <div class="tlacitka">
+        <button type="button" onclick="ulozitPoznamky()">Uložit</button>
+        <button type="button" onclick="window.close()">Zavřít</button>
+    </div>
+
+    <div id="ulozeno"></div>
+
+</div>
+
+<script>
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+
+let postava = null;
+
+async function nacistPostavu() {
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("*")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání postavy:", error);
+        return;
+    }
+
+    postava = {
+        ...(radek.data || {}),
+        id: String(radek.id),
+        jmeno: radek.jmeno,
+        popis: radek.popis
+    };
+
+    nacistPoznamky();
+}
+
+nacistPostavu();
+async function ulozitPoznamky() {
+
+    if (!postava) {
+        return;
+    }
+
+    const poznamky = {};
+
+    document.querySelectorAll(".poznamka").forEach(function(input) {
+        poznamky[input.dataset.index] = input.value;
+    });
+
+    postava.bestiarPoznamky = poznamky;
+
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({
+            data: postava
+        })
+        .eq("id", idPostavy);
+
+    if (error) {
+        console.error("Chyba při ukládání poznámek:", error);
+        document.getElementById("ulozeno").textContent =
+            "Uložení se nepodařilo.";
+        return;
+    }
+
+    document.getElementById("ulozeno").textContent = "Uloženo.";
+
+    setTimeout(function() {
+        document.getElementById("ulozeno").textContent = "";
+    }, 2000);
+}
+
+function nacistPoznamky() {
+
+    if (!postava || !postava.bestiarPoznamky) {
+        return;
+    }
+
+    const ulozene = postava.bestiarPoznamky;
+
+    document.querySelectorAll(".poznamka").forEach(function(input) {
+        input.value = ulozene[input.dataset.index] || "";
+    });
+}
+
+
+
+</script>
+
+</body>
+</html>

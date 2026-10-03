@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventář</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("pozadi-inventar.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #eee4d2;
+            font-family: Georgia, serif;
+        }
+
+        .page {
+            width: min(1000px, 94vw);
+            margin: 40px auto;
+            padding: 40px;
+            box-sizing: border-box;
+            background: rgba(20, 17, 14, 0.9);
+            border: 1px solid #6f5a3e;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #d8c29d;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #d8c29d;
+        }
+
+        .info-hlavicka {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #eee4d2;
+        }
+
+        .horni-cast {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sekce {
+            padding: 20px;
+            border: 1px solid #6f5a3e;
+            background: rgba(30, 25, 20, 0.8);
+            box-sizing: border-box;
+        }
+
+        .radek {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .radek:last-child {
+            margin-bottom: 0;
+        }
+
+        .mnozstvi {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mnozstvi button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .cislo {
+            min-width: 35px;
+            text-align: center;
+            font-size: 19px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font: inherit;
+            font-size: 17px;
+            color: #eee4d2;
+            background: #33291e;
+            border: 1px solid #8a704d;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,.5);
+        }
+
+        button:hover {
+            background: #473827;
+            border-color: #b39468;
+        }
+
+        .inventar-sekce {
+            margin-top: 10px;
+        }
+
+        .inventar-tabulka {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inventar-tabulka th {
+            background: rgba(190, 165, 125, 0.75);
+            color: #1a1510;
+            border: 1px solid #6f5a3e;
+            padding: 10px;
+        }
+
+        .inventar-tabulka td {
+            border: 1px solid #6f5a3e;
+            padding: 8px;
+        }
+
+        .inventar-tabulka input {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(15, 12, 10, 0.8);
+            color: #eee4d2;
+            border: 1px solid #6f5a3e;
+            padding: 8px;
+            font: inherit;
+        }
+
+        .inventar-tabulka textarea {
+            width: 100%;
+            min-height: 38px;
+            box-sizing: border-box;
+            resize: none;
+            overflow: hidden;
+            background: rgba(15, 12, 10, 0.8);
+            color: #eee4d2;
+            border: 1px solid #6f5a3e;
+            padding: 8px;
+            font: inherit;
+        }
+
+        .inventar-tabulka th:nth-child(1) {
+            width: 55%;
+        }
+
+        .inventar-tabulka th:nth-child(2) {
+            width: 15%;
+        }
+
+        .inventar-tabulka th:nth-child(3) {
+            width: 25%;
+        }
+
+        .inventar-tabulka th:nth-child(4) {
+            width: 5%;
+        }
+
+        .inventar-tabulka .mazani {
+            width: 50px;
+            text-align: center;
+        }
+
+        .inventar-tabulka .mazani button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .ulozeni {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.ulozeno {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #d8c29d;
+}
+        /* Vlastní vyskakovací okno */
+
+        .vlastni-okno-pozadi {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vlastni-okno {
+            width: min(450px, 90vw);
+            padding: 25px;
+            background: rgba(25, 21, 17, 0.98);
+            border: 1px solid #8a704d;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .vlastni-okno h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #d8c29d;
+            font-size: 22px;
+        }
+
+        .vlastni-okno-text {
+            margin-bottom: 25px;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .vlastni-okno-tlacitka {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .vlastni-okno-tlacitka button {
+            min-width: 100px;
+        }
+    </style>
+    
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>   
+    
+</head>
+
+<body>
+<div class="vlastni-okno-pozadi" id="vlastniOknoPozadi">
+
+    <div class="vlastni-okno">
+
+        <h3 id="vlastniOknoNadpis">Inventář</h3>
+
+        <div class="vlastni-okno-text" id="vlastniOknoText"></div>
+
+        <div class="vlastni-okno-tlacitka" id="vlastniOknoTlacitka">
+        </div>
+
+    </div>
+
+</div>
+<div class="page">
+
+    <h1>Inventář</h1>
+
+    <div class="info-hlavicka" id="info"></div>
+
+    <div class="horni-cast">
+
+<div class="sekce">
+    <h2>Peníze</h2>
+
+    <div class="radek">
+        <span>Zlaťáky</span>
+        <span class="cislo" id="zlato">0</span>
+    </div>
+
+    <div class="radek">
+        <span>Stříbrňáky</span>
+        <span class="cislo" id="stribro">0</span>
+    </div>
+
+    <div class="radek">
+        <span>Měďáky</span>
+        <span class="cislo" id="med">0</span>
+    </div>
+
+    <div class="radek">
+        <input
+            type="number"
+            id="castkaPenez"
+            min="1"
+            value="1"
+            style="width: 80px;"
+        >
+
+        <select id="menaPenez">
+            <option value="zlato">Zlaťáky</option>
+            <option value="stribro">Stříbrňáky</option>
+            <option value="med">Měďáky</option>
+        </select>
+
+        <button type="button" onclick="zmenitPeneze(-1)">− Odečíst</button>
+        <button type="button" onclick="zmenitPeneze(1)">+ Přidat</button>
+    </div>
+</div>
+
+
+        <div class="sekce">
+            <h2>Jídlo</h2>
+
+            <div class="radek">
+                <span>Jídlo</span>
+                <div class="mnozstvi">
+                    <button type="button" onclick="zmenitMnozstvi('jidlo', -1)">−</button>
+                    <span class="cislo" id="jidlo">0</span>
+                    <button type="button" onclick="zmenitMnozstvi('jidlo', 1)">+</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="sekce inventar-sekce">
+
+        <h2>Inventář</h2>
+
+        <table class="inventar-tabulka">
+
+            <thead>
+                <tr>
+                    <th>Předmět</th>
+                    <th>Počet</th>
+                    <th>Poznámka</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody id="seznamInventare">
+
+                <tr>
+                    <td>
+                        <input type="text" oninput="zkontrolovatPosledniRadek()">
+                    </td>
+
+                    <td>
+                        <input type="number" min="0" value="1">
+                    </td>
+
+                    <td>
+                        <textarea oninput="zvetsitPoznamku(this)"></textarea>
+                    </td>
+
+                    <td class="mazani">
+                        <button type="button" onclick="smazatRadek(this)">×</button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+       <div class="ulozeni">
+    <button type="button" onclick="ulozitInventar()">Uložit</button>
+    <button type="button" onclick="window.close()">Zavřít</button>
+    <div id="ulozeno" class="ulozeno"></div>
+</div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+
+let postava = null;
+
+async function nacistPostavu() {
+
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("*")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání postavy:", error);
+
+        document.getElementById("info").textContent =
+            "Postavu se nepodařilo načíst.";
+
+        return;
+    }
+
+    postava = {
+        ...(radek.data || {}),
+        id: String(radek.id),
+        jmeno: radek.jmeno,
+        popis: radek.popis
+    };
+
+    document.getElementById("info").textContent =
+        postava.jmeno || "Bez jména";
+
+    nacistInventar();
+}
+
+nacistPostavu();
+
+
+
+
+
+/* Vytvoření nového řádku */
+
+function zkontrolovatPosledniRadek() {
+
+    const tbody = document.getElementById("seznamInventare");
+    const radky = tbody.querySelectorAll("tr");
+    const posledni = radky[radky.length - 1];
+
+    const predmet = posledni.querySelector("input[type='text']");
+
+    if (predmet.value.trim() !== "") {
+
+        const novyRadek = document.createElement("tr");
+
+        novyRadek.innerHTML = `
+            <td>
+                <input type="text" oninput="zkontrolovatPosledniRadek()">
+            </td>
+
+            <td>
+                <input type="number" min="0" value="1">
+            </td>
+
+            <td>
+                <textarea oninput="zvetsitPoznamku(this)"></textarea>
+            </td>
+
+            <td class="mazani">
+                <button type="button" onclick="smazatRadek(this)">×</button>
+            </td>
+        `;
+
+        tbody.appendChild(novyRadek);
+    }
+}
+
+
+/* Automatické zvětšování poznámky */
+
+function zvetsitPoznamku(textarea) {
+
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
+
+
+/* Změna množství peněz a jídla */
+
+function zobrazitPenize(celkemMedaku) {
+
+    if (celkemMedaku < 0) {
+        celkemMedaku = 0;
+    }
+
+    const zlato = Math.floor(celkemMedaku / 100);
+    const stribro = Math.floor((celkemMedaku % 100) / 10);
+    const med = celkemMedaku % 10;
+
+    document.getElementById("zlato").textContent = zlato;
+    document.getElementById("stribro").textContent = stribro;
+    document.getElementById("med").textContent = med;
+}
+
+
+function celkemPenezVMedacich() {
+
+    const zlato =
+        Number(document.getElementById("zlato").textContent) || 0;
+
+    const stribro =
+        Number(document.getElementById("stribro").textContent) || 0;
+
+    const med =
+        Number(document.getElementById("med").textContent) || 0;
+
+    return zlato * 100 + stribro * 10 + med;
+}
+
+
+function zmenitPeneze(smer) {
+
+    const castka =
+        Number(document.getElementById("castkaPenez").value) || 0;
+
+    const mena =
+        document.getElementById("menaPenez").value;
+
+    if (castka <= 0) {
+        return;
+    }
+
+    let hodnotaVMediakach = 1;
+
+    if (mena === "stribro") {
+        hodnotaVMediakach = 10;
+    }
+
+    if (mena === "zlato") {
+        hodnotaVMediakach = 100;
+    }
+
+    let celkem = celkemPenezVMedacich();
+
+const zmena = smer * castka * hodnotaVMediakach;
+
+if (celkem + zmena < 0) {
+
+    zobrazitHlasku(
+        "Postava nemá dostatek peněz.",
+        "Peníze"
+    );
+
+    return;
+}
+
+celkem += zmena;
+
+zobrazitPenize(celkem);
+}
+
+function zobrazitHlasku(text, nadpis = "Inventář") {
+
+    const pozadi =
+        document.getElementById("vlastniOknoPozadi");
+
+    const nadpisPrvku =
+        document.getElementById("vlastniOknoNadpis");
+
+    const textPrvku =
+        document.getElementById("vlastniOknoText");
+
+    const tlacitka =
+        document.getElementById("vlastniOknoTlacitka");
+
+    nadpisPrvku.textContent = nadpis;
+    textPrvku.textContent = text;
+
+    tlacitka.innerHTML = "";
+
+    const ok = document.createElement("button");
+
+    ok.type = "button";
+    ok.textContent = "OK";
+
+    ok.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(ok);
+
+    pozadi.style.display = "flex";
+}
+/* Smazání celého řádku */
+
+function smazatRadek(tlacitko) {
+
+    const radek = tlacitko.parentElement.parentElement;
+
+    radek.remove();
+}
+
+
+/* Uložení celého inventáře */
+
+async function ulozitInventar() {
+
+    if (!postava) {
+        return;
+    }
+
+    const radky = document.querySelectorAll("#seznamInventare tr");
+    const predmety = [];
+
+    radky.forEach(function(radek) {
+
+        const predmet = radek.querySelector("input[type='text']").value.trim();
+        const pocet = radek.querySelector("input[type='number']").value;
+        const poznamka = radek.querySelector("textarea").value;
+
+        if (predmet !== "") {
+
+            predmety.push({
+                predmet: predmet,
+                pocet: parseInt(pocet) || 0,
+                poznamka: poznamka
+            });
+
+        }
+
+    });
+
+
+  const celkemPenez = celkemPenezVMedacich();
+
+const zlato = Math.floor(celkemPenez / 100);
+const stribro = Math.floor((celkemPenez % 100) / 10);
+const med = celkemPenez % 10;
+
+postava.inventar = {
+
+    // Peníze se ukládají jako jeden společný počet měďáků
+    penize: celkemPenez,
+
+    // Tohle necháváme i kvůli kompatibilitě se staršími postavami
+    zlato: zlato,
+    stribro: stribro,
+    med: med,
+
+    jidlo:
+        parseInt(document.getElementById("jidlo").textContent) || 0,
+
+    predmety: predmety
+};
+
+
+const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", idPostavy);
+
+if (error) {
+    console.error("Chyba při ukládání inventáře:", error);
+
+    document.getElementById("ulozeno").textContent =
+        "Uložení se nepodařilo.";
+
+    return;
+}
+
+document.getElementById("ulozeno").textContent = "Uloženo.";
+
+setTimeout(function() {
+    document.getElementById("ulozeno").textContent = "";
+}, 2000);
+}
+
+function nacistInventar() {
+
+    if (!postava || !postava.inventar) {
+        return;
+    }
+
+    const inventar = postava.inventar;
+
+    let celkemPenez;
+
+if (inventar.penize !== undefined) {
+    // Nové postavy – peníze uložené jako měďáky
+    celkemPenez = Number(inventar.penize) || 0;
+} else {
+    // Starší postavy – převedeme původní rozdělení měn
+    celkemPenez =
+        (Number(inventar.zlato) || 0) * 100 +
+        (Number(inventar.stribro) || 0) * 10 +
+        (Number(inventar.med) || 0);
+}
+
+zobrazitPenize(celkemPenez);
+    document.getElementById("jidlo").textContent = inventar.jidlo || 0;
+
+    const tbody = document.getElementById("seznamInventare");
+
+    tbody.innerHTML = "";
+
+    const predmety = inventar.predmety || [];
+
+    predmety.forEach(function(predmet) {
+
+        const radek = document.createElement("tr");
+
+        radek.innerHTML = `
+            <td>
+                <input type="text"
+                       value="${predmet.predmet.replace(/"/g, '&quot;')}"
+                       oninput="zkontrolovatPosledniRadek()">
+            </td>
+
+            <td>
+                <input type="number"
+                       min="0"
+                       value="${predmet.pocet}">
+            </td>
+
+            <td>
+                <textarea oninput="zvetsitPoznamku(this)"></textarea>
+            </td>
+
+            <td class="mazani">
+                <button type="button" onclick="smazatRadek(this)">×</button>
+            </td>
+        `;
+
+        radek.querySelector("textarea").value = predmet.poznamka || "";
+
+        tbody.appendChild(radek);
+
+    });
+
+    // vždy necháme jeden prázdný řádek pro nový předmět
+    const novyRadek = document.createElement("tr");
+
+    novyRadek.innerHTML = `
+        <td>
+            <input type="text" oninput="zkontrolovatPosledniRadek()">
+        </td>
+
+        <td>
+            <input type="number" min="0" value="1">
+        </td>
+
+        <td>
+            <textarea oninput="zvetsitPoznamku(this)"></textarea>
+        </td>
+
+        <td class="mazani">
+            <button type="button" onclick="smazatRadek(this)">×</button>
+        </td>
+    `;
+
+    tbody.appendChild(novyRadek);
+
+    // správná výška načtených poznámek
+    tbody.querySelectorAll("textarea").forEach(function(textarea) {
+        zvetsitPoznamku(textarea);
+    });
+}
+</script>
+
+</body>
+</html>

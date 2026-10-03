@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vytvořit postavu</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        width: 100%;
+        min-height: 100%;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+
+        background:
+            radial-gradient(circle at center, #25201a 0%, #100e0c 65%, #080706 100%);
+
+        color: #e8dfcf;
+        font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .page {
+        width: min(700px, 90vw);
+        min-height: 500px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        border: 2px solid #6f5a3e;
+
+        box-shadow:
+            0 0 40px rgba(0,0,0,.75),
+            inset 0 0 50px rgba(0,0,0,.4);
+
+        background: rgba(18,15,12,.88);
+        padding: 50px;
+    }
+
+    h1 {
+        margin: 0 0 45px;
+
+        font-size: clamp(36px, 6vw, 58px);
+        font-weight: normal;
+
+        letter-spacing: 2px;
+        text-shadow: 0 3px 8px #000;
+    }
+
+    label {
+        align-self: stretch;
+        margin-bottom: 10px;
+
+        font-size: 20px;
+    }
+
+    input {
+        width: 100%;
+
+        padding: 14px;
+
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 20px;
+
+        color: #eee4d2;
+        background: #17130f;
+
+        border: 1px solid #8a704d;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #b39468;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 15px;
+
+        margin-top: 35px;
+    }
+
+    button {
+        padding: 14px 28px;
+
+        font: inherit;
+        font-size: 19px;
+
+        color: #eee4d2;
+        background: #33291e;
+
+        border: 1px solid #8a704d;
+        cursor: pointer;
+
+        box-shadow: 0 4px 12px rgba(0,0,0,.5);
+    }
+
+    button:hover {
+        background: #473827;
+        border-color: #b39468;
+    }
+
+    .chyba {
+        margin-top: 15px;
+        color: #c99b7a;
+        min-height: 22px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Nová postava</h1>
+
+    <label for="jmeno">Jméno postavy</label>
+
+    <input
+        type="text"
+        id="jmeno"
+        maxlength="50"
+        autocomplete="off"
+        autofocus
+    >
+
+    <div class="buttons">
+        <button onclick="vytvoritPostavu()">Vytvořit postavu</button>
+        <button onclick="zpet()">Zpět</button>
+    </div>
+
+    <div id="chyba" class="chyba"></div>
+
+</main>
+
+<script>
+
+async function vytvoritPostavu() {
+
+    const jmeno = document.getElementById("jmeno").value.trim();
+    const chyba = document.getElementById("chyba");
+
+    if (jmeno === "") {
+        chyba.textContent = "Nejdřív zadej jméno postavy.";
+        return;
+    }
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        chyba.textContent =
+            "Nejdřív se musíš přihlásit.";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("postavy")
+        .insert({
+            jmeno: jmeno,
+            user_id: user.id,
+            data: {}
+        })
+        .select("id")
+        .single();
+
+    if (error) {
+        console.error("Chyba při vytváření postavy:", error);
+
+        chyba.textContent =
+            "Postavu se nepodařilo vytvořit.";
+
+        return;
+    }
+
+    window.location.href =
+        "postava.html?id=" +
+        encodeURIComponent(data.id);
+}
+
+
+function zpet() {
+
+    window.location.href = "index.html";
+
+}
+
+</script>
+
+</body>
+</html>

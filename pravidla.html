@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pravidla hry</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at center,
+            #25201a 0%,
+            #100e0c 65%,
+            #080706 100%
+        );
+
+    color: #e8dfcf;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    padding: 40px 20px;
+}
+
+
+/* Hlavní stránka */
+
+.page {
+
+    width: min(900px, 95vw);
+
+    margin: 0 auto;
+
+    padding: 35px 55px 45px;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.88);
+}
+
+
+/* Záložky */
+
+.zalozky {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-bottom: 35px;
+
+    border-bottom: 1px solid #6f5a3e;
+
+    padding-bottom: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+.zalozka {
+
+    padding: 12px 22px;
+
+    font: inherit;
+
+    font-size: 18px;
+
+    color: #d6c19e;
+
+    background: #2a2118;
+
+    border: 1px solid #6f5a3e;
+
+    cursor: pointer;
+}
+
+
+.zalozka:hover {
+
+    background: #3b2d20;
+
+    border-color: #8a704d;
+}
+
+
+.zalozka.aktivni {
+
+    background: #473827;
+
+    border-color: #b39468;
+
+    color: #eee4d2;
+}
+
+
+/* Obsah záložky */
+
+.obsah-zalozky {
+
+    min-height: 500px;
+}
+
+
+/* Nadpis */
+
+h1 {
+
+    margin: 0 0 45px;
+
+    text-align: center;
+
+    font-size: clamp(36px, 6vw, 60px);
+
+    font-weight: normal;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 3px 8px #000;
+}
+
+
+/* Nadpis části */
+
+h2 {
+
+    margin: 35px 0 25px;
+
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid #6f5a3e;
+
+    font-size: 28px;
+
+    font-weight: normal;
+
+    color: #d6c19e;
+}
+
+
+/* Jednotlivá pravidla */
+
+.pravidlo {
+
+    margin-bottom: 28px;
+
+    font-size: 19px;
+
+    line-height: 1.6;
+}
+
+
+.pravidlo-cislo {
+
+    font-size: 22px;
+
+    color: #d6c19e;
+
+    margin-bottom: 8px;
+}
+
+
+/* Odrážky */
+
+ul {
+
+    margin-top: 8px;
+
+    padding-left: 28px;
+}
+
+
+li {
+
+    margin-bottom: 7px;
+}
+
+
+/* Zvýraznění */
+
+.zvyrazneni {
+
+    color: #d6c19e;
+
+}
+
+
+/* Tlačítko */
+
+.zpet {
+
+    display: block;
+
+    margin: 45px auto 0;
+
+    padding: 14px 28px;
+
+    font: inherit;
+
+    font-size: 19px;
+
+    color: #eee4d2;
+
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.5);
+}
+
+
+.zpet:hover {
+
+    background: #473827;
+
+    border-color: #b39468;
+}
+
+
+/* Mobil */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 10px;
+    }
+
+    .page {
+        padding: 25px 22px 30px;
+    }
+
+    .zalozka {
+        font-size: 16px;
+        padding: 10px 16px;
+    }
+
+    .pravidlo {
+        font-size: 17px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="page">
+
+<h1>Pravidla hry</h1>
+
+    <!-- ZÁLOŽKY -->
+
+    <nav class="zalozky">
+
+        <button
+            class="zalozka aktivni"
+            onclick="zobrazZalozku('vyroba')"
+        >
+            Výroba postavy
+        </button>
+
+        <button
+            class="zalozka"
+            onclick="zobrazZalozku('schopnosti')"
+        >
+            Schopnosti
+        </button>
+
+    </nav>
+
+
+    <!-- VÝROBA POSTAVY -->
+
+    <section
+        id="vyroba"
+        class="obsah-zalozky"
+    >
+
+        
+
+
+        <h2>Výroba postavy</h2>
+
+
+        <div class="pravidlo">
+
+            <div class="pravidlo-cislo">
+                1. Rozdělení atributů
+            </div>
+
+            <ul>
+
+                <li>
+                    Hráč si rozdělí
+                    <span class="zvyrazneni">32 bodů</span>
+                    mezi atributy.
+                </li>
+
+                <li>
+                    Na začátku hry nelze mít žádný atribut
+                    na více než
+                    <span class="zvyrazneni">8 bodů</span>.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="pravidlo">
+
+            <div class="pravidlo-cislo">
+                2. Schopnosti
+            </div>
+
+            <ul>
+
+                <li>
+                    Hráč si vypíše arch se schopnostmi.
+                </li>
+
+                <li>
+                    Napíše si součty AT k daným schopnostem.
+                </li>
+
+                <li>
+                    Hráč si vybere
+                    <span class="zvyrazneni">8 schopností</span>,
+                    které „umí“, a označí si je.
+                </li>
+
+                <li>
+                    Tyto schopnosti se nazývají
+                    <span class="zvyrazneni">Aktivní</span>.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="pravidlo">
+
+            <div class="pravidlo-cislo">
+                3. Rysy postavy
+            </div>
+
+            <ul>
+
+                <li>
+                    Hráč si může vybrat
+                    <span class="zvyrazneni">0–2 Rysy postavy</span>.
+                </li>
+
+                <li>
+                    Podle Rysů si upraví Schopnosti / Atributy.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="pravidlo">
+
+            <div class="pravidlo-cislo">
+                4. Ostatní informace
+            </div>
+
+            <ul>
+
+                <li>
+                    Hráč si po domluvě s PJ dopíše zbylé informace
+                    do archu postavy.
+                </li>
+
+                <li>
+                    Jedná se například o minulost,
+                    charakterové vlastnosti, majetek atd.
+                </li>
+
+                <li>
+                    Dále si zapíše Životy, Odolnosti
+                    a další potřebné hodnoty.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="pravidlo">
+
+            <div class="pravidlo-cislo">
+                5. Zbraň a boj
+            </div>
+
+            <ul>
+
+                <li>
+                    Pokud má hráč zbraň, vypíše si také
+                    <span class="zvyrazneni">UT / KR / UH</span>
+                    a ostatní informace k boji.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </section>
+
+
+    <!-- SCHOPNOSTI -->
+
+    <section
+        id="schopnosti"
+        class="obsah-zalozky"
+        style="display: none;"
+    >
+
+      
+
+        <iframe
+            src="schopnosti.html"
+            style="
+                width: 100%;
+                height: 900px;
+                border: none;
+                display: block;
+            "
+        ></iframe>
+
+    </section>
+
+
+    <button
+        class="zpet"
+        type="button"
+        onclick="window.close()"
+    >
+        Zavřít
+    </button>
+
+
+</main>
+
+
+<script>
+
+function zobrazZalozku(zalozka) {
+
+    const vyroba = document.getElementById("vyroba");
+    const schopnosti = document.getElementById("schopnosti");
+
+    const tlacitka = document.querySelectorAll(".zalozka");
+
+
+    if (zalozka === "vyroba") {
+
+        vyroba.style.display = "block";
+        schopnosti.style.display = "none";
+
+        tlacitka[0].classList.add("aktivni");
+        tlacitka[1].classList.remove("aktivni");
+
+    }
+
+
+    if (zalozka === "schopnosti") {
+
+        vyroba.style.display = "none";
+        schopnosti.style.display = "block";
+
+        tlacitka[0].classList.remove("aktivni");
+        tlacitka[1].classList.add("aktivni");
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+

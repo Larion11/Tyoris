@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postava</title>
+
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+
+body {
+    min-height: 100vh;
+    background-image: url("pozadi.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.page {
+    width: min(1000px, 94vw);
+    margin: 40px auto;
+    padding: 40px;
+    border: 2px solid #6f5a3e;
+    box-shadow: 0 0 40px rgba(0,0,0,.75), inset 0 0 50px rgba(0,0,0,.4);
+    background: rgba(18,15,12,.88);
+}
+
+h1 {
+    margin: 0 0 35px;
+    text-align: center;
+    font-size: clamp(36px, 6vw, 58px);
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+.portret-sekce {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: start;
+}
+
+.horni-udaje {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.horni-identita {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.identita-radek {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.identita-radek label {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.identita-radek input {
+    flex: 1;
+    min-width: 0;
+}
+
+.identita-radek:first-child input {
+    flex: 0 0 80px;
+}
+
+.údaj { width: 100%; }
+
+.údaj label,
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.popis-postavy {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.povahove-rysy {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.povahovy-rys { cursor: pointer; }
+
+.portret-ramecek {
+    position: relative;
+    width: 250px;
+    height: 310px;
+    padding: 12px;
+    background: linear-gradient(145deg, #4a3927, #211a13 45%, #4a3927);
+    border: 3px solid #8a704d;
+    box-shadow: 0 0 0 2px #241c15, 0 0 0 5px #6f5a3e,
+                0 10px 25px rgba(0,0,0,.7), inset 0 0 20px rgba(0,0,0,.8);
+}
+
+.portret-ramecek::before,
+.portret-ramecek::after {
+    content: "✦";
+    position: absolute;
+    color: #b39468;
+    font-size: 24px;
+    text-shadow: 0 2px 4px #000;
+}
+
+.portret-ramecek::before { top: -5px; left: -5px; }
+.portret-ramecek::after { bottom: -5px; right: -5px; }
+
+.portret-vnitrek {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(circle, #292018 0%, #100d0a 100%);
+    border: 2px solid #57452f;
+    box-shadow: inset 0 0 25px rgba(0,0,0,.9);
+}
+
+#obrazekPostavy {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.bez-portretu {
+    text-align: center;
+    color: #8a765b;
+    font-size: 18px;
+    padding: 20px;
+}
+
+.portret-tlacitko {
+    display: block;
+    margin: 15px auto 0;
+    padding: 10px 18px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    color: #eee4d2;
+    background: #33291e;
+    border: 1px solid #8a704d;
+    cursor: pointer;
+}
+
+.portret-tlacitko:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+#souborPortretu { display: none; }
+
+.sekce {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #6f5a3e;
+    background: rgba(10,8,6,.35);
+}
+
+.sekce h2 {
+    margin: 0 0 20px;
+    font-size: 25px;
+    font-weight: normal;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    color: #eee4d2;
+    background: #17130f;
+    border: 1px solid #8a704d;
+    outline: none;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #b39468;
+}
+
+textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* =========================
+   ATRIBUTY + ŽIVOTY + ODOLNOSTI
+   ========================= */
+
+.statistiky {
+    display: block;
+}
+
+.atributy {
+    width: 100%;
+    margin: 0 0 5px;
+    text-align: center;
+}
+
+.atributy .radek {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
+}
+
+.atributy .radek > div { width: 100%; }
+
+.atributy input {
+    width: 100%;
+    text-align: center;
+    
+}
+
+
+.atribut-hodnota input {
+    width: 28px;
+    padding: 3px;
+}
+
+.atribut-zaklad {
+    width: 18px;
+    text-align: center;
+}
+
+.atribut-hodnota {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.atribut-tlacitka {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.atribut-tlacitka button {
+    width: 20px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 14px;
+}
+
+.atribut-hodnota input {
+    width: 44px;
+    padding: 2px;
+}
+
+.atribut-zaklad {
+    width: 22px;
+    text-align: center;
+}
+
+.atribut-hodnota button {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.atributy-info {
+    margin-bottom: 15px;
+    text-align: right;
+    color: #b39468;
+    font-size: 17px;
+}
+.statistiky-spodni {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+.odolnosti-sloupec {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.odolnosti-sloupec button {
+    align-self: center;
+}
+.zivoty-statusy,
+.odolnosti {
+    width: 100%;
+    margin-right: 0;
+}
+
+.zivoty-radek {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.zivoty-max {
+    width: 50px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.zivoty-lomitko { font-size: 24px; }
+.zivoty-radek input { width: 80px; }
+
+.statusy {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status { cursor: pointer; }
+.odolnosti input { width: 100px; }
+
+.odolnosti + button {
+    grid-column: 2;
+    margin-top: 10px;
+    
+}
+
+.vybaveni { width: 100%; }
+
+.celkova-zbroj {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    padding: 2px 10px;
+    min-width: 42px;
+    height: 32px;
+    border: 1px solid #8a704d;
+    background: #17130f;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.postih-zbroje {
+    margin-left: 30px;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.zbroj-tabulka {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.zbroj-tabulka th,
+.zbroj-tabulka td {
+    padding: 8px;
+    border: 1px solid #6f5a3e;
+    text-align: left;
+}
+
+.zbroj-tabulka th {
+    font-weight: normal;
+    color: #b39468;
+}
+
+.zbroj-tabulka td:first-child { width: 100px; }
+.zbroj-tabulka td:nth-child(2) { width: auto; }
+.zbroj-tabulka td:nth-child(3) { width: 90px; }
+.zbroj-tabulka input[type="text"] { width: 100%; }
+.zbroj-tabulka input[type="number"] { width: 70px; }
+
+.boj h2 { text-align: center; }
+
+.boj-radek {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.boj-radek > div {
+    width: 150px;
+    text-align: center;
+}
+
+.boj-radek input {
+    width: 100px;
+    text-align: center;
+}
+
+.weapon-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+}
+
+.weapon-table th,
+.weapon-table td {
+    border: 1px solid #6f5a3e;
+    padding: 5px;
+    text-align: center;
+    
+}
+.weapon-table th {
+    background: rgba(190, 165, 125, 0.75);
+    color: #1a1510;
+    
+}
+
+.weapon-table th:nth-child(1),
+.weapon-table td:nth-child(1) { width: 190px; }
+.weapon-table th:nth-child(2),
+.weapon-table td:nth-child(2) { width: 55px; }
+.weapon-table th:nth-child(3),
+.weapon-table td:nth-child(3) { width: 70px; }
+.weapon-table th:nth-child(4),
+.weapon-table td:nth-child(4) { width: 55px; }
+.weapon-table th:nth-child(5),
+.weapon-table td:nth-child(5) { width: 55px; }
+.weapon-table th:nth-child(6),
+.weapon-table td:nth-child(6) { width: 65px; }
+.weapon-table th:nth-child(7),
+.weapon-table td:nth-child(7) { width: 80px; }
+.weapon-table th:nth-child(8),
+.weapon-table td:nth-child(8) { width: 110px; }
+
+.weapon-table input,
+.weapon-table select {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(10, 8, 6, .7);
+    color: #e8dfcf;
+    border: 1px solid #6f5a3e;
+    padding: 4px;
+}
+
+.weapon-table input[type="number"] { text-align: center; }
+
+.weapon-total td {
+    color: #b39468;
+    font-weight: normal;
+    background: rgba(10, 8, 6, .45);
+}
+
+.weapon-total-label {
+    text-align: right !important;
+    padding-right: 12px !important;
+}
+
+.weapon-total-value {
+    font-size: 18px;
+    text-align: center !important;
+}
+.schopnosti {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.schopnosti-info {
+    margin-bottom: 15px;
+    text-align: right;
+    color: #b39468;
+    font-size: 17px;
+}
+
+.schopnosti-tabulka {
+    width: 100%;
+    min-width: 870px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.schopnosti-tabulka th,
+.schopnosti-tabulka td {
+    border: 1px solid #6f5a3e;
+    padding: 6px;
+    text-align: center;
+}
+
+.schopnosti-tabulka th {
+    color: #b39468;
+    background: rgba(190, 165, 125, 0.75);
+    color: #1a1510;
+}
+
+.schopnosti-tabulka th:nth-child(1) { width: 170px; }
+.schopnosti-tabulka th:nth-child(2),
+.schopnosti-tabulka th:nth-child(3) { width: 105px; }
+.schopnosti-tabulka th:nth-child(4) { width: 70px; }
+.schopnosti-tabulka th:nth-child(5) { width: 80px; }
+.schopnosti-tabulka th:nth-child(6) { width: 65px; }
+.schopnosti-tabulka th:nth-child(7),
+.schopnosti-tabulka th:nth-child(8) { width: 110px; }
+
+.schopnost-body {
+    width: 45px !important;
+    text-align: center;
+    padding: 5px !important;
+}
+
+.schopnost-hodnota {
+    width: 55px !important;
+    text-align: center;
+    padding: 5px !important;
+}
+
+.schopnost-checkbox {
+    width: 20px !important;
+    height: 20px;
+    padding: 0 !important;
+    margin: 0;
+    accent-color: #b39468;
+}
+
+.schopnost-policka {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+.body-ovladani {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.body-ovladani button {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.body-ovladani input {
+    width: 40px;
+    text-align: center;
+}
+.specializace {
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    color: #eee4d2;
+    background: #17130f;
+    border: 1px solid #6f5a3e;
+}
+
+.specializace:focus {
+    border-color: #b39468;
+}
+.schopnost-bojova td { color: #c9b99f; }
+.schopnost-bojova td:first-child { font-weight: normal; }
+
+.tlacitka {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+button {
+    padding: 14px 28px;
+    font: inherit;
+    font-size: 19px;
+    color: #eee4d2;
+    background: #33291e;
+    border: 1px solid #8a704d;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+
+button:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+#stav {
+    min-height: 24px;
+    margin-top: 15px;
+    text-align: center;
+    color: #b9a47e;
+}
+
+.chyba {
+    text-align: center;
+    color: #c99b7a;
+    font-size: 20px;
+}
+
+@media (max-width: 700px) {
+    .page { padding: 25px; }
+
+    .portret-sekce {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .horni-identita {
+        grid-template-columns: 1fr;
+    }
+
+    .statistiky-spodni {
+        grid-template-columns: 1fr;
+    }
+
+    .atributy .radek {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .boj-radek {
+        flex-direction: column;
+    }
+
+    .povahove-rysy {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+</head>
+
+<body>
+<main class="page">
+
+<h1 id="nadpis">Postava</h1>
+
+<div class="portret-sekce">
+
+<div>
+<div class="portret-ramecek">
+<div class="portret-vnitrek">
+<img id="obrazekPostavy" alt="Portrét postavy">
+<div id="bezPortretu" class="bez-portretu">Zatím bez portrétu</div>
+</div>
+</div>
+
+<input type="file" id="souborPortretu" accept="image/*">
+
+<button class="portret-tlacitko"
+onclick="document.getElementById('souborPortretu').click()">
+Vybrat portrét
+</button>
+</div>
+
+<div class="horni-udaje">
+
+<div class="horni-identita">
+<div class="identita-radek">
+<label for="vek">Věk</label>
+<input type="number" id="vek" min="0">
+</div>
+
+<div class="identita-radek">
+<label for="puvod">Původ</label>
+<input type="text" id="puvod">
+</div>
+</div>
+
+<div class="údaj">
+<label for="popisPostavy">Popis postavy</label>
+<textarea id="popisPostavy" class="popis-postavy"></textarea>
+</div>
+
+<div class="povahove-rysy">
+
+<div class="údaj">
+<label for="rys1">Povahový rys 1</label>
+<input type="text" id="rys1" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+</div>
+
+<div class="údaj">
+<label for="rys2">Povahový rys 2</label>
+<input type="text" id="rys2" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+</div>
+
+<div class="údaj">
+<label for="rys3">Povahový rys 3</label>
+<input type="text" id="rys3" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="statistiky">
+
+<div class="sekce atributy">
+<h2>Atributy</h2>
+
+<div class="atributy-info">
+    Zbývající body: <span id="zbyvajiciBodyAtributu">32</span> / 32
+</div>
+
+<div class="radek">
+
+<div>
+<label for="sila">Síla</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="silaZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="sila" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('sila', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('sila', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="odolnost">Odolnost</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="odolnostZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="odolnost" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('odolnost', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('odolnost', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="hbitost">Hbitost</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="hbitostZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="hbitost" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('hbitost', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('hbitost', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="zrcnost">Zručnost</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="zrcnostZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="zrcnost" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('zrcnost', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('zrcnost', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="moudrost">Moudrost</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="moudrostZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="moudrost" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('moudrost', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('moudrost', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="charisma">Charisma</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="charismaZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="charisma" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('charisma', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('charisma', -1)">−</button>
+</div>
+</div>
+</div>
+
+<div>
+<label for="intuice">Intuice</label>
+<div class="atribut-hodnota">
+    <span class="atribut-zaklad" id="intuiceZaklad">0</span>
+    <span>/</span>
+    <input type="number" id="intuice" value="0" readonly>
+
+<div class="atribut-tlacitka">
+    <button type="button" onclick="zmenitAtribut('intuice', 1)">+</button>
+    <button type="button" onclick="zmenitAtribut('intuice', -1)">−</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="statistiky-spodni">
+
+<div class="sekce zivoty-statusy">
+<h2>Životy</h2>
+
+<div class="zivoty-radek">
+<span class="zivoty-max" id="maxZivoty">5</span>
+<span class="zivoty-lomitko">/</span>
+<input type="number" id="zivoty" min="0">
+</div>
+
+<h2>Statusy</h2>
+
+<div class="statusy">
+<div class="údaj"><label for="status1">Status 1</label><input type="text" id="status1" class="status" readonly placeholder="Klikni pro výběr"></div>
+<div class="údaj"><label for="status2">Status 2</label><input type="text" id="status2" class="status" readonly placeholder="Klikni pro výběr"></div>
+<div class="údaj"><label for="status3">Status 3</label><input type="text" id="status3" class="status" readonly placeholder="Klikni pro výběr"></div>
+<div class="údaj"><label for="status4">Status 4</label><input type="text" id="status4" class="status" readonly placeholder="Klikni pro výběr"></div>
+<div class="údaj"><label for="status5">Status 5</label><input type="text" id="status5" class="status" readonly placeholder="Klikni pro výběr"></div>
+</div>
+</div>
+
+<div class="odolnosti-sloupec">
+
+    <div class="sekce odolnosti">
+        <h2>Odolnosti</h2>
+
+        <div class="údaj">
+            <label for="odolnostJedy">Odolnost na jedy</label>
+            <input type="number" id="odolnostJedy">
+        </div>
+
+        <div class="údaj">
+            <label for="odolnostNemoci">Odolnost na nemoci</label>
+            <input type="number" id="odolnostNemoci">
+        </div>
+    </div>
+
+    <button type="button" onclick="otevritInventar()">Inventář</button>
+    <button type="button" onclick="otevritAlchemii()">Alchymie</button>
+    <button type="button" onclick="otevritBestiar()">Bestiář</button>
+    
+
+</div></div>
+</div>
+
+<div class="sekce vybaveni">
+<h2>Zbroj
+    <span class="celkova-zbroj" id="celkovaZbroj">0</span>
+    <span class="postih-zbroje">Postih zbroje <span class="celkova-zbroj" id="postihZbroje">0</span></span>
+</h2>
+
+<table class="zbroj-tabulka">
+<thead><tr><th>Místo</th><th>Co má na sobě</th><th>Hodnota</th></tr></thead>
+<tbody>
+<tr><td>Hlava</td><td><input type="text" id="zbrojPopisHlava"></td><td><input type="number" id="zbrojHlava" min="0"></td></tr>
+<tr><td>Trup</td><td><input type="text" id="zbrojPopisTrup"></td><td><input type="number" id="zbrojTrup" min="0"></td></tr>
+<tr><td>Ruce</td><td><input type="text" id="zbrojPopisRuce"></td><td><input type="number" id="zbrojRuce" min="0"></td></tr>
+<tr><td>Ramena</td><td><input type="text" id="zbrojPopisRamena"></td><td><input type="number" id="zbrojRamena" min="0"></td></tr>
+<tr><td>Nohy</td><td><input type="text" id="zbrojPopisNohy"></td><td><input type="number" id="zbrojNohy" min="0"></td></tr>
+<tr><td>Boty</td><td><input type="text" id="zbrojPopisBoty"></td><td><input type="number" id="zbrojBoty" min="0"></td></tr>
+<tr><td>Stehna</td><td><input type="text" id="zbrojPopisStehna"></td><td><input type="number" id="zbrojStehna" min="0"></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="sekce boj">
+<h2>Boj</h2>
+<div class="boj-radek">
+<div><label for="utokZaklad">Útok základ</label><input type="number" id="utokZaklad" readonly></div>
+<div><label for="krytZaklad">Kryt základ</label><input type="number" id="krytZaklad" readonly></div>
+<div><label for="uhybZaklad">Úhyb základ</label><input type="number" id="uhybZaklad" readonly></div>
+<div><label for="streleckyUtok">Střelecký útok</label><input type="number" id="streleckyUtok" readonly></div>
+</div>
+</div>
+
+
+<table class="weapon-table">
+<thead><tr>
+<th>Název zbraně</th><th>Útok</th><th>Střelecký útok</th>
+<th>Kryt</th><th>Úhyb</th><th>Poškození</th><th>Typ zbraně</th>
+</tr></thead>
+
+<tbody>
+
+<tr>
+<td>
+<select class="nazev-zbrane">
+<option value="">-- vyber zbraň --</option>
+</select>
+</td>
+
+<td><input type="number" class="zbran-utok" readonly></td>
+<td><input type="number" class="zbran-strelecky-utok" readonly></td>
+<td><input type="number" class="zbran-kryt" readonly></td>
+<td><input type="number" class="zbran-uhyb" readonly></td>
+<td><input type="text" class="zbran-poskozeni" readonly></td>
+
+<td>
+<select class="typ-zbrane">
+<option value="">-- vyber typ --</option>
+<option value="Meče">Meče</option>
+<option value="Sekery / Palcáty">Sekery / Palcáty</option>
+<option value="Dřevcové">Dřevcové</option>
+<option value="Krátké">Krátké</option>
+<option value="Střelné">Střelné</option>
+<option value="Vrhací">Vrhací</option>
+<option value="Štíty">Štíty</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<select class="nazev-zbrane">
+<option value="">-- vyber zbraň --</option>
+</select>
+</td>
+
+<td><input type="number" class="zbran-utok" readonly></td>
+<td><input type="number" class="zbran-strelecky-utok" readonly></td>
+<td><input type="number" class="zbran-kryt" readonly></td>
+<td><input type="number" class="zbran-uhyb" readonly></td>
+<td><input type="text" class="zbran-poskozeni" readonly></td>
+
+<td>
+<select class="typ-zbrane">
+<option value="">-- vyber typ --</option>
+<option value="Meče">Meče</option>
+<option value="Sekery / Palcáty">Sekery / Palcáty</option>
+<option value="Dřevcové">Dřevcové</option>
+<option value="Krátké">Krátké</option>
+<option value="Střelné">Střelné</option>
+<option value="Vrhací">Vrhací</option>
+<option value="Štíty">Štíty</option>
+</select>
+</td>
+</tr>
+<tr class="weapon-total">
+<td colspan="1" class="weapon-total-label">Celkový výpočet</td>
+<td class="weapon-total-value" id="celkovyUtok1">0</td>
+<td class="weapon-total-value" id="celkovyStreleckyUtok1">0</td>
+<td class="weapon-total-value" id="celkovyKryt1">0</td>
+<td class="weapon-total-value" id="celkovyUhyb1">0</td>
+<td class="weapon-total-value" id="celkovePoskozeni1">0</td>
+<td></td>
+</tr>
+<tr>
+<td>
+<select class="nazev-zbrane">
+<option value="">-- vyber zbraň --</option>
+</select>
+</td>
+
+<td><input type="number" class="zbran-utok" readonly></td>
+<td><input type="number" class="zbran-strelecky-utok" readonly></td>
+<td><input type="number" class="zbran-kryt" readonly></td>
+<td><input type="number" class="zbran-uhyb" readonly></td>
+<td><input type="text" class="zbran-poskozeni" readonly></td>
+
+<td>
+<select class="typ-zbrane">
+<option value="">-- vyber typ --</option>
+<option value="Meče">Meče</option>
+<option value="Sekery / Palcáty">Sekery / Palcáty</option>
+<option value="Dřevcové">Dřevcové</option>
+<option value="Krátké">Krátké</option>
+<option value="Střelné">Střelné</option>
+<option value="Vrhací">Vrhací</option>
+<option value="Štíty">Štíty</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<select class="nazev-zbrane">
+<option value="">-- vyber zbraň --</option>
+</select>
+</td>
+
+<td><input type="number" class="zbran-utok" readonly></td>
+<td><input type="number" class="zbran-strelecky-utok" readonly></td>
+<td><input type="number" class="zbran-kryt" readonly></td>
+<td><input type="number" class="zbran-uhyb" readonly></td>
+<td><input type="text" class="zbran-poskozeni" readonly></td>
+
+<td>
+<select class="typ-zbrane">
+<option value="">-- vyber typ --</option>
+<option value="Meče">Meče</option>
+<option value="Sekery / Palcáty">Sekery / Palcáty</option>
+<option value="Dřevcové">Dřevcové</option>
+<option value="Krátké">Krátké</option>
+<option value="Střelné">Střelné</option>
+<option value="Vrhací">Vrhací</option>
+<option value="Štíty">Štíty</option>
+</select>
+</td>
+</tr>
+<tr class="weapon-total">
+<td colspan="1" class="weapon-total-label">Celkový výpočet</td>
+<td class="weapon-total-value" id="celkovyUtok2">0</td>
+<td class="weapon-total-value" id="celkovyStreleckyUtok2">0</td>
+<td class="weapon-total-value" id="celkovyKryt2">0</td>
+<td class="weapon-total-value" id="celkovyUhyb2">0</td>
+<td class="weapon-total-value" id="celkovePoskozeni2">0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+
+<div class="sekce schopnosti">
+<h2>Schopnosti</h2>
+
+<div class="schopnosti-info">
+Vybráno: <span id="pocetVybranychSchopnosti">0</span> / 8
+&nbsp;&nbsp;|&nbsp;&nbsp;
+Zbývající body: <span id="zbyvajiciBodySchopnosti">6</span> / 6
+</div>
+
+<table class="schopnosti-tabulka">
+<thead><tr>
+<th>Schopnost</th><th>Atribut 1</th><th>Atribut 2</th><th>Body</th>
+<th>Hodnota</th><th>Plná</th><th>Úspěchy</th><th>Neúspěchy</th>
+</tr></thead>
+<tbody id="seznamSchopnosti"></tbody>
+</table>
+</div>
+
+<div class="sekce">
+<h2>Poznámky</h2>
+<textarea id="poznamky"></textarea>
+</div>
+
+<div class="tlacitka">
+<button onclick="ulozit()">Uložit</button>
+<button onclick="zpet()">Zpět</button>
+</div>
+
+<div id="stav"></div>
+</main>
+
+<script>
+const parametry = new URLSearchParams(window.location.search);
+const id = parametry.get("id");
+
+let postava = null;
+function prepocitatZivoty() {
+    const odolnost = Number(document.getElementById("odolnost").value) || 0;
+    const maxZivoty = 5 + (3 * odolnost);
+    document.getElementById("maxZivoty").textContent = maxZivoty;
+}
+
+function prepocitatZbroj() {
+    const casti = [
+        "zbrojHlava","zbrojTrup","zbrojRuce","zbrojRamena",
+        "zbrojNohy","zbrojBoty","zbrojStehna"
+    ];
+
+    let soucet = 0;
+
+    casti.forEach(function(id) {
+        soucet += Number(document.getElementById(id).value) || 0;
+    });
+
+    const celkovaZbroj = Math.floor(soucet / 2);
+
+    document.getElementById("celkovaZbroj").textContent =
+        celkovaZbroj;
+
+    const sila = Number(document.getElementById("sila").value) || 0;
+
+    const postihZbroje = Math.max(
+        0,
+        Math.floor(celkovaZbroj / 2) - Math.floor(sila / 2.5)
+    );
+
+    document.getElementById("postihZbroje").textContent =
+    postihZbroje;
+
+prepocitatCelkoveUtoky();
+prepocitatCelkovyStreleckyUtok();
+prepocitatCelkoveKryty();
+prepocitatCelkoveUhyby();
+}
+
+function prepocitatCelkoveUhyby() {
+
+    const uhybZaklad =
+        Number(document.getElementById("uhybZaklad").value) || 0;
+
+    const postihZbroje =
+        Number(document.getElementById("postihZbroje").textContent) || 0;
+
+    const celkoveUhyby = [
+        document.getElementById("celkovyUhyb1"),
+        document.getElementById("celkovyUhyb2")
+    ];
+
+    celkoveUhyby.forEach(function(vystup) {
+
+        const uhyb = uhybZaklad - postihZbroje;
+
+        vystup.textContent = uhyb;
+    });
+}
+
+function prepocitatBoj() {
+    const sila = Number(document.getElementById("sila").value) || 0;
+    const hbitost = Number(document.getElementById("hbitost").value) || 0;
+    const zrcnost = Number(document.getElementById("zrcnost").value) || 0;
+    const intuice = Number(document.getElementById("intuice").value) || 0;
+
+    document.getElementById("utokZaklad").value = sila + hbitost;
+    document.getElementById("krytZaklad").value = sila + zrcnost;
+    document.getElementById("streleckyUtok").value = zrcnost + intuice;
+    document.getElementById("uhybZaklad").value =
+    hbitost + intuice +
+    (Number(document.getElementById("schopnostBody0").value) || 0);
+    prepocitatCelkoveUtoky();
+    prepocitatCelkovyStreleckyUtok();
+    prepocitatCelkovePoskozeni();
+}
+function prepocitatCelkoveUtoky() {
+    const utokZaklad =
+        Number(document.getElementById("utokZaklad").value) || 0;
+
+    const postihZbroje =
+        Number(document.getElementById("postihZbroje").textContent) || 0;
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    const celkoveUtoky = [
+        document.getElementById("celkovyUtok1"),
+        document.getElementById("celkovyUtok2")
+    ];
+
+    celkoveUtoky.forEach(function(vystup, index) {
+
+    const prvniRadek = radky[index * 2];
+    const zbranUtokText =
+        prvniRadek.querySelector(".zbran-utok").value;
+
+    if (zbranUtokText === "") {
+        vystup.textContent = "";
+        return;
+    }
+
+    let utok = utokZaklad;
+
+        for (let i = 0; i < 2; i++) {
+
+            const radek = radky[index * 2 + i];
+
+            const zbranUtok =
+                Number(radek.querySelector(".zbran-utok").value) || 0;
+
+            const typ =
+                radek.querySelector(".typ-zbrane").value;
+
+            let schopnost = 0;
+
+            if (typ) {
+                const indexSchopnosti =
+                    seznamSchopnosti.findIndex(function(schopnost) {
+                        return schopnost[0].toLowerCase() === typ.toLowerCase();
+                    });
+
+                if (indexSchopnosti !== -1) {
+                    schopnost =
+                        Number(
+                            document.getElementById(
+                                "schopnostHodnota" + indexSchopnosti
+                            ).value
+                        ) || 0;
+                }
+            }
+
+            utok += zbranUtok + schopnost;
+        }
+
+        utok -= postihZbroje;
+
+        vystup.textContent = utok;
+    });
+}
+
+function prepocitatCelkovePoskozeni() {
+
+    const sila =
+        Number(document.getElementById("sila").value) || 0;
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    const celkovaPoskozeni = [
+        document.getElementById("celkovePoskozeni1"),
+        document.getElementById("celkovePoskozeni2")
+    ];
+
+    celkovaPoskozeni.forEach(function(vystup, index) {
+
+        // Bere se pouze první řádek dvojice.
+        const radek = radky[index * 2];
+
+        const poskozeniText =
+            radek.querySelector(".zbran-poskozeni").value;
+
+        if (!poskozeniText) {
+    vystup.textContent = "";
+    return;
+}
+
+        const casti = poskozeniText.split("/");
+
+        const A = Number(casti[0]) || 0;
+        const B = Number(casti[1]) || 0;
+        const C = Number(casti[2]) || 0;
+
+        let poskozeni;
+
+        if (sila < A) {
+            poskozeni = sila;
+        } else {
+            poskozeni = B + (sila - A) * C;
+        }
+
+        vystup.textContent = Math.floor(poskozeni);
+    });
+}
+function prepocitatCelkovyStreleckyUtok() {
+    const streleckyUtokZaklad =
+        Number(document.getElementById("streleckyUtok").value) || 0;
+
+    const postihZbroje =
+        Number(document.getElementById("postihZbroje").textContent) || 0;
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    const celkoveStreleckeUtoky = [
+        document.getElementById("celkovyStreleckyUtok1"),
+        document.getElementById("celkovyStreleckyUtok2")
+    ];
+
+    celkoveStreleckeUtoky.forEach(function(vystup, index) {
+
+    const prvniRadek = radky[index * 2];
+    const zbranStreleckyUtokText =
+        prvniRadek.querySelector(".zbran-strelecky-utok").value;
+
+    if (zbranStreleckyUtokText === "") {
+        vystup.textContent = "";
+        return;
+    }
+
+    let utok = streleckyUtokZaklad;
+        for (let i = 0; i < 2; i++) {
+
+            const radek = radky[index * 2 + i];
+
+            const zbranStreleckyUtok =
+                Number(
+                    radek.querySelector(".zbran-strelecky-utok").value
+                ) || 0;
+
+            const typ =
+                radek.querySelector(".typ-zbrane").value;
+
+            let schopnost = 0;
+
+            if (typ) {
+                const indexSchopnosti =
+                    seznamSchopnosti.findIndex(function(schopnost) {
+                        return schopnost[0].toLowerCase() === typ.toLowerCase();
+                    });
+
+                if (indexSchopnosti !== -1) {
+                    schopnost =
+                        Number(
+                            document.getElementById(
+                                "schopnostHodnota" + indexSchopnosti
+                            ).value
+                        ) || 0;
+                }
+            }
+
+            utok += zbranStreleckyUtok + schopnost;
+        }
+
+        utok -= postihZbroje;
+
+        vystup.textContent = utok;
+    });
+}
+function prepocitatCelkoveKryty() {
+
+    const krytZaklad =
+        Number(document.getElementById("krytZaklad").value) || 0;
+
+    const postihZbroje =
+        Number(document.getElementById("postihZbroje").textContent) || 0;
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    const celkoveKryty = [
+        document.getElementById("celkovyKryt1"),
+        document.getElementById("celkovyKryt2")
+    ];
+
+    celkoveKryty.forEach(function(vystup, index) {
+
+    const prvniRadek = radky[index * 2];
+    const zbranKrytText =
+        prvniRadek.querySelector(".zbran-kryt").value;
+
+    if (zbranKrytText === "") {
+        vystup.textContent = "";
+        return;
+    }
+
+    let kryt = krytZaklad;
+
+        for (let i = 0; i < 2; i++) {
+
+            const radek = radky[index * 2 + i];
+
+            const zbranKryt =
+                Number(radek.querySelector(".zbran-kryt").value) || 0;
+
+            const typ =
+                radek.querySelector(".typ-zbrane").value;
+
+            let schopnost = 0;
+
+            if (typ) {
+
+                const indexSchopnosti =
+                    seznamSchopnosti.findIndex(function(schopnost) {
+                        return schopnost[0].toLowerCase() === typ.toLowerCase();
+                    });
+
+                if (indexSchopnosti !== -1) {
+
+                    schopnost =
+                        Number(
+                            document.getElementById(
+                                "schopnostHodnota" + indexSchopnosti
+                            ).value
+                        ) || 0;
+                }
+            }
+
+            kryt += zbranKryt + schopnost;
+        }
+
+        kryt -= postihZbroje;
+
+        vystup.textContent = kryt;
+    });
+}
+const seznamSchopnosti = [
+    ["Akrobacie", "hbitost", "intuice"],
+    ["Výdrž", "odolnost", "hbitost"],
+    ["Břemena", "sila", "sila"],
+    ["Atletika", "sila", "hbitost"],
+    ["Plížení", "hbitost", "hbitost"],
+    ["Jízda", "hbitost", "sila"],
+    ["Sebeovládání", "odolnost", "moudrost"],
+    ["Všímavost", "intuice", "intuice"],
+    ["Stopování", "intuice", "zrcnost"],
+    ["Orientace", "moudrost", "intuice"],
+    ["Znalost zvěře", "zrcnost", "intuice"],
+    ["Byliny", "moudrost", "zrcnost"],
+    ["Přežití", "zrcnost", "intuice"],
+    ["Alchymie", "moudrost", "zrcnost"],
+    ["Historie", "moudrost", "moudrost"],
+    ["Taktika", "charisma", "intuice"],
+    ["Znalosti", "moudrost", "moudrost"],
+    ["Mořeplavecství", "moudrost", "intuice"],
+    ["Ošetření", "moudrost", "intuice"],
+    ["Zámky", "zrcnost", "intuice"],
+    ["Řemesla", "zrcnost", "zrcnost"],
+    ["Pasti", "zrcnost", "hbitost"],
+    ["Krádež", "zrcnost", "charisma"],
+    ["Umění", "moudrost", "zrcnost"],
+    ["Lučba", "moudrost", "intuice"],
+    ["Svádění", "charisma", "zrcnost"],
+    ["Přetvářka", "charisma", "odolnost"],
+    ["Etiketa", "charisma", "moudrost"],
+    ["Výřečnost", "charisma", "charisma"],
+    ["Vyhrožování", "charisma", "sila"],
+    ["Odhad", "charisma", "intuice"],
+    ["Meče", null, null],
+    ["Sekery / palcáty", null, null],
+    ["Dřevcové", null, null],
+    ["Krátké", null, null],
+    ["Střelné", null, null],
+    ["Vrhací", null, null]
+];
+
+const nazvyAtributu = {
+    sila: "Síla",
+    odolnost: "Odolnost",
+    hbitost: "Hbitost",
+    zrcnost: "Zručnost",
+    moudrost: "Moudrost",
+    charisma: "Charisma",
+    intuice: "Intuice"
+};
+
+function zmenitAtribut(id, zmena) {
+    const input = document.getElementById(id);
+    const zaklad = document.getElementById(id + "Zaklad");
+
+    let aktualni = Number(input.value) || 0;
+    let hodnotaZakladu = Number(zaklad.textContent) || 0;
+
+    let celkem = 0;
+
+    [
+        "sila",
+        "odolnost",
+        "hbitost",
+        "zrcnost",
+        "moudrost",
+        "charisma",
+        "intuice"
+    ].forEach(function(atribut) {
+        celkem += Number(
+            document.getElementById(atribut + "Zaklad").textContent
+        ) || 0;
+    });
+
+    if (!postava.atributyRozdeleny) {
+
+        if (zmena > 0) {
+            if (hodnotaZakladu >= 8) return;
+            if (celkem >= 32) return;
+
+            hodnotaZakladu++;
+            aktualni++;
+        }
+
+        if (zmena < 0) {
+            if (hodnotaZakladu <= 0) return;
+
+            hodnotaZakladu--;
+            aktualni--;
+        }
+
+        zaklad.textContent = hodnotaZakladu;
+        input.value = aktualni;
+
+        celkem = 0;
+
+        [
+            "sila",
+            "odolnost",
+            "hbitost",
+            "zrcnost",
+            "moudrost",
+            "charisma",
+            "intuice"
+        ].forEach(function(atribut) {
+            celkem += Number(
+                document.getElementById(atribut + "Zaklad").textContent
+            ) || 0;
+        });
+
+        document.getElementById("zbyvajiciBodyAtributu").textContent =
+            32 - celkem;
+
+        if (celkem === 32) {
+            postava.atributyRozdeleny = true;
+        }
+
+    } else {
+
+        aktualni += zmena;
+
+        if (aktualni < 0) {
+            aktualni = 0;
+        }
+
+        
+
+        input.value = aktualni;
+    }
+
+    prepocitatZivoty();
+    prepocitatZbroj();
+    prepocitatBoj();
+    prepocitatSchopnosti();
+}
+
+
+function vytvoritSchopnosti() {
+    const tbody = document.getElementById("seznamSchopnosti");
+    tbody.innerHTML = "";
+
+    seznamSchopnosti.forEach(function(schopnost, index) {
+        const atribut1 = schopnost[1];
+        const atribut2 = schopnost[2];
+        const bojova = atribut1 === null && atribut2 === null;
+
+        const tr = document.createElement("tr");
+
+        if (bojova) tr.classList.add("schopnost-bojova");
+
+        const atribut1Text = atribut1 ? nazvyAtributu[atribut1] : "—";
+        const atribut2Text = atribut2 ? nazvyAtributu[atribut2] : "—";
+
+        tr.innerHTML = `
+            <td>
+    ${
+        schopnost[0] === "Řemesla"
+        ? 'Řemesla <input type="text" class="specializace" id="specializace' + index + '" placeholder="konkrétní řemeslo">'
+        : schopnost[0] === "Umění"
+        ? 'Umění <input type="text" class="specializace" id="specializace' + index + '" placeholder="konkrétní umění">'
+        : schopnost[0]
+    }
+</td>
+            <td>${atribut1Text}</td>
+            <td>${atribut2Text}</td>
+            <td>
+   <div class="body-ovladani">
+    <input type="number" class="schopnost-body" id="schopnostBody${index}" readonly value="0">
+    <button type="button" class="body-plus" id="schopnostPlus${index}">+</button>
+</div>
+</td>
+            <td><input type="number" class="schopnost-hodnota" id="schopnostHodnota${index}" readonly></td>
+            <td><input type="checkbox" class="schopnost-checkbox" id="schopnostPlna${index}"></td>
+            <td><div class="schopnost-policka">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostUspech${index}0">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostUspech${index}1">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostUspech${index}2">
+            </div></td>
+            <td><div class="schopnost-policka">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostNeuspech${index}0">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostNeuspech${index}1">
+                <input type="checkbox" class="schopnost-checkbox" id="schopnostNeuspech${index}2">
+            </div></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        const plna = document.getElementById("schopnostPlna" + index);
+        const body = document.getElementById("schopnostBody" + index);
+
+        plna.addEventListener("change", function() {
+            if (plna.checked) {
+                const vybrano = seznamSchopnosti.filter(function(_, i) {
+                    return document.getElementById("schopnostPlna" + i).checked;
+                }).length;
+
+                if (vybrano > 8) {
+                    plna.checked = false;
+                    document.getElementById("stav").textContent =
+                        "Můžeš vybrat nejvýše 8 schopností.";
+                    return;
+                }
+            }
+            prepocitatSchopnosti();
+        });
+
+const plus = document.getElementById("schopnostPlus" + index);
+
+plus.addEventListener("click", function() {
+    let mojeBody = Number(body.value) || 0;
+    let vsechnyBody = 0;
+
+    seznamSchopnosti.forEach(function(_, i) {
+        vsechnyBody += Number(
+            document.getElementById("schopnostBody" + i).value
+        ) || 0;
+    });
+
+    if (vsechnyBody >= 6) return;
+    if (mojeBody >= 2) return;
+
+    body.value = mojeBody + 1;
+    prepocitatSchopnosti();
+});
+
+   
+        for (let i = 0; i < 3; i++) {
+            document.getElementById("schopnostUspech" + index + i)
+                .addEventListener("change", function() {
+                    kontrolaPokroku(index);
+                });
+
+            document.getElementById("schopnostNeuspech" + index + i)
+                .addEventListener("change", function() {
+                    kontrolaPokroku(index);
+                });
+        }
+    });
+}
+
+function kontrolaPokroku(index) {
+    let vse = true;
+
+    for (let i = 0; i < 3; i++) {
+        if (!document.getElementById("schopnostUspech" + index + i).checked) vse = false;
+        if (!document.getElementById("schopnostNeuspech" + index + i).checked) vse = false;
+    }
+
+    if (!vse) return;
+
+    if (!postava.schopnostiPokrok) postava.schopnostiPokrok = [];
+
+   const body = document.getElementById("schopnostBody" + index);
+
+body.value = (Number(body.value) || 0) + 2;
+
+    for (let i = 0; i < 3; i++) {
+        document.getElementById("schopnostUspech" + index + i).checked = false;
+        document.getElementById("schopnostNeuspech" + index + i).checked = false;
+    }
+
+    prepocitatSchopnosti();
+}
+
+function prepocitatSchopnosti() {
+    let pocetVybranych = 0;
+    let pouziteBody = 0;
+
+    seznamSchopnosti.forEach(function(schopnost, index) {
+        const plna = document.getElementById("schopnostPlna" + index);
+        const bodyInput = document.getElementById("schopnostBody" + index);
+        const hodnotaInput = document.getElementById("schopnostHodnota" + index);
+
+        const body = Number(bodyInput.value) || 0;
+        pouziteBody += body;
+
+
+const plus = document.getElementById("schopnostPlus" + index);
+
+plus.disabled = body >= 2 || pouziteBody >= 6;
+        if (plna.checked) pocetVybranych++;
+
+        let zaklad = 0;
+
+        if (schopnost[1] !== null && schopnost[2] !== null) {
+            const atribut1 =
+                Number(document.getElementById(schopnost[1]).value) || 0;
+
+            const atribut2 =
+                Number(document.getElementById(schopnost[2]).value) || 0;
+
+            const soucet = atribut1 + atribut2;
+
+            zaklad = plna.checked
+                ? soucet
+                : Math.floor(soucet / 2);
+        }
+
+        
+
+        hodnotaInput.value = zaklad + body;
+    });
+
+    document.getElementById("pocetVybranychSchopnosti").textContent =
+        pocetVybranych;
+
+    document.getElementById("zbyvajiciBodySchopnosti").textContent =
+        6 - pouziteBody;
+        
+           prepocitatCelkoveUtoky();
+           prepocitatCelkovyStreleckyUtok();
+           prepocitatCelkoveKryty();
+           prepocitatCelkoveUhyby();
+}
+
+function nacistSchopnosti() {
+    const data = postava.schopnosti || [];
+    const pokrok = postava.schopnostiPokrok || [];
+
+    seznamSchopnosti.forEach(function(_, index) {
+        const ulozena = data[index] || {};
+        const specializace =
+    document.getElementById("specializace" + index);
+
+if (specializace) {
+    specializace.value = ulozena.specializace || "";
+}
+
+        document.getElementById("schopnostPlna" + index).checked =
+            ulozena.plna || false;
+
+        document.getElementById("schopnostBody" + index).value =
+            ulozena.body || 0;
+
+        for (let i = 0; i < 3; i++) {
+            document.getElementById("schopnostUspech" + index + i).checked =
+                ulozena.uspechy ? ulozena.uspechy[i] : false;
+
+            document.getElementById("schopnostNeuspech" + index + i).checked =
+                ulozena.neuspechy ? ulozena.neuspechy[i] : false;
+        }
+    });
+
+    postava.schopnostiPokrok = pokrok;
+    prepocitatSchopnosti();
+}
+
+function ulozitSchopnosti() {
+    postava.schopnosti = [];
+
+    seznamSchopnosti.forEach(function(_, index) {
+        const uspechy = [];
+        const neuspechy = [];
+
+        for (let i = 0; i < 3; i++) {
+            uspechy.push(
+                document.getElementById("schopnostUspech" + index + i).checked
+            );
+
+            neuspechy.push(
+                document.getElementById("schopnostNeuspech" + index + i).checked
+            );
+        }
+
+       postava.schopnosti[index] = {
+    plna: document.getElementById("schopnostPlna" + index).checked,
+    body: Number(document.getElementById("schopnostBody" + index).value) || 0,
+    uspechy: uspechy,
+    neuspechy: neuspechy,
+    specializace:
+        document.getElementById("specializace" + index)
+        ? document.getElementById("specializace" + index).value
+        : ""
+};
+    });
+}
+let seznamZbrani = [];
+
+const typyZbrani = {
+    "meče": "Meče",
+    "sekery / palcáty": "Sekery / Palcáty",
+    "dřevcové": "Dřevcové",
+    "krátké": "Krátké",
+    "střelné": "Střelné",
+    "vrhací": "Vrhací",
+    "štít": "Štíty"
+    
+};
+
+async function nacistZbrane() {
+
+    const { data, error } = await supabaseClient
+        .from("zbrane")
+        .select("*")
+        .order("id");
+
+    if (error) {
+        console.error("Chyba při načítání zbraní:", error);
+        seznamZbrani = [];
+        return;
+    }
+
+    seznamZbrani = data.map(function(zbran) {
+        return {
+            nazev: zbran.nazev,
+            typ: zbran.typ,
+            utok: zbran.utok,
+            streleckyUtok: zbran.strelecky_utok,
+            kryt: zbran.kryt,
+            poskozeni: zbran.poskozeni
+        };
+    });
+console.log("Zbraně ze Supabase:", seznamZbrani);
+    naplnitTypyZbrani();
+}
+
+function naplnitTypyZbrani() {
+
+    const radky = document.querySelectorAll(
+    ".weapon-table tbody tr:not(.weapon-total)"
+);
+
+    radky.forEach(function(radek) {
+
+        const typSelect =
+            radek.querySelector(".typ-zbrane");
+
+        const nazevSelect =
+            radek.querySelector(".nazev-zbrane");
+
+        typSelect.addEventListener("change", function() {
+            naplnitNazvyZbrani(radek);
+        });
+
+        nazevSelect.addEventListener("change", function() {
+            doplnitUdajeZbrane(radek);
+        });
+    });
+
+    nacistUlozeneZbrane();
+}
+
+function naplnitNazvyZbrani(radek, vybranyNazev = "") {
+
+    const typ =
+        radek.querySelector(".typ-zbrane").value;
+
+    const nazevSelect =
+        radek.querySelector(".nazev-zbrane");
+
+    nazevSelect.innerHTML =
+        '<option value="">-- vyber zbraň --</option>';
+
+    const zbraneTypu = seznamZbrani.filter(function(zbran) {
+
+        const typZbrane =
+            typyZbrani[zbran.typ.toLowerCase()] || zbran.typ;
+
+        return typZbrane === typ;
+    });
+
+    zbraneTypu.forEach(function(zbran) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = zbran.nazev;
+        option.textContent = zbran.nazev;
+
+        nazevSelect.appendChild(option);
+    });
+
+    if (vybranyNazev) {
+        nazevSelect.value = vybranyNazev;
+    }
+
+    doplnitUdajeZbrane(radek);
+}
+
+function doplnitUdajeZbrane(radek) {
+
+    const nazev =
+        radek.querySelector(".nazev-zbrane").value;
+
+    const utok =
+        radek.querySelector(".zbran-utok");
+        
+    const streleckyUtok =
+    radek.querySelector(".zbran-strelecky-utok");
+
+    const kryt =
+        radek.querySelector(".zbran-kryt");
+
+    const poskozeni =
+        radek.querySelector(".zbran-poskozeni");
+
+    if (!nazev) {
+    utok.value = "";
+    streleckyUtok.value = "";
+    kryt.value = "";
+    poskozeni.value = "";
+
+    prepocitatCelkoveUtoky();
+    prepocitatCelkovyStreleckyUtok();
+    prepocitatCelkoveKryty();
+    prepocitatCelkoveUhyby();
+    prepocitatCelkovePoskozeni();
+
+    return;
+}
+
+    const zbran = seznamZbrani.find(function(z) {
+        return z.nazev === nazev;
+    });
+
+    if (!zbran) {
+    utok.value = "";
+    streleckyUtok.value = "";
+    kryt.value = "";
+    poskozeni.value = "";
+    prepocitatCelkoveUtoky();
+    prepocitatCelkovyStreleckyUtok();
+    
+    return;
+}
+
+    utok.value = zbran.utok;
+    kryt.value = zbran.kryt;
+    streleckyUtok.value = zbran.streleckyUtok;
+    poskozeni.value = zbran.poskozeni;
+        prepocitatCelkoveUtoky();
+        prepocitatCelkovyStreleckyUtok();
+        prepocitatCelkoveKryty();
+        prepocitatCelkoveUhyby();
+        prepocitatCelkovePoskozeni();
+}
+
+    
+async function inicializovatPostavu() {
+    
+        
+    document.getElementById("nadpis").textContent = postava.jmeno;
+
+    document.getElementById("vek").value = postava.vek || "";
+    document.getElementById("puvod").value = postava.puvod || "";
+    document.getElementById("popisPostavy").value = postava.popisPostavy || "";
+
+    document.getElementById("rys1").value = postava.rys1 || "";
+    document.getElementById("rys2").value = postava.rys2 || "";
+    document.getElementById("rys3").value = postava.rys3 || "";
+
+   document.getElementById("sila").value = postava.sila || 0;
+document.getElementById("odolnost").value = postava.odolnost || 0;
+document.getElementById("hbitost").value = postava.hbitost || 0;
+document.getElementById("zrcnost").value = postava.zrcnost || 0;
+document.getElementById("moudrost").value = postava.moudrost || 0;
+document.getElementById("charisma").value = postava.charisma || 0;
+document.getElementById("intuice").value = postava.intuice || 0;
+
+document.getElementById("silaZaklad").textContent = postava.silaZaklad || postava.sila || 0;
+document.getElementById("odolnostZaklad").textContent = postava.odolnostZaklad || postava.odolnost || 0;
+document.getElementById("hbitostZaklad").textContent = postava.hbitostZaklad || postava.hbitost || 0;
+document.getElementById("zrcnostZaklad").textContent = postava.zrcnostZaklad || postava.zrcnost || 0;
+document.getElementById("moudrostZaklad").textContent = postava.moudrostZaklad || postava.moudrost || 0;
+document.getElementById("charismaZaklad").textContent = postava.charismaZaklad || postava.charisma || 0;
+document.getElementById("intuiceZaklad").textContent = postava.intuiceZaklad || postava.intuice || 0;
+
+let soucetAtributu =
+    Number(document.getElementById("silaZaklad").textContent) +
+    Number(document.getElementById("odolnostZaklad").textContent) +
+    Number(document.getElementById("hbitostZaklad").textContent) +
+    Number(document.getElementById("zrcnostZaklad").textContent) +
+    Number(document.getElementById("moudrostZaklad").textContent) +
+    Number(document.getElementById("charismaZaklad").textContent) +
+    Number(document.getElementById("intuiceZaklad").textContent);
+
+if (soucetAtributu >= 32) {
+    postava.atributyRozdeleny = true;
+    document.getElementById("zbyvajiciBodyAtributu").textContent = 0;
+} else {
+    postava.atributyRozdeleny = false;
+    document.getElementById("zbyvajiciBodyAtributu").textContent =
+        32 - soucetAtributu;
+}
+    document.getElementById("zivoty").value = postava.zivoty || "";
+
+    document.getElementById("status1").value = postava.status1 || "";
+    document.getElementById("status2").value = postava.status2 || "";
+    document.getElementById("status3").value = postava.status3 || "";
+    document.getElementById("status4").value = postava.status4 || "";
+    document.getElementById("status5").value = postava.status5 || "";
+
+    document.getElementById("odolnostJedy").value = postava.odolnostJedy || "";
+    document.getElementById("odolnostNemoci").value = postava.odolnostNemoci || "";
+
+    document.getElementById("zbrojPopisHlava").value = postava.zbrojPopisHlava || "";
+    document.getElementById("zbrojHlava").value = postava.zbrojHlava || "";
+    document.getElementById("zbrojPopisTrup").value = postava.zbrojPopisTrup || "";
+    document.getElementById("zbrojTrup").value = postava.zbrojTrup || "";
+    document.getElementById("zbrojPopisRuce").value = postava.zbrojPopisRuce || "";
+    document.getElementById("zbrojRuce").value = postava.zbrojRuce || "";
+    document.getElementById("zbrojPopisRamena").value = postava.zbrojPopisRamena || "";
+    document.getElementById("zbrojRamena").value = postava.zbrojRamena || "";
+    document.getElementById("zbrojPopisNohy").value = postava.zbrojPopisNohy || "";
+    document.getElementById("zbrojNohy").value = postava.zbrojNohy || "";
+    document.getElementById("zbrojPopisBoty").value = postava.zbrojPopisBoty || "";
+    document.getElementById("zbrojBoty").value = postava.zbrojBoty || "";
+    document.getElementById("zbrojPopisStehna").value = postava.zbrojPopisStehna || "";
+    document.getElementById("zbrojStehna").value = postava.zbrojStehna || "";
+
+    document.getElementById("utokZaklad").value = postava.utokZaklad || "";
+    document.getElementById("krytZaklad").value = postava.krytZaklad || "";
+    document.getElementById("uhybZaklad").value = postava.uhybZaklad || "";
+    document.getElementById("streleckyUtok").value = postava.streleckyUtok || "";
+
+    document.getElementById("poznamky").value = postava.poznamky || "";
+
+    if (postava.portret) zobrazitPortret(postava.portret);
+
+    vytvoritSchopnosti();
+    nacistSchopnosti();
+
+    prepocitatZivoty();
+    prepocitatZbroj();
+    prepocitatBoj();
+    
+
+    document.getElementById("odolnost").addEventListener("input", prepocitatZivoty);
+
+    [
+        "zbrojHlava","zbrojTrup","zbrojRuce","zbrojRamena",
+        "zbrojNohy","zbrojBoty","zbrojStehna"
+    ].forEach(function(id) {
+        document.getElementById(id).addEventListener("input", prepocitatZbroj);
+    });
+
+    ["sila","hbitost","zrcnost","intuice"].forEach(function(id) {
+        document.getElementById(id).addEventListener("input", prepocitatBoj);
+    });
+
+    document.getElementById("sila").addEventListener("input", prepocitatZbroj);
+
+    [
+        "sila","odolnost","hbitost","zrcnost",
+        "moudrost","charisma","intuice"
+    ].forEach(function(id) {
+        document.getElementById(id).addEventListener("input", prepocitatSchopnosti);
+    });
+
+    document.getElementById("souborPortretu").addEventListener(
+        "change",
+        function(event) {
+            const soubor = event.target.files[0];
+
+            if (!soubor) return;
+
+            const ctecka = new FileReader();
+
+  ctecka.onload = async function(e) {
+                zobrazitPortret(e.target.result);
+
+                postava.portret = e.target.result;
+
+                const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        data: postava
+    })
+    .eq("id", id);
+
+if (error) {
+    console.error("Chyba při ukládání portrétu:", error);
+    document.getElementById("stav").textContent =
+        "Portrét se nepodařilo uložit.";
+    return;
+}
+
+                document.getElementById("stav").textContent =
+                    "Portrét uložen.";
+            };
+
+            ctecka.readAsDataURL(soubor);
+        }
+    );
+}
+
+async function nacistPostavu() {
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání postavy:", error);
+
+        document.querySelector(".page").innerHTML =
+            '<div class="chyba">Postavu se nepodařilo načíst.</div>';
+
+        return;
+    }
+
+    postava = {
+        ...(radek.data || {}),
+        id: String(radek.id),
+        jmeno: radek.jmeno,
+        popis: radek.popis
+    };
+
+    inicializovatPostavu();
+    nacistZbrane();
+}
+
+nacistPostavu();
+
+function zobrazitPortret(data) {
+    const obrazek = document.getElementById("obrazekPostavy");
+    const bezPortretu = document.getElementById("bezPortretu");
+
+    obrazek.src = data;
+    obrazek.style.display = "block";
+    bezPortretu.style.display = "none";
+}
+function nacistUlozeneZbrane() {
+
+
+    const ulozene = postava.zbrane || [];
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    radky.forEach(function(radek, index) {
+
+        const zbran = ulozene[index];
+
+        if (!zbran) return;
+
+        radek.querySelector(".typ-zbrane").value =
+            zbran.typ || "";
+
+        naplnitNazvyZbrani(
+            radek,
+            zbran.nazev || ""
+        );
+
+        radek.querySelector(".zbran-strelecky-utok").value =
+            zbran.streleckyUtok || "";
+
+        radek.querySelector(".zbran-uhyb").value =
+            zbran.uhyb || "";
+    });
+
+    prepocitatCelkoveUtoky();
+    prepocitatCelkovyStreleckyUtok();
+    prepocitatCelkoveKryty();
+    prepocitatCelkoveUhyby();
+}
+
+
+function ulozitZbrane() {
+
+    postava.zbrane = [];
+
+    const radky = document.querySelectorAll(
+        ".weapon-table tbody tr:not(.weapon-total)"
+    );
+
+    radky.forEach(function(radek) {
+
+        postava.zbrane.push({
+            nazev:
+                radek.querySelector(".nazev-zbrane").value,
+
+            typ:
+                radek.querySelector(".typ-zbrane").value,
+
+            utok:
+                radek.querySelector(".zbran-utok").value,
+
+            streleckyUtok:
+                radek.querySelector(".zbran-strelecky-utok").value,
+
+            kryt:
+                radek.querySelector(".zbran-kryt").value,
+
+            uhyb:
+                radek.querySelector(".zbran-uhyb").value,
+
+            poskozeni:
+                radek.querySelector(".zbran-poskozeni").value
+        });
+    });
+}
+async function ulozit() {
+    if (!postava) return;
+
+    postava.vek = document.getElementById("vek").value;
+    postava.puvod = document.getElementById("puvod").value;
+    postava.popisPostavy = document.getElementById("popisPostavy").value;
+
+    postava.rys1 = document.getElementById("rys1").value;
+    postava.rys2 = document.getElementById("rys2").value;
+    postava.rys3 = document.getElementById("rys3").value;
+
+    postava.sila = document.getElementById("sila").value;
+postava.silaZaklad = document.getElementById("silaZaklad").textContent;
+
+postava.odolnost = document.getElementById("odolnost").value;
+postava.odolnostZaklad = document.getElementById("odolnostZaklad").textContent;
+
+postava.hbitost = document.getElementById("hbitost").value;
+postava.hbitostZaklad = document.getElementById("hbitostZaklad").textContent;
+
+postava.zrcnost = document.getElementById("zrcnost").value;
+postava.zrcnostZaklad = document.getElementById("zrcnostZaklad").textContent;
+
+postava.moudrost = document.getElementById("moudrost").value;
+postava.moudrostZaklad = document.getElementById("moudrostZaklad").textContent;
+
+postava.charisma = document.getElementById("charisma").value;
+postava.charismaZaklad = document.getElementById("charismaZaklad").textContent;
+
+postava.intuice = document.getElementById("intuice").value;
+postava.intuiceZaklad = document.getElementById("intuiceZaklad").textContent;
+postava.atributyRozdeleny = postava.atributyRozdeleny || false;
+
+    postava.zivoty = document.getElementById("zivoty").value;
+
+    postava.status1 = document.getElementById("status1").value;
+    postava.status2 = document.getElementById("status2").value;
+    postava.status3 = document.getElementById("status3").value;
+    postava.status4 = document.getElementById("status4").value;
+    postava.status5 = document.getElementById("status5").value;
+
+    postava.odolnostJedy = document.getElementById("odolnostJedy").value;
+    postava.odolnostNemoci = document.getElementById("odolnostNemoci").value;
+
+    postava.zbrojPopisHlava = document.getElementById("zbrojPopisHlava").value;
+    postava.zbrojHlava = document.getElementById("zbrojHlava").value;
+    postava.zbrojPopisTrup = document.getElementById("zbrojPopisTrup").value;
+    postava.zbrojTrup = document.getElementById("zbrojTrup").value;
+    postava.zbrojPopisRuce = document.getElementById("zbrojPopisRuce").value;
+    postava.zbrojRuce = document.getElementById("zbrojRuce").value;
+    postava.zbrojPopisRamena = document.getElementById("zbrojPopisRamena").value;
+    postava.zbrojRamena = document.getElementById("zbrojRamena").value;
+    postava.zbrojPopisNohy = document.getElementById("zbrojPopisNohy").value;
+    postava.zbrojNohy = document.getElementById("zbrojNohy").value;
+    postava.zbrojPopisBoty = document.getElementById("zbrojPopisBoty").value;
+    postava.zbrojBoty = document.getElementById("zbrojBoty").value;
+    postava.zbrojPopisStehna = document.getElementById("zbrojPopisStehna").value;
+    postava.zbrojStehna = document.getElementById("zbrojStehna").value;
+
+    postava.utokZaklad = document.getElementById("utokZaklad").value;
+    postava.krytZaklad = document.getElementById("krytZaklad").value;
+    postava.uhybZaklad = document.getElementById("uhybZaklad").value;
+    postava.streleckyUtok = document.getElementById("streleckyUtok").value;
+
+    postava.poznamky = document.getElementById("poznamky").value;
+    
+    ulozitZbrane();
+    
+    ulozitSchopnosti();
+
+   const { error } = await supabaseClient
+    .from("postavy")
+    .update({
+        jmeno: postava.jmeno,
+        popis: postava.popisPostavy || "",
+        data: postava
+    })
+    .eq("id", id);
+
+if (error) {
+    console.error("Chyba při ukládání postavy:", error);
+    document.getElementById("stav").textContent =
+        "Uložení se nepodařilo.";
+    return;
+}
+
+    document.getElementById("stav").textContent = "Uloženo.";
+
+setTimeout(function() {
+    document.getElementById("stav").textContent = "";
+}, 2000);
+}
+
+function zpet() {
+    window.location.href = "index.html";
+}
+function otevritInventar() {
+    window.open(
+        "inventar.html?id=" + encodeURIComponent(id),
+        "_blank"
+    );
+}
+function otevritAlchemii() {
+    window.open(
+        "alchymie.html?id=" + encodeURIComponent(id),
+        "_blank"
+    );
+}
+
+
+function otevritBestiar() {
+    window.open(
+        "bestiar.html?id=" + encodeURIComponent(id),
+        "_blank"
+    );
+}
+
+
+</script>
+
+</body>
+</html>
