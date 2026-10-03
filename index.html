@@ -328,10 +328,12 @@ async function prihlasit() {
         return;
     }
 
-    document.getElementById("stavPrihlaseni").textContent =
-        "Přihlášeno.";
+   document.getElementById("stavPrihlaseni").textContent =
+    "Přihlášeno.";
 
-    console.log("Přihlášený uživatel:", data.user);
+console.log("Přihlášený uživatel:", data.user);
+
+zobrazitPostavy();
 }
 
 
