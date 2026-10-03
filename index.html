@@ -203,7 +203,29 @@ const supabaseClient = window.supabase.createClient(
     </main>
 
 <script>
+async function zkontrolovatPrihlaseni() {
 
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (user) {
+
+        document.getElementById("stavPrihlaseni").textContent =
+            "Přihlášeno.";
+
+        document.getElementById("tlacitkoPrihlaseni").textContent =
+            "Odhlásit";
+
+        document.getElementById("tlacitkoPrihlaseni").onclick =
+            odhlasit;
+
+        zobrazitPostavy();
+
+    } else {
+
+        document.getElementById("seznamPostav").innerHTML = "";
+    }
+}
 async function vytvoritPostavu() {
 
     const { data: { user } } =
@@ -308,7 +330,7 @@ function zobrazitHlasku(text, callback) {
         callback(false);
     };
 }
-zobrazitPostavy();
+
 
 async function prihlasit() {
 
@@ -362,7 +384,7 @@ async function odhlasit() {
     document.getElementById("seznamPostav").innerHTML = "";
 }
 
-
+zkontrolovatPrihlaseni();
 </script>
 <div id="hlaskaOverlay" class="hlaska-overlay">
     <div class="hlaska-okno">
