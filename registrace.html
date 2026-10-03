@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrace</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at center, #25201a 0%, #100e0c 65%, #080706 100%);
+
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.page {
+    width: min(600px, 90vw);
+    min-height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.88);
+}
+
+h1 {
+    margin: 0 0 35px;
+
+    font-size: 42px;
+    font-weight: normal;
+
+    text-shadow: 0 3px 8px #000;
+}
+
+input {
+    display: block;
+
+    width: 300px;
+    padding: 12px;
+
+    margin: 8px;
+
+    font: inherit;
+    font-size: 18px;
+
+    color: #eee4d2;
+    background: #211b16;
+
+    border: 1px solid #6f5a3e;
+}
+
+button {
+    margin: 12px 5px;
+    padding: 13px 30px;
+
+    font: inherit;
+    font-size: 20px;
+
+    color: #eee4d2;
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+#stavRegistrace {
+    margin-top: 10px;
+    text-align: center;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Registrace</h1>
+
+    <input
+        type="email"
+        id="email"
+        placeholder="E-mail"
+    >
+
+    <input
+        type="password"
+        id="heslo"
+        placeholder="Heslo"
+    >
+
+    <button onclick="registrovat()">
+        Registrovat se
+    </button>
+
+    <div id="stavRegistrace"></div>
+
+    <button onclick="window.location.href='index.html'">
+        Zpět
+    </button>
+
+</main>
+
+<script>
+
+async function registrovat() {
+
+    const email =
+        document.getElementById("email").value;
+
+    const heslo =
+        document.getElementById("heslo").value;
+
+    const { data, error } =
+        await supabaseClient.auth.signUp({
+            email: email,
+            password: heslo
+        });
+
+    if (error) {
+
+        document.getElementById("stavRegistrace").textContent =
+            "Registrace se nepodařila: " + error.message;
+
+        return;
+    }
+
+    document.getElementById("stavRegistrace").textContent =
+        "Registrace proběhla. Pokud je potřeba, potvrď svůj e-mail.";
+
+}
+
+</script>
+
+</body>
+</html>
