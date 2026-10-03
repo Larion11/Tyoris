@@ -190,7 +190,7 @@ const supabaseClient = window.supabase.createClient(
         placeholder="Heslo"
     >
 
-    <button onclick="prihlasit()">Přihlásit</button>
+    <button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
 
     <div id="stavPrihlaseni"></div>
 </div>
@@ -328,14 +328,39 @@ async function prihlasit() {
         return;
     }
 
-   document.getElementById("stavPrihlaseni").textContent =
+document.getElementById("stavPrihlaseni").textContent =
     "Přihlášeno.";
+
+document.getElementById("tlacitkoPrihlaseni").textContent =
+    "Odhlásit";
+
+document.getElementById("tlacitkoPrihlaseni").onclick =
+    odhlasit;
 
 console.log("Přihlášený uživatel:", data.user);
 
 zobrazitPostavy();
 }
+async function odhlasit() {
 
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        console.error("Chyba při odhlašování:", error);
+        return;
+    }
+
+    document.getElementById("stavPrihlaseni").textContent =
+        "Odhlášeno.";
+
+    document.getElementById("tlacitkoPrihlaseni").textContent =
+        "Přihlásit";
+
+    document.getElementById("tlacitkoPrihlaseni").onclick =
+        prihlasit;
+
+    document.getElementById("seznamPostav").innerHTML = "";
+}
 
 
 </script>
