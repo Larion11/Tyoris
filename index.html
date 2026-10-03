@@ -177,24 +177,28 @@ const supabaseClient = window.supabase.createClient(
 </head>
 <body>
     <main class="page">
+
+    <h1>Vítejte dobrodruzi</h1>
+
     <div id="prihlaseni">
-    <input
-        type="email"
-        id="email"
-        placeholder="E-mail"
-    >
+        <input
+            type="email"
+            id="email"
+            placeholder="E-mail"
+        >
 
-    <input
-        type="password"
-        id="heslo"
-        placeholder="Heslo"
-    >
+        <input
+            type="password"
+            id="heslo"
+            placeholder="Heslo"
+        >
 
-    <button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
-
-    <div id="stavPrihlaseni"></div>
-</div>
-        <h1>Vítejte dobrodruzi</h1>
+        <button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
+<button type="button" onclick="window.location.href='registrace.html'">
+    Registrovat se
+</button>
+        <div id="stavPrihlaseni"></div>
+    </div>
         <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
         <button type="button" onclick="window.open('pravidla.html', '_blank')">
     Pravidla
@@ -240,7 +244,7 @@ async function vytvoritPostavu() {
         await supabaseClient.auth.getUser();
 
     if (!user) {
-        alert("Nejdřív se musíš přihlásit.");
+        zobrazitHlaskuZavrit("Nejdřív se musíš přihlásit.");
         return;
     }
 
@@ -248,6 +252,8 @@ async function vytvoritPostavu() {
 
     window.location.href = "nova_postava.html";
 }
+
+
 
 
 async function zobrazitPostavy() {
@@ -325,6 +331,10 @@ async function zobrazitPostavy() {
 }
 function zobrazitHlasku(text, callback) {
 
+    document.getElementById("hlaskaAno").style.display = "inline-block";
+    document.getElementById("hlaskaNe").style.display = "inline-block";
+    document.getElementById("hlaskaZavrit").style.display = "none";
+
     document.getElementById("hlaskaText").textContent = text;
     document.getElementById("hlaskaOverlay").style.display = "flex";
 
@@ -337,8 +347,21 @@ function zobrazitHlasku(text, callback) {
         document.getElementById("hlaskaOverlay").style.display = "none";
         callback(false);
     };
+ 
 }
+function zobrazitHlaskuZavrit(text) {
 
+    document.getElementById("hlaskaAno").style.display = "none";
+    document.getElementById("hlaskaNe").style.display = "none";
+    document.getElementById("hlaskaZavrit").style.display = "inline-block";
+
+    document.getElementById("hlaskaText").textContent = text;
+    document.getElementById("hlaskaOverlay").style.display = "flex";
+
+    document.getElementById("hlaskaZavrit").onclick = function() {
+        document.getElementById("hlaskaOverlay").style.display = "none";
+    };
+}
 
 async function prihlasit() {
 
@@ -398,10 +421,11 @@ zkontrolovatPrihlaseni();
     <div class="hlaska-okno">
         <div id="hlaskaText" class="hlaska-text"></div>
 
-        <div class="hlaska-tlacitka">
-            <button id="hlaskaAno">Ano</button>
-            <button id="hlaskaNe" class="hlaska-ne">Ne</button>
-        </div>
+       <div class="hlaska-tlacitka">
+    <button id="hlaskaAno">Ano</button>
+    <button id="hlaskaNe" class="hlaska-ne">Ne</button>
+    <button id="hlaskaZavrit">Zavřít</button>
+</div>
     </div>
 </div>
 </body>
