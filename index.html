@@ -205,10 +205,10 @@ const supabaseClient = window.supabase.createClient(
 <script>
 async function zkontrolovatPrihlaseni() {
 
-    const { data: { user } } =
-        await supabaseClient.auth.getUser();
+    const { data: { session } } =
+        await supabaseClient.auth.getSession();
 
-    if (user) {
+    if (session && session.user) {
 
         document.getElementById("stavPrihlaseni").textContent =
             "Přihlášeno.";
@@ -222,6 +222,14 @@ async function zkontrolovatPrihlaseni() {
         zobrazitPostavy();
 
     } else {
+
+        document.getElementById("stavPrihlaseni").textContent = "";
+
+        document.getElementById("tlacitkoPrihlaseni").textContent =
+            "Přihlásit";
+
+        document.getElementById("tlacitkoPrihlaseni").onclick =
+            prihlasit;
 
         document.getElementById("seznamPostav").innerHTML = "";
     }
