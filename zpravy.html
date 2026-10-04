@@ -156,7 +156,7 @@ if (odesilatele.length > 0) {
 
     const { data: postavy, error: chybaPostav } =
         await supabaseClient
-            .from("postavy")
+            .from("verejne_postavy")
             .select("jmeno, user_id")
             .in("user_id", odesilatele);
 
@@ -216,10 +216,10 @@ async function novaZprava() {
         return;
     }
 
-    const { data: postavy, error } =
+   const { data: postavy, error } =
     await supabaseClient
-        .from("postavy")
-        .select("id, jmeno, user_id")
+        .from("verejne_postavy")
+        .select("jmeno, user_id")
         .order("jmeno");
 
     if (error) {
