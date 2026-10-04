@@ -222,11 +222,11 @@ async function novaZprava() {
         .select("jmeno, user_id")
         .order("jmeno");
 
-    if (error) {
-        console.error("Chyba při načítání postav:", error);
-        obsah.innerHTML = "<p>Nepodařilo se načíst seznam postav.</p>";
-        return;
-    }
+   if (error) {
+    console.error("Chyba při načítání postav:", error);
+    obsah.innerHTML = "<p>" + error.message + "</p>";
+    return;
+}
 
     let moznosti = "";
 
