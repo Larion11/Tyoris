@@ -876,7 +876,15 @@ Vybrat portrét
     <button type="button" onclick="otevritInventar()">Inventář</button>
     <button type="button" onclick="otevritAlchemii()">Alchymie</button>
     <button type="button" onclick="otevritBestiar()">Bestiář</button>
-    <button type="button" onclick="otevritZpravy()">Zprávy</button>
+    <button type="button" onclick="otevritZpravy()" id="tlacitkoZpravy">
+    Zprávy
+    <span id="upozorneniZpravy" style="
+        display: none;
+        margin-left: 8px;
+        color: #d33;
+        font-weight: bold;
+    ">●</span>
+</button>
     
 
 </div></div>
@@ -2119,6 +2127,7 @@ async function nacistPostavu() {
 }
 
 nacistPostavu();
+zkontrolovatNoveZpravy();
 
 function zobrazitPortret(data) {
     const obrazek = document.getElementById("obrazekPostavy");
@@ -2318,7 +2327,34 @@ function otevritBestiar() {
 function otevritZpravy() {
     window.open("zpravy.html", "_blank");
 }
+async function zkontrolovatNoveZpravy() {
 
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const { count, error } =
+        await supabaseClient
+            .from("zpravy")
+            .select("*", { count: "exact", head: true })
+            .eq("prijemce_id", user.id)
+            .eq("precteno", false);
+
+    if (error) {
+        console.error("Chyba při kontrole nových zpráv:", error);
+        return;
+    }
+
+    const upozorneni =
+        document.getElementById("upozorneniZpravy");
+
+    if (count > 0) {
+        upozorneni.style.display = "inline";
+    } else {
+        upozorneni.style.display = "none";
+    }
+}
 </script>
 
 </body>
