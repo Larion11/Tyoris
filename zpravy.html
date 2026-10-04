@@ -173,7 +173,13 @@ if (zpravy.length === 0) {
     return;
 }
 
-zpravy.forEach(function(zprava) {
+for (const zprava of zpravy) {
+if (!zprava.precteno) {
+    await supabaseClient
+        .from("zpravy")
+        .update({ precteno: true })
+        .eq("id", zprava.id);
+}
 
     const radek = document.createElement("div");
 
@@ -193,8 +199,8 @@ zpravy.forEach(function(zprava) {
         (zprava.text || "") +
         "</span>";
 
-    obsah.appendChild(radek);
-});
+       obsah.appendChild(radek);
+}
 }
 }
 
