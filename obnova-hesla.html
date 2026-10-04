@@ -209,8 +209,16 @@ async function zmenitHeslo() {
         return;
     }
 
-    stav.textContent =
-        "Heslo bylo změněno.";
+  stav.textContent = "Heslo bylo změněno.";
+
+const tlacitko = document.createElement("button");
+tlacitko.textContent = "Zavřít";
+tlacitko.onclick = function() {
+    window.close();
+};
+
+stav.appendChild(document.createElement("br"));
+stav.appendChild(tlacitko);
 
 }
 </script>
