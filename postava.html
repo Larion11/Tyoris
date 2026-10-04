@@ -2128,6 +2128,7 @@ async function nacistPostavu() {
 
 nacistPostavu();
 zkontrolovatNoveZpravy();
+sledovatNoveZpravy();
 
 function zobrazitPortret(data) {
     const obrazek = document.getElementById("obrazekPostavy");
@@ -2354,6 +2355,37 @@ async function zkontrolovatNoveZpravy() {
     } else {
         upozorneni.style.display = "none";
     }
+}
+
+function sledovatNoveZpravy() {
+
+    supabaseClient
+        .channel("nove-zpravy")
+        .on(
+            "postgres_changes",
+            {
+                event: "INSERT",
+                schema: "public",
+                table: "zpravy"
+            },
+            async function(payload) {
+
+                const { data: { user } } =
+                    await supabaseClient.auth.getUser();
+
+                if (!user) return;
+
+                if (payload.new.prijemce_id !== user.id) return;
+
+                const upozorneni =
+                    document.getElementById("upozorneniZpravy");
+
+                if (upozorneni) {
+                    upozorneni.style.display = "inline";
+                }
+            }
+        )
+        .subscribe();
 }
 </script>
 
