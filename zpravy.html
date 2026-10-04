@@ -297,10 +297,12 @@ function zobrazitPotvrzeni(text) {
     okno.style.top = "50%";
     okno.style.left = "50%";
     okno.style.transform = "translate(-50%, -50%)";
-    okno.style.padding = "25px 40px";
-    okno.style.background = "#1b1611";
+    okno.style.minWidth = "300px";
+    okno.style.maxWidth = "80%";
+    okno.style.padding = "25px 35px";
+    okno.style.background = "rgba(18,15,12,.98)";
     okno.style.border = "2px solid #8a704d";
-    okno.style.boxShadow = "0 0 30px rgba(0,0,0,.8)";
+    okno.style.boxShadow = "0 0 40px rgba(0,0,0,.85)";
     okno.style.color = "#eee4d2";
     okno.style.fontFamily = 'Georgia, "Times New Roman", serif';
     okno.style.fontSize = "20px";
@@ -313,7 +315,7 @@ function zobrazitPotvrzeni(text) {
 
     setTimeout(function() {
         okno.remove();
-    }, 1000);
+    }, 1500);
 }
 
 async function odeslatZpravu() {
@@ -322,7 +324,7 @@ async function odeslatZpravu() {
         await supabaseClient.auth.getUser();
 
     if (!user) {
-        alert("Nejsi přihlášený.");
+        zobrazitPotvrzeni("Nejsi přihlášený.");
         return;
     }
 
@@ -331,12 +333,12 @@ async function odeslatZpravu() {
     const text = document.getElementById("textZpravy").value.trim();
 
     if (!prijemce) {
-        alert("Vyber příjemce.");
+        zobrazitPotvrzeni("Vyber příjemce.");
         return;
     }
 
     if (!text) {
-        alert("Napiš zprávu.");
+        zobrazitPotvrzeni("Napiš zprávu.");
         return;
     }
 
@@ -353,7 +355,7 @@ async function odeslatZpravu() {
 
     if (error) {
         console.error("Chyba při odesílání zprávy:", error);
-        alert("Zprávu se nepodařilo odeslat.");
+        zobrazitPotvrzeni("Zprávu se nepodařilo odeslat.");
         return;
     }
 
