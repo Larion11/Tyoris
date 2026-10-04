@@ -260,10 +260,7 @@ async function vytvoritPostavu() {
     window.location.href = "nova_postava.html";
 }
 
-    console.log("Přihlášený uživatel:", user.id);
 
-    window.location.href = "nova_postava.html";
-}
 
 
 async function zobrazitPostavy() {
@@ -372,6 +369,7 @@ function zobrazitHlaskuZavrit(text) {
         document.getElementById("hlaskaOverlay").style.display = "none";
     };
 }
+
 async function zapomenuteHeslo() {
 
     const email = document.getElementById("email").value.trim();
@@ -381,23 +379,31 @@ async function zapomenuteHeslo() {
         return;
     }
 
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(
-        email,
-        {
-            redirectTo: window.location.origin + "/obnova-hesla.html"
-        }
-    );
+    console.log("Posílám žádost o obnovu hesla pro:", email);
+
+    const { data, error } =
+        await supabaseClient.auth.resetPasswordForEmail(
+            email,
+            {
+                redirectTo:
+                    "https://larion11.github.io/Tyoris/obnova-hesla.html"
+            }
+        );
+
+    console.log("Výsledek resetu:", data, error);
 
     if (error) {
         console.error("Chyba při odesílání odkazu:", error);
+
         zobrazitHlaskuZavrit(
             "Odkaz pro obnovení hesla se nepodařilo odeslat."
         );
+
         return;
     }
 
     zobrazitHlaskuZavrit(
-        "Na zadaný e-mail byl odeslán odkaz pro obnovení hesla."
+        "Na e-mail byl odeslán odkaz pro obnovení hesla."
     );
 }
 async function prihlasit() {
