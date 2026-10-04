@@ -127,12 +127,39 @@ async function zobrazitDorucene() {
         return;
     }
 
-    const { data: zpravy, error } =
+   const { data: zpravy, error } =
+    await supabaseClient
+        .from("zpravy")
+        .select("*")
+        .eq("prijemce_id", user.id)
+        .order("odeslano", { ascending: false });
+
+if (error) {
+    console.error("Chyba při načítání zpráv:", error);
+    obsah.innerHTML = "<p>Zprávy se nepodařilo načíst.</p>";
+    return;
+}
+
+const odesilatele = [...new Set(
+    zpravy.map(zprava => zprava.odesilatel_id)
+)];
+
+let jmenaOdesilatelu = {};
+
+if (odesilatele.length > 0) {
+
+    const { data: postavy, error: chybaPostav } =
         await supabaseClient
-            .from("zpravy")
-            .select("*")
-            .eq("prijemce_id", user.id)
-            .order("odeslano", { ascending: false });
+            .from("postavy")
+            .select("jmeno, user_id")
+            .in("user_id", odesilatele);
+
+    if (!chybaPostav && postavy) {
+        postavy.forEach(function(postava) {
+            jmenaOdesilatelu[postava.user_id] = postava.jmeno;
+        });
+    }
+}
 
     if (error) {
         console.error("Chyba při načítání zpráv:", error);
@@ -157,12 +184,15 @@ async function zobrazitDorucene() {
         radek.style.background = "rgba(20,16,12,.7)";
 
         radek.innerHTML =
-            "<strong>" +
-            (zprava.predmet || "(bez předmětu)") +
-            "</strong><br>" +
-            "<span>" +
-            (zprava.text || "") +
-            "</span>";
+    "<strong>" +
+    (jmenaOdesilatelu[zprava.odesilatel_id] || "Neznámý odesílatel") +
+    "</strong><br>" +
+    "<strong>" +
+    (zprava.predmet || "(bez předmětu)") +
+    "</strong><br>" +
+    "<span>" +
+    (zprava.text || "") +
+    "</span>";
 
         obsah.appendChild(radek);
     });
@@ -183,7 +213,7 @@ async function novaZprava() {
     const { data: postavy, error } =
     await supabaseClient
         .from("postavy")
-        .select("id, jmeno")
+        .select("id, jmeno, user_id")
         .order("jmeno");
 
     if (error) {
@@ -195,8 +225,8 @@ async function novaZprava() {
     let moznosti = "";
 
     postavy.forEach(function(postava) {
-        moznosti +=
-            `<option value="${postava.id}">${postava.jmeno}</option>`;
+       moznosti +=
+    `<option value="${postava.user_id}">${postava.jmeno}</option>`;
     });
 
     obsah.innerHTML = `
@@ -258,6 +288,34 @@ async function novaZprava() {
         </div>
     `;
 }
+
+function zobrazitPotvrzeni(text) {
+
+    const okno = document.createElement("div");
+
+    okno.style.position = "fixed";
+    okno.style.top = "50%";
+    okno.style.left = "50%";
+    okno.style.transform = "translate(-50%, -50%)";
+    okno.style.padding = "25px 40px";
+    okno.style.background = "#1b1611";
+    okno.style.border = "2px solid #8a704d";
+    okno.style.boxShadow = "0 0 30px rgba(0,0,0,.8)";
+    okno.style.color = "#eee4d2";
+    okno.style.fontFamily = 'Georgia, "Times New Roman", serif';
+    okno.style.fontSize = "20px";
+    okno.style.textAlign = "center";
+    okno.style.zIndex = "9999";
+
+    okno.textContent = text;
+
+    document.body.appendChild(okno);
+
+    setTimeout(function() {
+        okno.remove();
+    }, 1000);
+}
+
 async function odeslatZpravu() {
 
     const { data: { user } } =
@@ -299,13 +357,12 @@ async function odeslatZpravu() {
         return;
     }
 
-    alert("Zpráva byla odeslána.");
+zobrazitPotvrzeni("Zpráva byla odeslána.");
 
-    
+setTimeout(function() {
+    zobrazitDorucene();
+}, 1200);
 }
-
-zobrazitDorucene();
-
 </script>
 
 
