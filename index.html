@@ -193,10 +193,17 @@ const supabaseClient = window.supabase.createClient(
             placeholder="Heslo"
         >
 
-        <button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
+<button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
+
 <button type="button" onclick="window.location.href='registrace.html'">
     Registrovat se
 </button>
+
+<div style="text-align: right; margin-bottom: 35px;">
+    <button type="button" onclick="zapomenuteHeslo()">
+        Zapomenuté heslo
+    </button>
+</div>
         <div id="stavPrihlaseni"></div>
     </div>
         <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
@@ -253,7 +260,10 @@ async function vytvoritPostavu() {
     window.location.href = "nova_postava.html";
 }
 
+    console.log("Přihlášený uživatel:", user.id);
 
+    window.location.href = "nova_postava.html";
+}
 
 
 async function zobrazitPostavy() {
@@ -362,7 +372,34 @@ function zobrazitHlaskuZavrit(text) {
         document.getElementById("hlaskaOverlay").style.display = "none";
     };
 }
+async function zapomenuteHeslo() {
 
+    const email = document.getElementById("email").value.trim();
+
+    if (!email) {
+        zobrazitHlaskuZavrit("Nejdřív zadej svůj e-mail.");
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(
+        email,
+        {
+            redirectTo: window.location.origin + "/obnova-hesla.html"
+        }
+    );
+
+    if (error) {
+        console.error("Chyba při odesílání odkazu:", error);
+        zobrazitHlaskuZavrit(
+            "Odkaz pro obnovení hesla se nepodařilo odeslat."
+        );
+        return;
+    }
+
+    zobrazitHlaskuZavrit(
+        "Na zadaný e-mail byl odeslán odkaz pro obnovení hesla."
+    );
+}
 async function prihlasit() {
 
     const email = document.getElementById("email").value;
