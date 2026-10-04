@@ -165,13 +165,7 @@ if (odesilatele.length > 0) {
             jmenaOdesilatelu[postava.user_id] = postava.jmeno;
         });
     }
-}
 
-    if (error) {
-        console.error("Chyba při načítání zpráv:", error);
-        obsah.innerHTML = "<p>Zprávy se nepodařilo načíst.</p>";
-        return;
-    }
 
     obsah.innerHTML = "";
 
@@ -222,11 +216,11 @@ async function novaZprava() {
         .select("jmeno, user_id")
         .order("jmeno");
 
-   if (error) {
-    console.error("Chyba při načítání postav:", error);
-    obsah.innerHTML = "<p>" + error.message + "</p>";
-    return;
-}
+    if (error) {
+        console.error("Chyba při načítání postav:", error);
+        obsah.innerHTML = "<p>Nepodařilo se načíst seznam postav.</p>";
+        return;
+    }
 
     let moznosti = "";
 
