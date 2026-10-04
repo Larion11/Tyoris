@@ -308,6 +308,7 @@ textarea {
 
 .odolnosti-sloupec button {
     align-self: center;
+    width: 180px;
 }
 .zivoty-statusy,
 .odolnosti {
@@ -869,6 +870,7 @@ Vybrat portrét
     <button type="button" onclick="otevritInventar()">Inventář</button>
     <button type="button" onclick="otevritAlchemii()">Alchymie</button>
     <button type="button" onclick="otevritBestiar()">Bestiář</button>
+    <button type="button" onclick="otevritZpravy()">Zprávy</button>
     
 
 </div></div>
@@ -2307,7 +2309,9 @@ function otevritBestiar() {
         "_blank"
     );
 }
-
+function otevritZpravy() {
+    window.open("zpravy.html", "_blank");
+}
 
 </script>
 

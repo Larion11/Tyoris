@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zprávy</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at center, #25201a 0%, #100e0c 65%, #080706 100%);
+
+    color: #e8dfcf;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+}
+
+.page {
+    width: min(900px, 90vw);
+    min-height: 600px;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.88);
+
+    padding: 35px;
+}
+
+h1 {
+    margin: 0 0 35px;
+    text-align: center;
+
+    font-size: clamp(38px, 6vw, 60px);
+    font-weight: normal;
+
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+button {
+    padding: 12px 25px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+
+    color: #eee4d2;
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+
+button:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Zprávy</h1>
+
+
+<div style="text-align: center; margin-bottom: 30px;">
+
+    <button type="button" onclick="zobrazitDorucene()">
+        Doručené
+    </button>
+
+    <button type="button" onclick="novaZprava()">
+        Napsat zprávu
+    </button>
+
+</div>
+
+<div id="obsahZprav"></div>
+<script>
+async function zobrazitDorucene() {
+
+    const obsah = document.getElementById("obsahZprav");
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        obsah.innerHTML = "<p>Nejsi přihlášený.</p>";
+        return;
+    }
+
+    const { data: zpravy, error } =
+        await supabaseClient
+            .from("zpravy")
+            .select("*")
+            .eq("prijemce_id", user.id)
+            .order("odeslano", { ascending: false });
+
+    if (error) {
+        console.error("Chyba při načítání zpráv:", error);
+        obsah.innerHTML = "<p>Zprávy se nepodařilo načíst.</p>";
+        return;
+    }
+
+    obsah.innerHTML = "";
+
+    if (zpravy.length === 0) {
+        obsah.innerHTML = "<p>Nemáš žádné zprávy.</p>";
+        return;
+    }
+
+    zpravy.forEach(function(zprava) {
+
+        const radek = document.createElement("div");
+
+        radek.style.border = "1px solid #6f5a3e";
+        radek.style.padding = "15px";
+        radek.style.marginBottom = "12px";
+        radek.style.background = "rgba(20,16,12,.7)";
+
+        radek.innerHTML =
+            "<strong>" +
+            (zprava.predmet || "(bez předmětu)") +
+            "</strong><br>" +
+            "<span>" +
+            (zprava.text || "") +
+            "</span>";
+
+        obsah.appendChild(radek);
+    });
+}
+
+async function novaZprava() {
+
+    const obsah = document.getElementById("obsahZprav");
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        obsah.innerHTML = "<p>Nejsi přihlášený.</p>";
+        return;
+    }
+
+    const { data: postavy, error } =
+        await supabaseClient
+            .from("postavy")
+            .select("id, jmeno")
+            .neq("id", user.id)
+            .order("jmeno");
+
+    if (error) {
+        console.error("Chyba při načítání postav:", error);
+        obsah.innerHTML = "<p>Nepodařilo se načíst seznam postav.</p>";
+        return;
+    }
+
+    let moznosti = "";
+
+    postavy.forEach(function(postava) {
+        moznosti +=
+            `<option value="${postava.id}">${postava.jmeno}</option>`;
+    });
+
+    obsah.innerHTML = `
+        <div style="
+            border: 1px solid #6f5a3e;
+            padding: 20px;
+            background: rgba(20,16,12,.7);
+        ">
+
+            <label>Příjemce:</label><br>
+
+            <select id="prijemceZpravy" style="
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0 15px;
+                font-family: Georgia, 'Times New Roman', serif;
+                font-size: 17px;
+                background: #33291e;
+                color: #eee4d2;
+                border: 1px solid #8a704d;
+            ">
+                <option value="">-- vyber postavu --</option>
+                ${moznosti}
+            </select>
+
+            <label>Předmět:</label><br>
+
+            <input id="predmetZpravy" type="text" style="
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0 15px;
+                font-family: Georgia, 'Times New Roman', serif;
+                font-size: 17px;
+                background: #33291e;
+                color: #eee4d2;
+                border: 1px solid #8a704d;
+            ">
+
+            <label>Zpráva:</label><br>
+
+            <textarea id="textZpravy" rows="8" style="
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0 15px;
+                font-family: Georgia, 'Times New Roman', serif;
+                font-size: 17px;
+                background: #33291e;
+                color: #eee4d2;
+                border: 1px solid #8a704d;
+                resize: vertical;
+            "></textarea>
+
+            <div style="text-align: center;">
+                <button type="button" onclick="odeslatZpravu()">
+                    Odeslat
+                </button>
+            </div>
+
+        </div>
+    `;
+}
+async function odeslatZpravu() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if (!user) {
+        alert("Nejsi přihlášený.");
+        return;
+    }
+
+    const prijemce = document.getElementById("prijemceZpravy").value;
+    const predmet = document.getElementById("predmetZpravy").value.trim();
+    const text = document.getElementById("textZpravy").value.trim();
+
+    if (!prijemce) {
+        alert("Vyber příjemce.");
+        return;
+    }
+
+    if (!text) {
+        alert("Napiš zprávu.");
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("zpravy")
+            .insert({
+                odesilatel_id: user.id,
+                prijemce_id: prijemce,
+                predmet: predmet || null,
+                text: text,
+                precteno: false
+            });
+
+    if (error) {
+        console.error("Chyba při odesílání zprávy:", error);
+        alert("Zprávu se nepodařilo odeslat.");
+        return;
+    }
+
+    alert("Zpráva byla odeslána.");
+
+    
+}
+
+zobrazitDorucene();
+
+</script>
+
+
+
+
+</main>
+
+</body>
+</html>
+
