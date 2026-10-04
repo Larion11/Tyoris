@@ -181,11 +181,10 @@ async function novaZprava() {
     }
 
     const { data: postavy, error } =
-        await supabaseClient
-            .from("postavy")
-            .select("id, jmeno")
-            .neq("id", user.id)
-            .order("jmeno");
+    await supabaseClient
+        .from("postavy")
+        .select("id, jmeno")
+        .order("jmeno");
 
     if (error) {
         console.error("Chyba při načítání postav:", error);
