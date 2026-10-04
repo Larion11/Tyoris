@@ -56,10 +56,14 @@ h1 {
 .bestiary-blok {
     display: grid;
     grid-template-columns: 1.1fr 1.3fr 1fr;
+    min-width: 850px;
     border: 1px solid #6f5a3e;
     margin-bottom: 25px;
 }
-
+.bestiary-posun {
+    width: 100%;
+    overflow-x: auto;
+}
 
 
 
@@ -202,7 +206,7 @@ const supabaseClient = window.supabase.createClient(
 
     <h1>Bestiář</h1>
     <div class="bestiary-kategorie">Obratlovci</div>
-
+    <div class="bestiary-posun"> 
     <div class="bestiary-blok">
 
     <div class="bestiary-cast">
@@ -590,7 +594,9 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
+</div>
 <div class="bestiary-kategorie">Bezobratlí</div>
+<div class="bestiary-posun">
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
@@ -701,6 +707,7 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
+
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
@@ -789,7 +796,7 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
-
+</div>
 
 
     <div class="tlacitka">
