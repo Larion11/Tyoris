@@ -2326,7 +2326,20 @@ function otevritBestiar() {
     );
 }
 function otevritZpravy() {
-    window.open("zpravy.html", "_blank");
+
+    const okno = window.open("zpravy.html", "_blank");
+
+    const kontrola = setInterval(async function() {
+
+        if (okno && okno.closed) {
+
+            clearInterval(kontrola);
+
+            await zkontrolovatNoveZpravy();
+        }
+
+    }, 500);
+}
 }
 async function zkontrolovatNoveZpravy() {
 
