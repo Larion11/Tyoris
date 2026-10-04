@@ -159,6 +159,19 @@ const supabaseClient = window.supabase.createClient(
 
     <div id="stav"></div>
 
+<div class="tlacitka">
+
+    <button
+        id="tlacitkoZavrit"
+        type="button"
+        style="display: none;"
+        onclick="window.close()"
+    >
+        Zavřít
+    </button>
+
+</div>
+
 </main>
 
 <script>
@@ -209,16 +222,10 @@ async function zmenitHeslo() {
         return;
     }
 
-  stav.textContent = "Heslo bylo změněno.";
+stav.textContent = "Heslo bylo změněno.";
+document.getElementById("tlacitkoZavrit").style.display = "inline-block";
 
-const tlacitko = document.createElement("button");
-tlacitko.textContent = "Zavřít";
-tlacitko.onclick = function() {
-    window.close();
-};
 
-stav.appendChild(document.createElement("br"));
-stav.appendChild(tlacitko);
 
 }
 </script>
