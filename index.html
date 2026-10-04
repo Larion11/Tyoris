@@ -169,6 +169,18 @@
     background: #4a2923;
     border-color: #9a6255;
 }
+.paticka {
+    margin-top: 30px;
+    padding: 15px;
+    text-align: center;
+    color: #8f806b;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.paticka span {
+    font-style: italic;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -219,7 +231,15 @@ const supabaseClient = window.supabase.createClient(
         <button type="button" onclick="window.open('pravidla.html', '_blank')">
     Pravidla
 </button>
-        <div id="seznamPostav"></div>
+            <div id="seznamPostav"></div>
+
+    <div class="paticka">
+        Vytvořila Larion ve spolupráci s Gerym, nejlepším Chat-GPT<br>
+        <span>(Gemini je šupák, co neumí počítat)</span><br>
+        za malé podpory Sekáče a vůbec žádné podpory Euroxe.
+    </div>
+
+</main>
     </main>
 
 <script>
@@ -480,5 +500,6 @@ zkontrolovatPrihlaseni();
 </div>
     </div>
 </div>
+
 </body>
 </html>
