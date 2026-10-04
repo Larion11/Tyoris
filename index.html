@@ -38,6 +38,13 @@
         letter-spacing: 2px;
         text-shadow: 0 3px 8px #000;
     }
+    
+    #stavPrihlaseni {
+    margin-top: -35px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 18px;
+}
     button {
         padding: 17px 34px;
         font: inherit;
@@ -179,6 +186,8 @@ const supabaseClient = window.supabase.createClient(
     <main class="page">
 
     <h1>Vítejte dobrodruzi</h1>
+    
+    <div id="stavPrihlaseni"></div>
 
     <div id="prihlaseni">
         <input
@@ -204,7 +213,7 @@ const supabaseClient = window.supabase.createClient(
         Zapomenuté heslo
     </button>
 </div>
-        <div id="stavPrihlaseni"></div>
+        
     </div>
         <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
         <button type="button" onclick="window.open('pravidla.html', '_blank')">
