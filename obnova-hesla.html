@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obnova hesla</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at center, #25201a 0%, #100e0c 65%, #080706 100%);
+
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.page {
+    width: min(600px, 90vw);
+    padding: 45px;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.88);
+}
+
+h1 {
+    margin: 0 0 35px;
+
+    text-align: center;
+
+    font-size: clamp(36px, 6vw, 55px);
+    font-weight: normal;
+
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 18px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+
+    margin-bottom: 20px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+
+    color: #eee4d2;
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+}
+
+button {
+    padding: 13px 28px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+
+    color: #eee4d2;
+    background: #33291e;
+
+    border: 1px solid #8a704d;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+
+button:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+.tlacitka {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#stav {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 18px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Obnova hesla</h1>
+
+    <label for="noveHeslo">
+        Nové heslo
+    </label>
+
+    <input
+        type="password"
+        id="noveHeslo"
+        placeholder="Nové heslo"
+    >
+
+    <label for="noveHesloZnovu">
+        Nové heslo znovu
+    </label>
+
+    <input
+        type="password"
+        id="noveHesloZnovu"
+        placeholder="Zopakuj nové heslo"
+    >
+
+    <div class="tlacitka">
+
+        <button type="button" onclick="zmenitHeslo()">
+            Nastavit nové heslo
+        </button>
+
+    </div>
+
+    <div id="stav"></div>
+
+</main>
+
+<script>
+async function zmenitHeslo() {
+
+    const heslo =
+        document.getElementById("noveHeslo").value;
+
+    const hesloZnovu =
+        document.getElementById("noveHesloZnovu").value;
+
+    const stav =
+        document.getElementById("stav");
+
+    if (!heslo || !hesloZnovu) {
+        stav.textContent =
+            "Vyplň obě políčka.";
+        return;
+    }
+
+    if (heslo !== hesloZnovu) {
+        stav.textContent =
+            "Hesla se neshodují.";
+        return;
+    }
+
+    if (heslo.length < 6) {
+        stav.textContent =
+            "Heslo musí mít alespoň 6 znaků.";
+        return;
+    }
+
+    const { error } =
+        await supabaseClient.auth.updateUser({
+            password: heslo
+        });
+
+    if (error) {
+
+        console.error(
+            "Chyba při změně hesla:",
+            error
+        );
+
+        stav.textContent =
+            "Heslo se nepodařilo změnit.";
+
+        return;
+    }
+
+    stav.textContent =
+        "Heslo bylo změněno.";
+
+}
+</script>
+
+</body>
+</html>
