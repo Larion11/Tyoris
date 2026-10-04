@@ -145,7 +145,7 @@ if (error) {
     obsah.innerHTML = "<p>Zprávy se nepodařilo načíst.</p>";
     return;
 }
-
+console.log("NAČTENÉ ZPRÁVY:", zpravy);
 const odesilatele = [...new Set(
     zpravy.map(zprava => zprava.odesilatel_id)
 )];
@@ -160,42 +160,42 @@ if (odesilatele.length > 0) {
             .select("jmeno, user_id")
             .in("user_id", odesilatele);
 
-    if (!chybaPostav && postavy) {
-        postavy.forEach(function(postava) {
-            jmenaOdesilatelu[postava.user_id] = postava.jmeno;
-        });
-    }
-
-
-    obsah.innerHTML = "";
-
-    if (zpravy.length === 0) {
-        obsah.innerHTML = "<p>Nemáš žádné zprávy.</p>";
-        return;
-    }
-
-    zpravy.forEach(function(zprava) {
-
-        const radek = document.createElement("div");
-
-        radek.style.border = "1px solid #6f5a3e";
-        radek.style.padding = "15px";
-        radek.style.marginBottom = "12px";
-        radek.style.background = "rgba(20,16,12,.7)";
-
-        radek.innerHTML =
-    "<strong>" +
-    (jmenaOdesilatelu[zprava.odesilatel_id] || "Neznámý odesílatel") +
-    "</strong><br>" +
-    "<strong>" +
-    (zprava.predmet || "(bez předmětu)") +
-    "</strong><br>" +
-    "<span>" +
-    (zprava.text || "") +
-    "</span>";
-
-        obsah.appendChild(radek);
+   if (!chybaPostav && postavy) {
+    postavy.forEach(function(postava) {
+        jmenaOdesilatelu[postava.user_id] = postava.jmeno;
     });
+}
+
+obsah.innerHTML = "";
+
+if (zpravy.length === 0) {
+    obsah.innerHTML = "<p>Nemáš žádné zprávy.</p>";
+    return;
+}
+
+zpravy.forEach(function(zprava) {
+
+    const radek = document.createElement("div");
+
+    radek.style.border = "1px solid #6f5a3e";
+    radek.style.padding = "15px";
+    radek.style.marginBottom = "12px";
+    radek.style.background = "rgba(20,16,12,.7)";
+
+    radek.innerHTML =
+        "<strong>" +
+        (jmenaOdesilatelu[zprava.odesilatel_id] || "Neznámý odesílatel") +
+        "</strong><br>" +
+        "<strong>" +
+        (zprava.predmet || "(bez předmětu)") +
+        "</strong><br>" +
+        "<span>" +
+        (zprava.text || "") +
+        "</span>";
+
+    obsah.appendChild(radek);
+});
+}
 }
 
 async function novaZprava() {
