@@ -536,7 +536,24 @@ celkem += zmena;
 
 zobrazitPenize(celkem);
 }
+function zmenitMnozstvi(co, smer) {
 
+    const prvek = document.getElementById(co);
+
+    if (!prvek) {
+        return;
+    }
+
+    let mnozstvi = Number(prvek.textContent) || 0;
+
+    mnozstvi += smer;
+
+    if (mnozstvi < 0) {
+        mnozstvi = 0;
+    }
+
+    prvek.textContent = mnozstvi;
+}
 function zobrazitHlasku(text, nadpis = "Inventář") {
 
     const pozadi =
