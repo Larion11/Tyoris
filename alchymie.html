@@ -235,11 +235,11 @@
 }
 
 .tabulka-recepty th:nth-child(1) {
-    width: 10%;
+    width: 11%;
 }
 
 .tabulka-recepty th:nth-child(2) {
-    width: 22%;
+    width: 25%;
 }
 
 .tabulka-recepty th:nth-child(3) {
@@ -251,11 +251,11 @@
 }
 
 .tabulka-recepty th:nth-child(5) {
-    width: 11%;
+    width: 8%;
 }
 
 .tabulka-recepty th:nth-child(6) {
-    width: 6%;
+    width: 7%;
 }
 
 .tabulka-recepty th:nth-child(7) {
@@ -268,7 +268,21 @@
     text-align: center;
     vertical-align: middle;
 }
+.pocet-lektvaru {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
 
+.pocet-lektvaru span {
+    font-size: 17px;
+}
+
+.pocet-lektvaru button {
+    padding: 3px 8px;
+    font-size: 14px;
+}
 .tabulka-recepty button {
     padding: 5px 8px;
     font-size: 14px;
@@ -718,7 +732,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Náročnost</th>
+                <th>Nároky</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -738,7 +752,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Náročnost</th>
+                <th>Nároky</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -758,7 +772,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Náročnost</th>
+                <th>Nároky</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -778,7 +792,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Náročnost</th>
+                <th>Nároky</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -1514,6 +1528,90 @@ if (error) {
         }
     );
 }
+async function pouzitLektvar(id) {
+
+    if (!postava || !postava.alchymie) {
+        return;
+    }
+
+    if (!postava.alchymie.recepty) {
+        postava.alchymie.recepty = {};
+    }
+
+    let pocet = postava.alchymie.recepty[id] || 0;
+
+    if (pocet <= 0) {
+        zobrazitHlasku("Tento předmět nemáš.");
+        return;
+    }
+
+    pocet--;
+
+    postava.alchymie.recepty[id] = pocet;
+
+    const prvek = document.getElementById("pocet-" + id);
+
+    if (prvek) {
+        prvek.textContent = pocet;
+    }
+
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({
+            data: postava
+        })
+        .eq("id", idPostavy);
+
+    if (error) {
+        console.error("Chyba při použití předmětu:", error);
+        return;
+    }
+
+    zobrazitHlasku(
+        "Použil jsi předmět.",
+        "Alchymie"
+    );
+
+}
+async function pridatLektvar(id) {
+
+    if (!postava || !postava.alchymie) {
+        return;
+    }
+
+    if (!postava.alchymie.recepty) {
+        postava.alchymie.recepty = {};
+    }
+
+    let pocet = postava.alchymie.recepty[id] || 0;
+
+    pocet++;
+
+    postava.alchymie.recepty[id] = pocet;
+
+    const prvek = document.getElementById("pocet-" + id);
+
+    if (prvek) {
+        prvek.textContent = pocet;
+    }
+
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({
+            data: postava
+        })
+        .eq("id", idPostavy);
+
+    if (error) {
+        console.error("Chyba při přidávání předmětu:", error);
+        return;
+    }
+
+    zobrazitHlasku(
+        "Přidal jsi 1 kus.",
+        "Alchymie"
+    );
+}
 
 function zobrazitHlasku(text, nadpis = "Alchymie") {
 
@@ -1606,7 +1704,21 @@ function zobrazitReceptyOstatni() {
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
             <td>${recept.narocnost}</td>
-            <td id="pocet-${recept.id}">0</td>
+            <td>
+   <div class="pocet-lektvaru">
+    <span id="pocet-${recept.id}">0</span>
+
+    <div>
+        <button type="button" onclick="pouzitLektvar('${recept.id}')">
+            Použít
+        </button>
+
+        <button type="button" onclick="pridatLektvar('${recept.id}')">
+            +1
+        </button>
+    </div>
+</div>
+</td>
             <td>
                 <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
             </td>
@@ -1631,7 +1743,21 @@ function zobrazitReceptyMasti() {
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
             <td>${recept.narocnost}</td>
-            <td id="pocet-${recept.id}">0</td>
+            <td>
+    <div class="pocet-lektvaru">
+    <span id="pocet-${recept.id}">0</span>
+
+    <div>
+        <button type="button" onclick="pouzitLektvar('${recept.id}')">
+            Použít
+        </button>
+
+        <button type="button" onclick="pridatLektvar('${recept.id}')">
+            +1
+        </button>
+    </div>
+</div>
+</td>
             <td>
                 <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
             </td>
@@ -1655,7 +1781,21 @@ function zobrazitReceptyJedy() {
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
             <td>${recept.narocnost}</td>
-            <td id="pocet-${recept.id}">0</td>
+            <td>
+    <div class="pocet-lektvaru">
+    <span id="pocet-${recept.id}">0</span>
+
+    <div>
+        <button type="button" onclick="pouzitLektvar('${recept.id}')">
+            Použít
+        </button>
+
+        <button type="button" onclick="pridatLektvar('${recept.id}')">
+            +1
+        </button>
+    </div>
+</div>
+</td>
             <td>
                 <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
             </td>
@@ -1683,7 +1823,21 @@ function zobrazitReceptyLektvary() {
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
             <td>${recept.narocnost}</td>
-            <td id="pocet-${recept.id}">0</td>
+            <td>
+    <div class="pocet-lektvaru">
+    <span id="pocet-${recept.id}">0</span>
+
+    <div>
+        <button type="button" onclick="pouzitLektvar('${recept.id}')">
+            Použít
+        </button>
+
+        <button type="button" onclick="pridatLektvar('${recept.id}')">
+            +1
+        </button>
+    </div>
+</div>
+</td>
             <td>
                 <button type="button" onclick='vyrobit(${JSON.stringify(recept)})'>Vyrobit</button>
             </td>
