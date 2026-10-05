@@ -41,7 +41,7 @@ body {
             padding: 40px;
             box-sizing: border-box;
             background: rgba(20, 17, 14, 0.9);
-            border: 1px solid #6f5a3e;
+            border: 2px solid #6f5a3e;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
         }
 
@@ -55,20 +55,13 @@ h1 {
 
 .bestiary-blok {
     display: grid;
-    grid-template-columns: 1.1fr 1.3fr 1fr;
-    min-width: 850px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr);
     border: 1px solid #6f5a3e;
     margin-bottom: 25px;
 }
-.bestiary-posun {
-    width: 100%;
-    overflow-x: auto;
-}
-
-
 
 .bestiary-cast {
-    padding: 15px;
+    padding: 5px;
     border-right: 1px solid #6f5a3e;
 }
 
@@ -84,6 +77,10 @@ h1 {
     font-size: 20px;
     font-weight: bold;
     text-align: center;
+}
+.bestiary-horni-cast {
+    border: 1px solid #6f5a3e;
+    padding-bottom: 5px;
 }
 .bestiary-radek {
     display: flex;
@@ -160,7 +157,44 @@ h1 {
     outline: none;
     border-color: #a8895f;
 }
+.bestiary-obrazek {
+    display: block;
+    width: 230px;
+    max-height: 180px;
+    object-fit: contain;
+    margin: 5px auto 0 auto;
+    border: 1px solid #6f5a3e;
+    cursor: pointer;
+}
+.obrazek-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
 
+.obrazek-overlay.obrazek-zobrazen {
+    display: flex;
+}
+
+.obrazek-overlay img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.obrazek-zavrit {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 40px;
+    color: #e8dfcf;
+    cursor: pointer;
+}
 .tlacitka {
     margin-top: 25px;
     text-align: center;
@@ -206,15 +240,25 @@ const supabaseClient = window.supabase.createClient(
 
     <h1>Bestiář</h1>
     <div class="bestiary-kategorie">Obratlovci</div>
-    <div class="bestiary-posun"> 
+
     <div class="bestiary-blok">
 
     <div class="bestiary-cast">
 
-        <div class="bestiary-jmeno">
-    Korgon lidožravý
-</div>
+       <div class="bestiary-horni-cast">
 
+    <div class="bestiary-jmeno">
+        Korgon lidožravý
+    </div>
+
+    <img
+        class="bestiary-obrazek"
+        src="bestiar/korgon.jpg"
+        alt="Korgon lidožravý"
+        onclick="zvetsitObrazek(this)"
+    >
+
+</div>
        <div class="bestiary-vlastnosti-blok">
 
     <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -308,10 +352,20 @@ const supabaseClient = window.supabase.createClient(
 
     <div class="bestiary-cast">
 
+    <div class="bestiary-horni-cast">
+
         <div class="bestiary-jmeno">
             Šebal
         </div>
 
+        <img
+            class="bestiary-obrazek"
+            src="bestiar/korgon.jpg"
+            alt="Korgon lidožravý"
+            onclick="zvetsitObrazek(this)"
+        >
+
+    </div>
         <div class="bestiary-vlastnosti-blok">
 
             <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -404,11 +458,17 @@ const supabaseClient = window.supabase.createClient(
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
-
+<div class="bestiary-horni-cast">
         <div class="bestiary-jmeno">
             Hryšal
         </div>
-
+ <img
+        class="bestiary-obrazek"
+        src="bestiar/korgon.jpg"
+        alt="Korgon lidožravý"
+        onclick="zvetsitObrazek(this)"
+    >
+    </div>
         <div class="bestiary-vlastnosti-blok">
 
             <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -500,11 +560,17 @@ const supabaseClient = window.supabase.createClient(
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
-
+<div class="bestiary-horni-cast">
         <div class="bestiary-jmeno">
             Drápač
         </div>
-
+ <img
+        class="bestiary-obrazek"
+        src="bestiar/korgon.jpg"
+        alt="Korgon lidožravý"
+        onclick="zvetsitObrazek(this)"
+    >
+    </div>
         <div class="bestiary-vlastnosti-blok">
 
             <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -594,17 +660,21 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
-</div>
 <div class="bestiary-kategorie">Bezobratlí</div>
-<div class="bestiary-posun">
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
-
+<div class="bestiary-horni-cast">
         <div class="bestiary-jmeno">
             Kokonatka
         </div>
-
+ <img
+        class="bestiary-obrazek"
+        src="bestiar/korgon.jpg"
+        alt="Korgon lidožravý"
+        onclick="zvetsitObrazek(this)"
+    >
+    </div>
         <div class="bestiary-vlastnosti-blok">
 
             <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -707,15 +777,20 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
-
 <div class="bestiary-blok">
 
     <div class="bestiary-cast">
-
+<div class="bestiary-horni-cast">
         <div class="bestiary-jmeno">
             Krunířník
         </div>
-
+ <img
+        class="bestiary-obrazek"
+        src="bestiar/korgon.jpg"
+        alt="Korgon lidožravý"
+        onclick="zvetsitObrazek(this)"
+    >
+    </div>
         <div class="bestiary-vlastnosti-blok">
 
             <div class="bestiary-vlastnosti">Vlastnosti</div>
@@ -796,8 +871,11 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
-</div>
 
+<div id="obrazekOverlay" class="obrazek-overlay">
+    <span class="obrazek-zavrit" onclick="zavritObrazek()">×</span>
+    <img id="velkyObrazek" src="" alt="">
+</div>
 
     <div class="tlacitka">
         <button type="button" onclick="ulozitPoznamky()">Uložit</button>
@@ -886,7 +964,15 @@ function nacistPoznamky() {
 }
 
 
+function zvetsitObrazek(obrazek) {
+    document.getElementById("velkyObrazek").src = obrazek.src;
+    document.getElementById("velkyObrazek").alt = obrazek.alt;
+    document.getElementById("obrazekOverlay").classList.add("obrazek-zobrazen");
+}
 
+function zavritObrazek() {
+    document.getElementById("obrazekOverlay").classList.remove("obrazek-zobrazen");
+}
 </script>
 
 </body>
