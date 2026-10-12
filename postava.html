@@ -203,9 +203,9 @@ textarea:focus {
 }
 
 textarea {
+    height: 220px;
     min-height: 150px;
     resize: vertical;
-    
 }
 .povahove-rysy {
     display: flex;
@@ -704,6 +704,7 @@ async function nacistPovahoveRysy() {
         // Zachová výběr uložený u postavy.
         // Funguje i pro starší uložené názvy rysů.
         const ulozenaHodnota = postava?.[id];
+        
 
         const ulozenyRys = seznamPovahovychRysu.find(function(rys) {
             return String(rys.id) === String(ulozenaHodnota)
@@ -768,6 +769,11 @@ function ulozitRysy() {
 
     aktualizovatNabidkuRysu();
     zkontrolovatZamceniRysu();
+    prepocitatZivoty();
+prepocitatOdolnosti();
+prepocitatZbroj();
+prepocitatBoj();
+prepocitatSchopnosti();
 }
 
 
@@ -945,8 +951,9 @@ Vybrat portrét
         <h2>Odolnosti</h2>
 
         <div class="údaj">
-            <label for="odolnostJedy">Odolnost na jedy</label>
-            <input type="number" id="odolnostJedy" readonly>
+            <label for="odolnostJedy">Odolnost na jedy / alkohol</label>
+            <input type="number" id="odolnostJedy" readonly> /
+            <input type="number" id="odolnostAlkohol" readonly>
         </div>
 
         <div class="údaj">
@@ -1201,20 +1208,107 @@ const parametry = new URLSearchParams(window.location.search);
 const id = parametry.get("id");
 
 let postava = null;
+
+function normalizovatNazev(nazev) {
+    return String(nazev || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function bonusProVlastnost(...vlastnosti) {
+    const hledaneNazvy = vlastnosti.map(normalizovatNazev);
+    let bonusCelkem = 0;
+
+    ["rys1", "rys2", "rys3"].forEach(function(id) {
+        const vybranyId = document.getElementById(id)?.value;
+
+        const rys = seznamPovahovychRysu.find(function(rys) {
+            return String(rys.id) === String(vybranyId);
+        });
+
+        if (
+            rys &&
+            hledaneNazvy.includes(normalizovatNazev(rys.vlastnost))
+        ) {
+            bonusCelkem += Number(rys.bonus) || 0;
+        }
+    });
+
+    return bonusCelkem;
+}
+
+function hodnotaAtributu(id) {
+    const zaklad =
+        Number(document.getElementById(id)?.value) || 0;
+
+    return zaklad + bonusProVlastnost(
+        id,
+        nazvyAtributu[id]
+    );
+}
+
+
 function prepocitatZivoty() {
-    const odolnost = Number(document.getElementById("odolnost").value) || 0;
-    const maxZivoty = 2 + (4 * odolnost);
+    const odolnost = hodnotaAtributu("odolnost");
+    let maxZivoty = 2 + (4 * odolnost);
+
+    ["rys1", "rys2", "rys3"].forEach(function(id) {
+        const vybranyId = document.getElementById(id)?.value;
+
+        const rys = seznamPovahovychRysu.find(function(rys) {
+            return String(rys.id) === String(vybranyId);
+        });
+
+        if (rys && normalizovatNazev(rys.nazev) === "houzevnaty") {
+            maxZivoty += Number(rys.bonus) || 0;
+        }
+    });
+
     document.getElementById("maxZivoty").textContent = maxZivoty;
 }
+
+
+
 function prepocitatOdolnosti() {
-    const odolnost =
-        Number(document.getElementById("odolnost").value) || 0;
+    const odolnost = hodnotaAtributu("odolnost");
+    const zaklad = 5 + odolnost;
+    let odolnostNemoci = zaklad;
 
-    const hodnota = 5 + odolnost;
+    let odolnostJedy = zaklad;
+    let odolnostAlkohol = zaklad;
 
-    document.getElementById("odolnostJedy").value = hodnota;
-    document.getElementById("odolnostNemoci").value = hodnota;
+    ["rys1", "rys2", "rys3"].forEach(function(id) {
+        const vybranyId = document.getElementById(id)?.value;
+
+        const rys = seznamPovahovychRysu.find(function(rys) {
+            return String(rys.id) === String(vybranyId);
+        });
+
+        if (!rys) return;
+
+        const nazevRysu = normalizovatNazev(rys.nazev);
+        const bonus = Number(rys.bonus) || 0;
+
+        if (nazevRysu === "hadi krev") {
+            odolnostJedy += bonus;
+        }
+
+        if (nazevRysu === "pijak") {
+            odolnostAlkohol += bonus;
+        }
+        if (nazevRysu === "tuhy korinek") {
+    odolnostNemoci += bonus;
 }
+    });
+
+    document.getElementById("odolnostJedy").value = odolnostJedy;
+    document.getElementById("odolnostAlkohol").value = odolnostAlkohol;
+    document.getElementById("odolnostNemoci").value = odolnostNemoci;
+}
+
+
 function prepocitatZbroj() {
     const casti = [
         "zbrojHlava","zbrojTrup","zbrojRuce","zbrojRamena",
@@ -1270,10 +1364,10 @@ function prepocitatCelkoveUhyby() {
 }
 
 function prepocitatBoj() {
-    const sila = Number(document.getElementById("sila").value) || 0;
-    const hbitost = Number(document.getElementById("hbitost").value) || 0;
-    const zrcnost = Number(document.getElementById("zrcnost").value) || 0;
-    const intuice = Number(document.getElementById("intuice").value) || 0;
+    const sila = hodnotaAtributu("sila");
+const hbitost = hodnotaAtributu("hbitost");
+const zrcnost = hodnotaAtributu("zrcnost");
+const intuice = hodnotaAtributu("intuice");
 
     document.getElementById("utokZaklad").value = sila + hbitost;
     document.getElementById("krytZaklad").value = sila + zrcnost;
@@ -1353,8 +1447,7 @@ function prepocitatCelkoveUtoky() {
 
 function prepocitatCelkovePoskozeni() {
 
-    const sila =
-        Number(document.getElementById("sila").value) || 0;
+    const sila = hodnotaAtributu("sila");
 
     const radky = document.querySelectorAll(
         ".weapon-table tbody tr:not(.weapon-total)"
@@ -1787,11 +1880,8 @@ function prepocitatSchopnosti() {
         let zaklad = 0;
 
         if (schopnost[1] !== null && schopnost[2] !== null) {
-            const atribut1 =
-                Number(document.getElementById(schopnost[1]).value) || 0;
-
-            const atribut2 =
-                Number(document.getElementById(schopnost[2]).value) || 0;
+            const atribut1 = hodnotaAtributu(schopnost[1]);
+const atribut2 = hodnotaAtributu(schopnost[2]);
 
             const soucet = atribut1 + atribut2;
 
@@ -1803,7 +1893,9 @@ function prepocitatSchopnosti() {
         
 
         hodnotaInput.value =
-    zaklad + (Number(postava.schopnostiPokrok?.[index]) || 0);
+    zaklad +
+    (Number(postava.schopnostiPokrok?.[index]) || 0) +
+    bonusProVlastnost(schopnost[0]);
     });
 
     document.getElementById("pocetVybranychSchopnosti").textContent =
@@ -2088,6 +2180,7 @@ document.getElementById("zbyvajiciBodyAtributu").textContent =
     document.getElementById("status5").value = postava.status5 || "";
 
     document.getElementById("odolnostJedy").value = postava.odolnostJedy || "";
+    document.getElementById("odolnostAlkohol").value = postava.odolnostAlkohol || "";
     document.getElementById("odolnostNemoci").value = postava.odolnostNemoci || "";
 
     document.getElementById("zbrojPopisHlava").value = postava.zbrojPopisHlava || "";
@@ -2336,6 +2429,7 @@ postava.atributyRozdeleny =
     postava.status5 = document.getElementById("status5").value;
 
     postava.odolnostJedy = document.getElementById("odolnostJedy").value;
+    postava.odolnostAlkohol = document.getElementById("odolnostAlkohol").value;
     postava.odolnostNemoci = document.getElementById("odolnostNemoci").value;
 
     postava.zbrojPopisHlava = document.getElementById("zbrojPopisHlava").value;
