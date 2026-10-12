@@ -754,7 +754,7 @@ function ulozitRysy() {
     aktualizovatNabidkuRysu();
     zkontrolovatZamceniRysu();
 }
-}
+
 
 </script>
 </head>
@@ -844,37 +844,32 @@ Vybrat portrét
 
 <div>
 <label for="sila">Síla</label>
+
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="silaZaklad">0</span>
-    <span>/</span>
     <input type="number" id="sila" value="0" readonly>
 
-<div class="atribut-tlacitka">
-    <button type="button" onclick="zmenitAtribut('sila', 1)">+</button>
-    <button type="button" onclick="zmenitAtribut('sila', -1)">−</button>
-</div>
+    <div class="atribut-tlacitka">
+        <button type="button" onclick="zmenitAtribut('sila', 1)">+</button>
+        <button type="button" onclick="zmenitAtribut('sila', -1)">−</button>
+    </div>
 </div>
 </div>
 
 <div>
 <label for="odolnost">Odolnost</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="odolnostZaklad">0</span>
-    <span>/</span>
     <input type="number" id="odolnost" value="0" readonly>
 
-<div class="atribut-tlacitka">
-    <button type="button" onclick="zmenitAtribut('odolnost', 1)">+</button>
-    <button type="button" onclick="zmenitAtribut('odolnost', -1)">−</button>
-</div>
+    <div class="atribut-tlacitka">
+        <button type="button" onclick="zmenitAtribut('odolnost', 1)">+</button>
+        <button type="button" onclick="zmenitAtribut('odolnost', -1)">−</button>
+    </div>
 </div>
 </div>
 
 <div>
 <label for="hbitost">Hbitost</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="hbitostZaklad">0</span>
-    <span>/</span>
     <input type="number" id="hbitost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -887,8 +882,6 @@ Vybrat portrét
 <div>
 <label for="zrcnost">Zručnost</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="zrcnostZaklad">0</span>
-    <span>/</span>
     <input type="number" id="zrcnost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -901,8 +894,6 @@ Vybrat portrét
 <div>
 <label for="moudrost">Moudrost</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="moudrostZaklad">0</span>
-    <span>/</span>
     <input type="number" id="moudrost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -915,8 +906,6 @@ Vybrat portrét
 <div>
 <label for="charisma">Charisma</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="charismaZaklad">0</span>
-    <span>/</span>
     <input type="number" id="charisma" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -929,8 +918,6 @@ Vybrat portrét
 <div>
 <label for="intuice">Intuice</label>
 <div class="atribut-hodnota">
-    <span class="atribut-zaklad" id="intuiceZaklad">0</span>
-    <span>/</span>
     <input type="number" id="intuice" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1578,16 +1565,13 @@ const nazvyAtributu = {
     intuice: "Intuice"
 };
 
+
 function zmenitAtribut(id, zmena) {
     const input = document.getElementById(id);
-    const zaklad = document.getElementById(id + "Zaklad");
 
     let aktualni = Number(input.value) || 0;
-    let hodnotaZakladu = Number(zaklad.textContent) || 0;
 
-    let celkem = 0;
-
-    [
+    const atributy = [
         "sila",
         "odolnost",
         "hbitost",
@@ -1595,45 +1579,35 @@ function zmenitAtribut(id, zmena) {
         "moudrost",
         "charisma",
         "intuice"
-    ].forEach(function(atribut) {
+    ];
+
+    let celkem = 0;
+
+    atributy.forEach(function(atribut) {
         celkem += Number(
-            document.getElementById(atribut + "Zaklad").textContent
+            document.getElementById(atribut).value
         ) || 0;
     });
 
     if (!postava.atributyRozdeleny) {
 
         if (zmena > 0) {
-            if (hodnotaZakladu >= 8) return;
+            if (aktualni >= 8) return;
             if (celkem >= 32) return;
-
-            hodnotaZakladu++;
-            aktualni++;
         }
 
-        if (zmena < 0) {
-            if (hodnotaZakladu <= 0) return;
-
-            hodnotaZakladu--;
-            aktualni--;
+        if (zmena < 0 && aktualni <= 0) {
+            return;
         }
 
-        zaklad.textContent = hodnotaZakladu;
+        aktualni += zmena;
         input.value = aktualni;
 
         celkem = 0;
 
-        [
-            "sila",
-            "odolnost",
-            "hbitost",
-            "zrcnost",
-            "moudrost",
-            "charisma",
-            "intuice"
-        ].forEach(function(atribut) {
+        atributy.forEach(function(atribut) {
             celkem += Number(
-                document.getElementById(atribut + "Zaklad").textContent
+                document.getElementById(atribut).value
             ) || 0;
         });
 
@@ -1642,17 +1616,15 @@ function zmenitAtribut(id, zmena) {
 
         if (celkem === 32) {
             postava.atributyRozdeleny = true;
+            zamknoutAtributy();
         }
 
     } else {
-
         aktualni += zmena;
 
         if (aktualni < 0) {
             aktualni = 0;
         }
-
-        
 
         input.value = aktualni;
     }
@@ -1662,6 +1634,30 @@ function zmenitAtribut(id, zmena) {
     prepocitatZbroj();
     prepocitatBoj();
     prepocitatSchopnosti();
+}
+function zamknoutAtributy() {
+    const atributy = [
+        "sila",
+        "odolnost",
+        "hbitost",
+        "zrcnost",
+        "moudrost",
+        "charisma",
+        "intuice"
+    ];
+
+    atributy.forEach(function(atribut) {
+        const input = document.getElementById(atribut);
+        const radek = input.closest(".atribut-hodnota");
+
+        if (radek) {
+            const tlacitka = radek.querySelectorAll("button");
+
+            tlacitka.forEach(function(tlacitko) {
+                tlacitko.disabled = postava.atributyRozdeleny;
+            });
+        }
+    });
 }
 
 
@@ -2046,31 +2042,29 @@ document.getElementById("moudrost").value = postava.moudrost || 0;
 document.getElementById("charisma").value = postava.charisma || 0;
 document.getElementById("intuice").value = postava.intuice || 0;
 
-document.getElementById("silaZaklad").textContent = postava.silaZaklad || postava.sila || 0;
-document.getElementById("odolnostZaklad").textContent = postava.odolnostZaklad || postava.odolnost || 0;
-document.getElementById("hbitostZaklad").textContent = postava.hbitostZaklad || postava.hbitost || 0;
-document.getElementById("zrcnostZaklad").textContent = postava.zrcnostZaklad || postava.zrcnost || 0;
-document.getElementById("moudrostZaklad").textContent = postava.moudrostZaklad || postava.moudrost || 0;
-document.getElementById("charismaZaklad").textContent = postava.charismaZaklad || postava.charisma || 0;
-document.getElementById("intuiceZaklad").textContent = postava.intuiceZaklad || postava.intuice || 0;
 
-let soucetAtributu =
-    Number(document.getElementById("silaZaklad").textContent) +
-    Number(document.getElementById("odolnostZaklad").textContent) +
-    Number(document.getElementById("hbitostZaklad").textContent) +
-    Number(document.getElementById("zrcnostZaklad").textContent) +
-    Number(document.getElementById("moudrostZaklad").textContent) +
-    Number(document.getElementById("charismaZaklad").textContent) +
-    Number(document.getElementById("intuiceZaklad").textContent);
+const atributy = [
+    "sila",
+    "odolnost",
+    "hbitost",
+    "zrcnost",
+    "moudrost",
+    "charisma",
+    "intuice"
+];
 
-if (soucetAtributu >= 32) {
-    postava.atributyRozdeleny = true;
-    document.getElementById("zbyvajiciBodyAtributu").textContent = 0;
-} else {
-    postava.atributyRozdeleny = false;
-    document.getElementById("zbyvajiciBodyAtributu").textContent =
-        32 - soucetAtributu;
-}
+let soucetAtributu = 0;
+
+atributy.forEach(function(atribut) {
+    soucetAtributu +=
+        Number(document.getElementById(atribut).value) || 0;
+});
+
+postava.atributyRozdeleny = soucetAtributu >= 32;
+
+document.getElementById("zbyvajiciBodyAtributu").textContent =
+    Math.max(0, 32 - soucetAtributu);
+
     document.getElementById("zivoty").value = postava.zivoty || "";
 
     document.getElementById("status1").value = postava.status1 || "";
@@ -2113,6 +2107,7 @@ if (soucetAtributu >= 32) {
     prepocitatOdolnosti();
     prepocitatZbroj();
     prepocitatBoj();
+    zamknoutAtributy();
     
 
     document.getElementById("odolnost").addEventListener("input", prepocitatZivoty);
@@ -2296,27 +2291,27 @@ async function ulozit() {
     postava.rys2 = document.getElementById("rys2").value;
     postava.rys3 = document.getElementById("rys3").value;
 
-    postava.sila = document.getElementById("sila").value;
-postava.silaZaklad = document.getElementById("silaZaklad").textContent;
+    
+const atributy = [
+    "sila",
+    "odolnost",
+    "hbitost",
+    "zrcnost",
+    "moudrost",
+    "charisma",
+    "intuice"
+];
 
-postava.odolnost = document.getElementById("odolnost").value;
-postava.odolnostZaklad = document.getElementById("odolnostZaklad").textContent;
+atributy.forEach(function(atribut) {
+    postava[atribut] =
+        Number(document.getElementById(atribut).value) || 0;
+});
 
-postava.hbitost = document.getElementById("hbitost").value;
-postava.hbitostZaklad = document.getElementById("hbitostZaklad").textContent;
+postava.atributyRozdeleny =
+    atributy.reduce(function(soucet, atribut) {
+        return soucet + postava[atribut];
+    }, 0) >= 32;
 
-postava.zrcnost = document.getElementById("zrcnost").value;
-postava.zrcnostZaklad = document.getElementById("zrcnostZaklad").textContent;
-
-postava.moudrost = document.getElementById("moudrost").value;
-postava.moudrostZaklad = document.getElementById("moudrostZaklad").textContent;
-
-postava.charisma = document.getElementById("charisma").value;
-postava.charismaZaklad = document.getElementById("charismaZaklad").textContent;
-
-postava.intuice = document.getElementById("intuice").value;
-postava.intuiceZaklad = document.getElementById("intuiceZaklad").textContent;
-postava.atributyRozdeleny = postava.atributyRozdeleny || false;
 
     postava.zivoty = document.getElementById("zivoty").value;
 
