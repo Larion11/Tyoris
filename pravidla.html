@@ -295,6 +295,12 @@ li {
         >
             Schopnosti
         </button>
+                <button
+            class="zalozka"
+            onclick="zobrazZalozku('rysy')"
+        >
+            Povahové rysy
+        </button>
 
     </nav>
 
@@ -461,7 +467,23 @@ li {
         ></iframe>
 
     </section>
+    <!-- POVAHOVÉ RYSY -->
 
+    <section
+        id="rysy"
+        class="obsah-zalozky"
+        style="display: none;"
+    >
+        <iframe
+            src="povahove_rysy.html"
+            style="
+                width: 100%;
+                height: 900px;
+                border: none;
+                display: block;
+            "
+        ></iframe>
+    </section>
 
     <button
         class="zpet"
@@ -481,32 +503,22 @@ function zobrazZalozku(zalozka) {
 
     const vyroba = document.getElementById("vyroba");
     const schopnosti = document.getElementById("schopnosti");
+    const rysy = document.getElementById("rysy");
 
     const tlacitka = document.querySelectorAll(".zalozka");
 
+    vyroba.style.display = zalozka === "vyroba" ? "block" : "none";
+    schopnosti.style.display = zalozka === "schopnosti" ? "block" : "none";
+    rysy.style.display = zalozka === "rysy" ? "block" : "none";
 
-    if (zalozka === "vyroba") {
+    tlacitka.forEach(t => t.classList.remove("aktivni"));
 
-        vyroba.style.display = "block";
-        schopnosti.style.display = "none";
-
-        tlacitka[0].classList.add("aktivni");
-        tlacitka[1].classList.remove("aktivni");
-
-    }
-
-
-    if (zalozka === "schopnosti") {
-
-        vyroba.style.display = "none";
-        schopnosti.style.display = "block";
-
-        tlacitka[0].classList.remove("aktivni");
-        tlacitka[1].classList.add("aktivni");
-
-    }
-
+    if (zalozka === "vyroba") tlacitka[0].classList.add("aktivni");
+    if (zalozka === "schopnosti") tlacitka[1].classList.add("aktivni");
+    if (zalozka === "rysy") tlacitka[2].classList.add("aktivni");
 }
+
+
 
 </script>
 
