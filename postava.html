@@ -205,11 +205,13 @@ textarea:focus {
 textarea {
     min-height: 150px;
     resize: vertical;
+    
 }
 .povahove-rysy {
-    display: grid;
+    display: flex;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 15px;
+    gap: 12px;
+    margin-top: 30px;
 }
 
 .povahove-rysy .pole {
@@ -814,36 +816,8 @@ Vybrat portrét
 <textarea id="popisPostavy" class="popis-postavy"></textarea>
 </div>
 
-<div class="sekce-rysy">
-    
-
-    <div class="povahove-rysy">
-<div class="pole">
-    <label for="rys1">Povahový rys 1</label>
-    <select id="rys1" onchange="ulozitRysy()">
-        <option value="">-- Vyber rys --</option>
-    </select>
-</div>
-
-<div class="pole">
-    <label for="rys2">Povahový rys 2</label>
-    <select id="rys2" onchange="ulozitRysy()">
-        <option value="">-- Vyber rys --</option>
-    </select>
-</div>
-
-<div class="pole">
-    <label for="rys3">Povahový rys 3</label>
-    <select id="rys3" onchange="ulozitRysy()">
-        <option value="">-- Vyber rys --</option>
-    </select>
-</div>
-    </div>
 </div>
 </div>
-</div>
-</div>
-
 <div class="statistiky">
 
 <div class="sekce atributy">
@@ -1163,6 +1137,33 @@ Vybrat portrét
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sekce-rysy">
+    
+
+    <div class="povahove-rysy">
+<div class="pole">
+    <label for="rys1">Povahový rys 1</label>
+    <select id="rys1" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
+</div>
+
+<div class="pole">
+    <label for="rys2">Povahový rys 2</label>
+    <select id="rys2" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
+</div>
+
+<div class="pole">
+    <label for="rys3">Povahový rys 3</label>
+    <select id="rys3" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
+</div>
+    </div>
+</div>
 </div>
 
 
