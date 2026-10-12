@@ -206,7 +206,32 @@ textarea {
     min-height: 150px;
     resize: vertical;
 }
+.povahove-rysy {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
 
+.povahove-rysy .pole {
+    background: rgba(18, 15, 12, 0.9);
+    border: 1px solid #6f5a3e;
+    padding: 12px;
+}
+
+.povahove-rysy .pole label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.povahove-rysy .pole select {
+    width: 100%;
+}
+
+@media (max-width: 700px) {
+    .povahove-rysy {
+        grid-template-columns: 1fr;
+    }
+}
 /* =========================
    ATRIBUTY + ŽIVOTY + ODOLNOSTI
    ========================= */
@@ -630,6 +655,107 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
+
+let seznamPovahovychRysu = [];
+
+async function nacistPovahoveRysy() {
+    const { data, error } = await supabaseClient
+        .from("povahove_rysy")
+        .select("id, nazev, vlastnost, bonus")
+        .order("nazev");
+
+    if (error) {
+        console.error("Chyba při načítání povahových rysů:", error);
+        return;
+    }
+
+    seznamPovahovychRysu = data || [];
+
+    ["rys1", "rys2", "rys3"].forEach(function(id) {
+        const select = document.getElementById(id);
+
+        select.innerHTML =
+            '<option value="">-- Vyber rys --</option>';
+
+        seznamPovahovychRysu.forEach(function(rys) {
+            const option = document.createElement("option");
+            option.value = String(rys.id);
+            option.textContent =
+                `${rys.nazev} (+${rys.bonus} ${rys.vlastnost})`;
+
+            select.appendChild(option);
+        });
+
+        // Zachová výběr uložený u postavy.
+        // Funguje i pro starší uložené názvy rysů.
+        const ulozenaHodnota = postava?.[id];
+
+        const ulozenyRys = seznamPovahovychRysu.find(function(rys) {
+            return String(rys.id) === String(ulozenaHodnota)
+                || rys.nazev === ulozenaHodnota;
+        });
+
+        select.value = ulozenyRys ? String(ulozenyRys.id) : "";
+    });
+
+    aktualizovatNabidkuRysu();
+    zkontrolovatZamceniRysu();
+}
+
+function aktualizovatNabidkuRysu() {
+    const selecty = ["rys1", "rys2", "rys3"].map(function(id) {
+        return document.getElementById(id);
+    });
+
+    selecty.forEach(function(select) {
+        const vybraneJinde = selecty
+            .filter(function(jinySelect) {
+                return jinySelect !== select;
+            })
+            .map(function(jinySelect) {
+                return jinySelect.value;
+            });
+
+        Array.from(select.options).forEach(function(option) {
+            option.disabled =
+                option.value !== ""
+                && vybraneJinde.includes(option.value);
+        });
+    });
+}
+
+function zkontrolovatZamceniRysu() {
+    const selecty = ["rys1", "rys2", "rys3"].map(
+        id => document.getElementById(id)
+    );
+
+    if (!postava) return;
+
+    // Starší postavy mohou mít rysy uložené jako názvy.
+    const pocetVybranych = selecty.filter(
+        select => select.value !== ""
+    ).length;
+
+    if (pocetVybranych === 3) {
+        postava.rysyZamcene = true;
+    }
+
+    selecty.forEach(select => {
+        select.disabled = Boolean(postava.rysyZamcene);
+    });
+}
+function ulozitRysy() {
+    if (!postava) return;
+
+    postava.rys1 = document.getElementById("rys1").value;
+    postava.rys2 = document.getElementById("rys2").value;
+    postava.rys3 = document.getElementById("rys3").value;
+
+    aktualizovatNabidkuRysu();
+    zkontrolovatZamceniRysu();
+}
+}
+
 </script>
 </head>
 
@@ -675,23 +801,32 @@ Vybrat portrét
 <textarea id="popisPostavy" class="popis-postavy"></textarea>
 </div>
 
-<div class="povahove-rysy">
+<div class="sekce-rysy">
+    
 
-<div class="údaj">
-<label for="rys1">Povahový rys 1</label>
-<input type="text" id="rys1" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+    <div class="povahove-rysy">
+<div class="pole">
+    <label for="rys1">Povahový rys 1</label>
+    <select id="rys1" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
 </div>
 
-<div class="údaj">
-<label for="rys2">Povahový rys 2</label>
-<input type="text" id="rys2" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+<div class="pole">
+    <label for="rys2">Povahový rys 2</label>
+    <select id="rys2" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
 </div>
 
-<div class="údaj">
-<label for="rys3">Povahový rys 3</label>
-<input type="text" id="rys3" class="povahovy-rys" readonly placeholder="Klikni pro výběr">
+<div class="pole">
+    <label for="rys3">Povahový rys 3</label>
+    <select id="rys3" onchange="ulozitRysy()">
+        <option value="">-- Vyber rys --</option>
+    </select>
 </div>
-
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -2062,6 +2197,7 @@ async function nacistPostavu() {
         popis: radek.popis
     };
 
+        await nacistPovahoveRysy();
     inicializovatPostavu();
     nacistZbrane();
 }
