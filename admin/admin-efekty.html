@@ -458,7 +458,7 @@ async function nacistEfekty() {
 
     const { data, error } = await supabaseClient
         .from("efekty")
-        .select("id, nazev, typ, aktivni")
+        .select("id, nazev, typ")
         .order("id", { ascending: true });
 
     if (error) {
