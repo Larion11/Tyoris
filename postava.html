@@ -367,12 +367,26 @@ textarea {
     width: 50px;
     text-align: center;
     font-size: 20px;
+    
 }
 
 .zivoty-lomitko { font-size: 24px; }
-.zivoty-radek input { width: 80px; }
+.zivoty-radek input { width: 80px; 
+}
 
 
+.sekce-hlavicka {
+        
+    padding: 8px 12px;
+    border: 1px solid #6f5a3e;
+    color: #1a1510;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    background: rgba(190, 165, 125, 0.75);
+    margin-bottom: 12px;
+    
+}
 
 .efekty .údaj {
     display: grid;
@@ -380,6 +394,7 @@ textarea {
     gap: 8px;
     min-width: 0;
     margin-bottom: 20px;
+    
 }
 
 .efekty .údaj label {
@@ -399,7 +414,11 @@ textarea {
     background: #17130f;
     border: 1px solid #8a704d;
 }
-
+.efekty select.ma-hodnotu {
+    background-color: #30271e;
+    border-color: #b39468;
+    color: #eee4d2;
+}
 .údaj:has(.typ-efektu) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -959,7 +978,7 @@ Vybrat portrét
 <div class="statistiky-spodni">
 
 <div class="sekce zivoty-efekty">
-<h2>Životy</h2>
+<div class="sekce-hlavicka">Životy</div>
 
 <div class="zivoty-radek">
 <span class="zivoty-max" id="maxZivoty">5</span>
@@ -967,7 +986,7 @@ Vybrat portrét
 <input type="number" id="zivoty" min="0">
 </div>
 
-<h2>Efekty</h2>
+<div class="sekce-hlavicka">Efekty</div>
 
 
 <div class="efekty">
@@ -1323,6 +1342,14 @@ Vybráno: <span id="pocetVybranychSchopnosti">0</span> / 8
 </main>
 
 <script>
+function oznacitVybraneEfekty() {
+    document.querySelectorAll(".efekty select").forEach(select => {
+        select.classList.toggle(
+            "ma-hodnotu",
+            select.value !== ""
+        );
+    });
+}
 const parametry = new URLSearchParams(window.location.search);
 const id = parametry.get("id");
 
@@ -2550,6 +2577,8 @@ async function nacistEfektyPostavy() {
         postava["fazeEfektu" + i] = fazeSelect.value;
 
         prepocitatPoZmeneEfektu();
+        oznacitVybraneEfekty();
+        document.querySelector(".efekty").addEventListener("change", oznacitVybraneEfekty);
     };
 }
     }
