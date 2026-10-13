@@ -350,7 +350,7 @@ textarea {
     align-self: center;
     width: 180px;
 }
-.zivoty-statusy,
+.zivoty-efekty,
 .odolnosti {
     width: 100%;
     margin-right: 0;
@@ -372,13 +372,46 @@ textarea {
 .zivoty-lomitko { font-size: 24px; }
 .zivoty-radek input { width: 80px; }
 
-.statusy {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
+
+.efekty .údaj {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 8px;
+    min-width: 0;
+    margin-bottom: 20px;
 }
 
-.status { cursor: pointer; }
+.efekty .údaj label {
+    grid-column: 1 / -1;
+    margin-bottom: -4px;
+    
+}
+
+.efekty select {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 8px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    color: #eee4d2;
+    background: #17130f;
+    border: 1px solid #8a704d;
+}
+
+.údaj:has(.typ-efektu) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.údaj:has(.typ-efektu) label {
+    grid-column: 1 / -1;
+}
+
+
+
 .odolnosti input { width: 100px; }
 
 .odolnosti + button {
@@ -925,7 +958,7 @@ Vybrat portrét
 
 <div class="statistiky-spodni">
 
-<div class="sekce zivoty-statusy">
+<div class="sekce zivoty-efekty">
 <h2>Životy</h2>
 
 <div class="zivoty-radek">
@@ -934,14 +967,100 @@ Vybrat portrét
 <input type="number" id="zivoty" min="0">
 </div>
 
-<h2>Statusy</h2>
+<h2>Efekty</h2>
 
-<div class="statusy">
-<div class="údaj"><label for="status1">Status 1</label><input type="text" id="status1" class="status" readonly placeholder="Klikni pro výběr"></div>
-<div class="údaj"><label for="status2">Status 2</label><input type="text" id="status2" class="status" readonly placeholder="Klikni pro výběr"></div>
-<div class="údaj"><label for="status3">Status 3</label><input type="text" id="status3" class="status" readonly placeholder="Klikni pro výběr"></div>
-<div class="údaj"><label for="status4">Status 4</label><input type="text" id="status4" class="status" readonly placeholder="Klikni pro výběr"></div>
-<div class="údaj"><label for="status5">Status 5</label><input type="text" id="status5" class="status" readonly placeholder="Klikni pro výběr"></div>
+
+<div class="efekty">
+
+    
+<div class="údaj">
+    <label>Efekt 1</label>
+    <select id="typEfektu1" class="typ-efektu">
+        <option value="">Vyber typ</option>
+        <option value="Nemoc">Nemoc</option>
+        <option value="Status">Status</option>
+        <option value="Alchymie">Alchymie</option>
+    </select>
+    <select id="efekt1" class="efekt">
+        <option value="">Nejdřív vyber typ</option>
+    </select>
+    <select id="fazeEfektu1" class="faze-efektu" disabled>
+        <option value="">Nejdřív vyber efekt</option>
+    </select>
+</div>
+
+
+<div class="údaj">
+    <label>Efekt 2</label>
+    <select id="typEfektu2" class="typ-efektu">
+        <option value="">Vyber typ</option>
+        <option value="Nemoc">Nemoc</option>
+        <option value="Status">Status</option>
+        <option value="Alchymie">Alchymie</option>
+    </select>
+    <select id="efekt2" class="efekt">
+        <option value="">Nejdřív vyber typ</option>
+    </select>
+    <select id="fazeEfektu2" class="faze-efektu" disabled>
+        <option value="">Nejdřív vyber efekt</option>
+    </select>
+</div>
+
+
+
+<div class="údaj">
+    <label>Efekt 3</label>
+    <select id="typEfektu3" class="typ-efektu">
+        <option value="">Vyber typ</option>
+        <option value="Nemoc">Nemoc</option>
+        <option value="Status">Status</option>
+        <option value="Alchymie">Alchymie</option>
+    </select>
+    <select id="efekt3" class="efekt">
+        <option value="">Nejdřív vyber typ</option>
+    </select>
+    <select id="fazeEfektu3" class="faze-efektu" disabled>
+        <option value="">Nejdřív vyber efekt</option>
+    </select>
+</div>
+
+
+   
+<div class="údaj">
+    <label>Efekt 4</label>
+    <select id="typEfektu4" class="typ-efektu">
+        <option value="">Vyber typ</option>
+        <option value="Nemoc">Nemoc</option>
+        <option value="Status">Status</option>
+        <option value="Alchymie">Alchymie</option>
+    </select>
+    <select id="efekt4" class="efekt">
+        <option value="">Nejdřív vyber typ</option>
+    </select>
+    <select id="fazeEfektu4" class="faze-efektu" disabled>
+        <option value="">Nejdřív vyber efekt</option>
+    </select>
+</div>
+
+
+    
+<div class="údaj">
+    <label>Efekt 5</label>
+    <select id="typEfektu5" class="typ-efektu">
+        <option value="">Vyber typ</option>
+        <option value="Nemoc">Nemoc</option>
+        <option value="Status">Status</option>
+        <option value="Alchymie">Alchymie</option>
+    </select>
+    <select id="efekt5" class="efekt">
+        <option value="">Nejdřív vyber typ</option>
+    </select>
+    <select id="fazeEfektu5" class="faze-efektu" disabled>
+        <option value="">Nejdřív vyber efekt</option>
+    </select>
+</div>
+
+
 </div>
 </div>
 
@@ -1239,14 +1358,87 @@ function bonusProVlastnost(...vlastnosti) {
     return bonusCelkem;
 }
 
-function hodnotaAtributu(id) {
-    const zaklad =
-        Number(document.getElementById(id)?.value) || 0;
 
-    return zaklad + bonusProVlastnost(
-        id,
-        nazvyAtributu[id]
+function bonusEfektuProVlastnost(id) {
+    const hledanyNazev = normalizovatNazev(
+        nazvyAtributu[id] || id
     );
+
+    let bonus = 0;
+
+    for (let i = 1; i <= 5; i++) {
+        const efektId = document.getElementById("efekt" + i)?.value;
+        const faze = document.getElementById("fazeEfektu" + i)?.value;
+
+        if (!efektId) continue;
+
+        ucinkyEfektu.forEach(function(ucinek) {
+            if (String(ucinek.efekt_id) !== String(efektId)) return;
+
+            // Účinek bez fáze platí po celou dobu vybraného efektu.
+            if (ucinek.faze) {
+                if (!faze) return;
+
+                if (
+                    normalizovatNazev(ucinek.faze) !==
+                    normalizovatNazev(faze)
+                ) {
+                    return;
+                }
+            }
+
+            if (
+                normalizovatNazev(ucinek.typ) !== hledanyNazev
+            ) {
+                return;
+            }
+
+            bonus += Number(ucinek.hodnota) || 0;
+        });
+    }
+
+    return bonus;
+}
+
+
+function aktualizovatZobrazeneAtributy() {
+    const atributy = [
+        "sila",
+        "odolnost",
+        "hbitost",
+        "zrcnost",
+        "moudrost",
+        "charisma",
+        "intuice"
+    ];
+
+    atributy.forEach(function(id) {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        const zaklad = Number(postava[id]) || 0;
+
+        input.value = zaklad
+            + bonusProVlastnost(id, nazvyAtributu[id])
+            + bonusEfektuProVlastnost(id);
+    });
+}
+
+
+
+function prepocitatPoZmeneEfektu() {
+    aktualizovatZobrazeneAtributy();
+
+    prepocitatZivoty();
+    prepocitatOdolnosti();
+    prepocitatZbroj();
+    prepocitatBoj();
+    prepocitatSchopnosti();
+}
+
+
+function hodnotaAtributu(id) {
+    return Number(document.getElementById(id)?.value) || 0;
 }
 
 
@@ -1271,11 +1463,13 @@ function prepocitatZivoty() {
 
 
 
+
+
 function prepocitatOdolnosti() {
     const odolnost = hodnotaAtributu("odolnost");
     const zaklad = 5 + odolnost;
-    let odolnostNemoci = zaklad;
 
+    let odolnostNemoci = zaklad;
     let odolnostJedy = zaklad;
     let odolnostAlkohol = zaklad;
 
@@ -1298,15 +1492,19 @@ function prepocitatOdolnosti() {
         if (nazevRysu === "pijak") {
             odolnostAlkohol += bonus;
         }
+
         if (nazevRysu === "tuhy korinek") {
-    odolnostNemoci += bonus;
-}
+            odolnostNemoci += bonus;
+        }
     });
+
+    odolnostNemoci += bonusEfektuProVlastnost("Odolnost nemoce");
 
     document.getElementById("odolnostJedy").value = odolnostJedy;
     document.getElementById("odolnostAlkohol").value = odolnostAlkohol;
     document.getElementById("odolnostNemoci").value = odolnostNemoci;
 }
+
 
 
 function prepocitatZbroj() {
@@ -1673,10 +1871,9 @@ const nazvyAtributu = {
 };
 
 
+
 function zmenitAtribut(id, zmena) {
     const input = document.getElementById(id);
-
-    let aktualni = Number(input.value) || 0;
 
     const atributy = [
         "sila",
@@ -1688,36 +1885,31 @@ function zmenitAtribut(id, zmena) {
         "intuice"
     ];
 
-    let celkem = 0;
+    let zaklad = Number(postava[id]) || 0;
 
-    atributy.forEach(function(atribut) {
-        celkem += Number(
-            document.getElementById(atribut).value
-        ) || 0;
-    });
+    let celkem = atributy.reduce(function(soucet, atribut) {
+        return soucet + (Number(postava[atribut]) || 0);
+    }, 0);
 
     if (!postava.atributyRozdeleny) {
-
         if (zmena > 0) {
-            if (aktualni >= 8) return;
-            if (celkem >= 32) return;
+            if (zaklad >= 8 || celkem >= 32) return;
         }
 
-        if (zmena < 0 && aktualni <= 0) {
-            return;
-        }
+        if (zmena < 0 && zaklad <= 0) return;
+    }
 
-        aktualni += zmena;
-        input.value = aktualni;
+    zaklad += zmena;
 
-        celkem = 0;
+    if (zaklad < 0) zaklad = 0;
 
-        atributy.forEach(function(atribut) {
-            celkem += Number(
-                document.getElementById(atribut).value
-            ) || 0;
-        });
+    postava[id] = zaklad;
 
+    celkem = atributy.reduce(function(soucet, atribut) {
+        return soucet + (Number(postava[atribut]) || 0);
+    }, 0);
+
+    if (!postava.atributyRozdeleny) {
         document.getElementById("zbyvajiciBodyAtributu").textContent =
             32 - celkem;
 
@@ -1725,16 +1917,9 @@ function zmenitAtribut(id, zmena) {
             postava.atributyRozdeleny = true;
             zamknoutAtributy();
         }
-
-    } else {
-        aktualni += zmena;
-
-        if (aktualni < 0) {
-            aktualni = 0;
-        }
-
-        input.value = aktualni;
     }
+
+    aktualizovatZobrazeneAtributy();
 
     prepocitatZivoty();
     prepocitatOdolnosti();
@@ -1742,6 +1927,7 @@ function zmenitAtribut(id, zmena) {
     prepocitatBoj();
     prepocitatSchopnosti();
 }
+
 function zamknoutAtributy() {
     const atributy = [
         "sila",
@@ -1892,10 +2078,15 @@ const atribut2 = hodnotaAtributu(schopnost[2]);
 
         
 
-        hodnotaInput.value =
+       
+hodnotaInput.value =
     zaklad +
     (Number(postava.schopnostiPokrok?.[index]) || 0) +
-    bonusProVlastnost(schopnost[0]);
+    bonusProVlastnost(schopnost[0]) +
+    bonusEfektuProVlastnost(
+    schopnost[0].replace(/"/g, "")
+);
+
     });
 
     document.getElementById("pocetVybranychSchopnosti").textContent =
@@ -2173,11 +2364,7 @@ document.getElementById("zbyvajiciBodyAtributu").textContent =
 
     document.getElementById("zivoty").value = postava.zivoty || "";
 
-    document.getElementById("status1").value = postava.status1 || "";
-    document.getElementById("status2").value = postava.status2 || "";
-    document.getElementById("status3").value = postava.status3 || "";
-    document.getElementById("status4").value = postava.status4 || "";
-    document.getElementById("status5").value = postava.status5 || "";
+ 
 
     document.getElementById("odolnostJedy").value = postava.odolnostJedy || "";
     document.getElementById("odolnostAlkohol").value = postava.odolnostAlkohol || "";
@@ -2275,6 +2462,156 @@ if (error) {
         }
     );
 }
+let ucinkyEfektu = [];
+
+
+async function nacistEfektyPostavy() {
+    const { data, error } = await supabaseClient
+        .from("efekty")
+        .select("id, nazev, typ")
+        .order("nazev", { ascending: true });
+
+    if (error) {
+        console.error("Chyba při načítání efektů:", error);
+        return;
+    }
+
+    const { data: ucinky, error: chybaUcinku } = await supabaseClient
+        .from("efekty_ucinky")
+        .select("efekt_id, typ, hodnota, jednotka, poznamka, faze");
+
+    if (chybaUcinku) {
+        console.error("Chyba při načítání účinků efektů:", chybaUcinku);
+        return;
+    }
+
+    ucinkyEfektu = ucinky || [];
+
+    for (let i = 1; i <= 5; i++) {
+        const typSelect = document.getElementById("typEfektu" + i);
+        const efektSelect = document.getElementById("efekt" + i);
+        const fazeSelect = document.getElementById("fazeEfektu" + i);
+
+        const ulozenyTyp = postava["typEfektu" + i] || "";
+        const ulozenyEfekt = postava["efekt" + i] || "";
+        const ulozenaFaze = postava["fazeEfektu" + i] || "";
+
+        typSelect.value = ulozenyTyp;
+
+        naplnitVyberEfektu(
+            efektSelect,
+            data,
+            ulozenyTyp,
+            ulozenyEfekt
+        );
+
+        if (fazeSelect) {
+            naplnitVyberFazi(
+                fazeSelect,
+                efektSelect.value,
+                ulozenaFaze
+            );
+        }
+
+        typSelect.onchange = function () {
+    naplnitVyberEfektu(
+        efektSelect,
+        data,
+        typSelect.value,
+        ""
+    );
+
+    if (fazeSelect) {
+        naplnitVyberFazi(fazeSelect, "");
+    }
+
+    prepocitatPoZmeneEfektu();
+};
+
+       efektSelect.onchange = function () {
+    if (fazeSelect) {
+        naplnitVyberFazi(
+            fazeSelect,
+            efektSelect.value
+        );
+    }
+
+    postava["efekt" + i] = efektSelect.value;
+
+    if (fazeSelect) {
+        postava["fazeEfektu" + i] = fazeSelect.value;
+    }
+
+    prepocitatPoZmeneEfektu();
+};
+
+        if (fazeSelect) {
+    fazeSelect.onchange = function () {
+        postava["fazeEfektu" + i] = fazeSelect.value;
+
+        prepocitatPoZmeneEfektu();
+    };
+}
+    }
+}
+
+
+
+function naplnitVyberEfektu(select, efekty, typ, vybranyEfekt) {
+    select.replaceChildren();
+
+    const uvodni = document.createElement("option");
+    uvodni.value = "";
+    uvodni.textContent = typ ? "-- Vyber efekt --" : "Nejdřív vyber typ";
+    select.appendChild(uvodni);
+
+    if (!typ) return;
+
+    efekty
+        .filter(efekt => efekt.typ === typ)
+        .forEach(efekt => {
+            const option = document.createElement("option");
+            option.value = efekt.id;
+            option.textContent = efekt.nazev;
+            select.appendChild(option);
+        });
+
+    select.value = vybranyEfekt;
+}
+
+function naplnitVyberFazi(select, efektId, vybranaFaze = "") {
+
+    select.replaceChildren();
+
+    const uvodni = document.createElement("option");
+    uvodni.value = "";
+    uvodni.textContent = "-- Vyber fázi --";
+    select.appendChild(uvodni);
+
+    if (!efektId) {
+        select.disabled = true;
+        return;
+    }
+
+    const faze = [...new Set(
+        ucinkyEfektu
+            .filter(ucinek =>
+                String(ucinek.efekt_id) === String(efektId) &&
+                ucinek.faze
+            )
+            .map(ucinek => ucinek.faze)
+    )];
+
+    faze.forEach(nazevFaze => {
+        const option = document.createElement("option");
+        option.value = nazevFaze;
+        option.textContent = nazevFaze;
+        select.appendChild(option);
+    });
+
+    select.disabled = faze.length === 0;
+    select.value = faze.includes(vybranaFaze) ? vybranaFaze : "";
+}
 
 async function nacistPostavu() {
     const { data: radek, error } = await supabaseClient
@@ -2299,9 +2636,14 @@ async function nacistPostavu() {
         popis: radek.popis
     };
 
-        await nacistPovahoveRysy();
-    inicializovatPostavu();
-    nacistZbrane();
+    await nacistPovahoveRysy();
+await nacistEfektyPostavy();
+await inicializovatPostavu();
+
+aktualizovatZobrazeneAtributy();
+prepocitatPoZmeneEfektu();
+
+nacistZbrane();
 }
 
 nacistPostavu();
@@ -2409,10 +2751,12 @@ const atributy = [
     "intuice"
 ];
 
+
 atributy.forEach(function(atribut) {
     postava[atribut] =
-        Number(document.getElementById(atribut).value) || 0;
+        Number(postava[atribut]) || 0;
 });
+
 
 postava.atributyRozdeleny =
     atributy.reduce(function(soucet, atribut) {
@@ -2422,11 +2766,18 @@ postava.atributyRozdeleny =
 
     postava.zivoty = document.getElementById("zivoty").value;
 
-    postava.status1 = document.getElementById("status1").value;
-    postava.status2 = document.getElementById("status2").value;
-    postava.status3 = document.getElementById("status3").value;
-    postava.status4 = document.getElementById("status4").value;
-    postava.status5 = document.getElementById("status5").value;
+    
+    for (let i = 1; i <= 5; i++) {
+    postava["typEfektu" + i] =
+        document.getElementById("typEfektu" + i).value;
+
+    postava["efekt" + i] =
+        document.getElementById("efekt" + i).value;
+
+    postava["fazeEfektu" + i] =
+        document.getElementById("fazeEfektu" + i).value;
+}
+
 
     postava.odolnostJedy = document.getElementById("odolnostJedy").value;
     postava.odolnostAlkohol = document.getElementById("odolnostAlkohol").value;
