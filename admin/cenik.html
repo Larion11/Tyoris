@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ceník</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    background: #120f0c;
+    color: #e8dfcf;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 40px 0;
+}
+
+.page {
+    width: min(1100px, 94vw);
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.95);
+
+    padding: 35px;
+}
+
+h1 {
+    margin: 0 0 35px;
+
+    text-align: center;
+
+    font-size: clamp(38px, 6vw, 60px);
+    font-weight: normal;
+
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+h2 {
+    margin: 35px 0 15px;
+
+    text-align: center;
+
+    font-size: 28px;
+    font-weight: normal;
+
+    color: #e8dfcf;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    margin-bottom: 20px;
+
+    background: rgba(20,16,12,.7);
+
+    font-size: 15px;
+}
+.tabulky-vedle-sebe {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.tabulka-blok {
+    min-width: 0;
+}
+
+.tabulka-blok h3 {
+    margin-top: 10px;
+}
+th,
+td {
+    border: 1px solid #6f5a3e;
+
+    padding: 9px 12px;
+
+    text-align: left;
+}
+
+th {
+    background: #33291e;
+    font-weight: normal;
+    color: #b39468;
+}
+
+td:last-child,
+th:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+tr:hover {
+    background: rgba(71,56,39,.45);
+}
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <h1>Ceník</h1>
+<div class="tabulky-vedle-sebe">
+
+    <div class="tabulka-blok">
+    <h2>Nápoje</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nápoj</th>
+                <th>Množství</th>
+                <th>Cena</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Lažan</td>
+                <td>0,8 l</td>
+                <td>3 měďáky</td>
+            </tr>
+
+            <tr>
+                <td>Ječné pivo korbel</td>
+                <td>0,5 l</td>
+                <td>2 měďáky</td>
+            </tr>
+
+            <tr>
+                <td>Dehťák korbel</td>
+                <td>0,3 l</td>
+                <td>4 měďáky</td>
+            </tr>
+
+            <tr>
+                <td>Silné pivo korbel</td>
+                <td>0,5 l</td>
+                <td>4 měďáky</td>
+            </tr>
+
+            <tr>
+                <td>Pohár vína obyč.</td>
+                <td>0,3 l</td>
+                <td>5 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Pohár vína dobré</td>
+                <td>0,3 l</td>
+                <td>7 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Pohár vína kvalitní</td>
+                <td>0,3 l</td>
+                <td>1 stříbrný</td>
+            </tr>
+
+            <tr>
+                <td>Lahev vína obyč.</td>
+                <td>1 l</td>
+                <td>12 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Lahev vína dobré</td>
+                <td>1 l</td>
+                <td>15 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Lahev vína kvalitní</td>
+                <td>1 l</td>
+                <td>3 stříbrné</td>
+            </tr>
+
+            <tr>
+                <td>Pohár Modrokvasu</td>
+                <td>0,3 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Lahev Modrokvasu</td>
+                <td>1 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Pohár lučavy</td>
+                <td>0,3 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Lahev Lučavy</td>
+                <td>1 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Pohár medoviny</td>
+                <td>0,3 l</td>
+                <td>5 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Lahev medoviny</td>
+                <td>1 l</td>
+                <td>15 měďáků</td>
+            </tr>
+
+            <tr>
+                <td>Pohár Zlatého Kvasu</td>
+                <td>0,3 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Pohár Zlaté mízy</td>
+                <td>0,2 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Lahev Zlatého Kvasu</td>
+                <td>1 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Lahev Zlaté mízy</td>
+                <td>0,5 l</td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Mléko</td>
+                <td>1 l</td>
+                <td>2 měďáky</td>
+            </tr>
+
+            <tr>
+                <td>Čaj</td>
+                <td>0,5 l</td>
+                <td>1 měďák</td>
+            </tr>
+
+        </tbody>
+    </table>
+        </div>
+
+    <div class="tabulka-blok">
+    <h2>Potraviny</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Potravina</th>
+            <th>Množství</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Zelenina</td>
+            <td>1 kg</td>
+            <td>3 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Ovoce</td>
+            <td>1 kg</td>
+            <td>3 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Pšenice</td>
+            <td>1 kg</td>
+            <td>2 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Ječmen</td>
+            <td>1 kg</td>
+            <td>1 mědák</td>
+        </tr>
+
+        <tr>
+            <td>Oves</td>
+            <td>1 kg</td>
+            <td>1 mědák</td>
+        </tr>
+
+        <tr>
+            <td>Fazole, hrách</td>
+            <td>1 kg</td>
+            <td>3 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Brambory</td>
+            <td>1 kg</td>
+            <td>4 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Bochník chleba</td>
+            <td>1 ks</td>
+            <td>4 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Houska</td>
+            <td>1 ks</td>
+            <td>1 mědák</td>
+        </tr>
+
+        <tr>
+            <td>Mouka</td>
+            <td>1 kg</td>
+            <td>3 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Máslo</td>
+            <td>0,5 kg</td>
+            <td>3 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Olej</td>
+            <td>0,5 l</td>
+            <td>1 stříbrný</td>
+        </tr>
+
+        <tr>
+            <td>Sádlo</td>
+            <td>0,5 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Med</td>
+            <td>1 l</td>
+            <td>1 stříbrný</td>
+        </tr>
+
+        <tr>
+            <td>Sůl</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Koření obyčejné</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Koření vzácné</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso zvěřina</td>
+            <td>1 kg</td>
+            <td>15 měďáků</td>
+        </tr>
+
+        <tr>
+            <td>Maso syvajík</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso drůbež</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso prase</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso koza</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso ovce</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Maso Bavul</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Ryba říční</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td>Ryba mořká</td>
+            <td>1 kg</td>
+            <td></td>
+        </tr>
+
+    </tbody>
+</table>
+    </div>
+
+</div>
+<div class="tabulky-vedle-sebe">
+
+    <div class="tabulka-blok">
+<h2>Služby a ubytování</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Služba</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Místo na slámě ve společné místnosti</td>
+            <td>5 měďáků</td>
+        </tr>
+
+        <tr>
+            <td>Jednoduchá postel ve společné místnosti</td>
+            <td>1 stříbrný</td>
+        </tr>
+
+        <tr>
+            <td>Malý soukromý pokoj</td>
+            <td>3 stříbrné</td>
+        </tr>
+
+        <tr>
+            <td>Dobrý pokoj s čistým ložem</td>
+            <td>5 stříbrných</td>
+        </tr>
+
+        <tr>
+            <td>Luxusní pokoj v zájezdním hostinci</td>
+            <td>1 zlatý</td>
+        </tr>
+
+    </tbody>
+</table>
+    </div>
+
+    <div class="tabulka-blok">
+<h2>Hotová jídla</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Jídlo</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Jednoduchá polévka nebo kaše</td>
+            <td>4 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Běžné teplé jídlo s chlebem</td>
+            <td>1 stříbrný</td>
+        </tr>
+
+        <tr>
+            <td>Vydatné jídlo s masem</td>
+            <td>2 stříbrné</td>
+        </tr>
+
+        <tr>
+            <td>Slavnostní hostina</td>
+            <td>5 stříbrných až 2 zlaté</td>
+        </tr>
+
+    </tbody>
+</table>
+    </div>
+
+</div>
+<h2>Zbraně</h2>
+
+<div class="tabulky-vedle-sebe">
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Zbraň</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr><td>Krátký meč</td><td>15 stříbrných</td></tr>
+                <tr><td>Meč</td><td>3 zlaté</td></tr>
+                <tr><td>Šavle</td><td>35 stříbrných</td></tr>
+                <tr><td>Tesák</td><td>8 stříbrných</td></tr>
+                <tr><td>Palaš</td><td>4 zlaté</td></tr>
+                <tr><td>1/2 Ruční meč</td><td>5 zlatých</td></tr>
+                <tr><td>Obouruční meč</td><td>8 zlatých</td></tr>
+                <tr><td>Kord</td><td>2 zlaté</td></tr>
+
+                <tr><td>Sekyrka</td><td>5 stříbrných</td></tr>
+                <tr><td>Válečná Sekera</td><td>1 zlatý</td></tr>
+                <tr><td>Bradatice</td><td>4 zlaté</td></tr>
+                <tr><td>Rypák</td><td></td></tr>
+
+                <tr><td>Klínovnice</td><td></td></tr>
+                <tr><td>Kyj</td><td>1 stříbrný</td></tr>
+                <tr><td>Palcát</td><td>2 zlaté</td></tr>
+                <tr><td>Řemdih</td><td></td></tr>
+                <tr><td>Zoban</td><td></td></tr>
+                <tr><td>Obouruční Kladivo</td><td>5 zlatých</td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Zbraň</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr><td>Nůž</td><td>3 měďáky</td></tr>
+                <tr><td>Dýka</td><td>5 stříbrných</td></tr>
+                <tr><td>Stileto</td><td>1 zlatý</td></tr>
+                <tr><td>Obušek</td><td>5 měďáků</td></tr>
+                <tr><td>Hůl</td><td>2 měďáky</td></tr>
+                <tr><td>Párák</td><td></td></tr>
+                <tr><td>Lilie</td><td></td></tr>
+                <tr><td>Špičec</td><td></td></tr>
+                <tr><td>Šipčák</td><td></td></tr>
+
+                <tr><td>Halapartna</td><td></td></tr>
+                <tr><td>Hartyzána</td><td></td></tr>
+                <tr><td>Kopí</td><td>8 stříbrných</td></tr>
+                <tr><td>Píka</td><td></td></tr>
+
+                <tr><td>Krátký luk</td><td>1 zlatý</td></tr>
+                <tr><td>Dlouhý luk</td><td>3 zlaté</td></tr>
+                <tr><td>Lehká kuše</td><td>5 zlatých</td></tr>
+                <tr><td>Páková Kuše</td><td>12 zlatých</td></tr>
+                <tr><td>Prak</td><td></td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+<h2>Zbroje</h2>
+<div class="tabulky-vedle-sebe">
+<div class="tabulka-blok">
+<h3>Hlava</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Batvat krátký (prošívaný límec)</td><td>3 stříbrné</td></tr>
+        <tr><td>Batvat dlouhý</td><td>6 stříbrných</td></tr>
+        <tr><td>Kroužková kapuce krátká (coif)</td><td>2 zlaté</td></tr>
+        <tr><td>Kroužková kapuce dlouhá</td><td>4 zlaté</td></tr>
+        <tr><td>Kožená helma</td><td>5 stříbrných</td></tr>
+        <tr><td>Kovová přilba otevřená</td><td>3 zlaté</td></tr>
+        <tr><td>Kovová přilba uzavřená</td><td>8 zlatých</td></tr>
+    </tbody>
+</table>
+
+<h3>Tělo</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Košile</td><td>2 stříbrné</td></tr>
+        <tr><td>Vesta látková</td><td>1 stříbrný a 5 měďáků</td></tr>
+        <tr><td>Vesta kožená</td><td>4 stříbrné</td></tr>
+        <tr><td>Kabátec</td><td>5 stříbrných</td></tr>
+        <tr><td>Kabátec teplý</td><td>1 zlatý</td></tr>
+        <tr><td>Kožený kabátec</td><td>1 zlatý a 5 stříbrných</td></tr>
+        <tr><td>Kožený kabátec teplý</td><td>3 zlaté</td></tr>
+        <tr><td>Kabátec teplý</td><td>1 zlatý</td></tr>
+        <tr><td>Prošívanice</td><td>1 zlatý a 5 stříbrných</td></tr>
+        <tr><td>Gambezon</td><td>3 zlaté</td></tr>
+        <tr><td>Kroužkovka krátká</td><td>12 zlatých</td></tr>
+        <tr><td>Kroužkovka dlouhá</td><td>20 zlatých</td></tr>
+        <tr><td>Kožená zbroj</td><td>5 zlatých</td></tr>
+        <tr><td>Kožešinová zbroj</td><td>4 zlaté</td></tr>
+        <tr><td>Šupinovka</td><td>15 zlatých</td></tr>
+        <tr><td>Destičkovka</td><td>18 zlatých</td></tr>
+        <tr><td>Kovový kyrys krátký</td><td>25 zlatých</td></tr>
+        <tr><td>Plátový kyrys</td><td>40 zlatých</td></tr>
+    </tbody>
+</table>
+    </div>
+
+    <div class="tabulka-blok">
+<h3>Ruce</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Kožené rukavice</td><td>5 měďáků</td></tr>
+        <tr><td>Kroužkové rukavice</td><td>3 zlaté</td></tr>
+        <tr><td>Gauntlety (plátové rukavice)</td><td>8 zlatých</td></tr>
+    </tbody>
+</table>
+
+<h3>Ramena</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Kožená ramena</td><td>2 zlaté</td></tr>
+        <tr><td>Šupinová ramena</td><td>4 zlaté</td></tr>
+        <tr><td>Destičková ramena</td><td>5 zlatých</td></tr>
+        <tr><td>Plátová ramena</td><td>8 zlatých</td></tr>
+    </tbody>
+</table>
+
+<h3>Nohy</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Látkové kalhoty</td><td>3 stříbrné</td></tr>
+        <tr><td>Kožené kalhoty</td><td>1 zlatý</td></tr>
+        <tr><td>Kalhoty teplé</td><td>7 stříbrných</td></tr>
+        <tr><td>Kroužkové kalhoty</td><td>10 zlatých</td></tr>
+    </tbody>
+</table>
+
+<h3>Stehna</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Kožené násteheníky</td><td>2 zlaté</td></tr>
+        <tr><td>Vycpávané násteheníky</td><td>1 zlatý</td></tr>
+        <tr><td>Kroužkové násteheníky</td><td>6 zlatých</td></tr>
+        <tr><td>Plátové násteheníky</td><td>12 zlatých</td></tr>
+    </tbody>
+</table>
+
+<h3>Obuv</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zbroj</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Nízké kožené boty</td><td>4 stříbrné</td></tr>
+        <tr><td>Vysoké kožené boty</td><td>1 zlatý</td></tr>
+        <tr><td>Kroužkové boty</td><td>5 zlatých</td></tr>
+        <tr><td>Plátové boty (sabatony)</td><td>10 zlatých</td></tr>
+    </tbody>
+</table>
+</div>
+</div>
+<h2>Oblečení</h2>
+
+<div class="tabulky-vedle-sebe">
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Oblečení</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr><td>Čepice</td><td>3 měďáky</td></tr>
+                <tr><td>Klobouk</td><td>1 stříbrný</td></tr>
+                <tr><td>Klobouk kožený</td><td>2 stříbrné</td></tr>
+                <tr><td>Kápě</td><td>6 měďáků</td></tr>
+
+                <tr><td>Košile (lněná)</td><td>2 stříbrné</td></tr>
+                <tr><td>Vesta</td><td>1 stříbrný a 5 měďáků</td></tr>
+                <tr><td>Kožená vesta</td><td>4 stříbrné</td></tr>
+
+                <tr><td>Kabátec</td><td>5 stříbrných</td></tr>
+                <tr><td>Kabátec teplý</td><td>1 zlatý</td></tr>
+                <tr><td>Kožený kabátec</td><td>1 zlatý a 5 stříbrných</td></tr>
+                <tr><td>Kožený kabátec teplý</td><td>3 zlaté</td></tr>
+                <tr><td>Čajka</td><td>3 stříbrné</td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Oblečení</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                
+                <tr><td>Šaty</td><td>6 stříbrných</td></tr>
+                <tr><td>Šaty teplé</td><td>1 zlatý a 5 stříbrných</td></tr>
+                <tr><td>Sukně</td><td>3 stříbrné</td></tr>
+
+                <tr><td>Plášť</td><td>8 stříbrných</td></tr>
+                <tr><td>Plášť teplý</td><td>2 zlaté</td></tr>
+                <tr><td>Varkoč</td><td>4 stříbrné</td></tr>
+
+                <tr><td>Krátké kalhoty</td><td>1 stříbrný</td></tr>
+                <tr><td>Kalhoty</td><td>3 stříbrné</td></tr>
+                <tr><td>Kalhoty teplé</td><td>7 stříbrných</td></tr>
+                <tr><td>Kožené kalhoty</td><td>1 zlatý</td></tr>
+                <tr><td>Kožené kalhoty teplé</td><td>2 zlaté</td></tr>
+
+                <tr><td>Kožená zástěra</td><td>5 stříbrných</td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+<h2>Předměty a vybavení</h2>
+
+<div class="tabulky-vedle-sebe">
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Předmět</th>
+                    <th>Množství / velikost</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr><td>Svíčka</td><td>4 hodiny</td><td>3 měďáky</td></tr>
+                <tr><td>Svíčka</td><td>8 hodin</td><td>6 měďáků</td></tr>
+                <tr><td>Lucerna</td><td></td><td>2 stříbrné</td></tr>
+                <tr><td>Louč</td><td></td><td>2 měďáky</td></tr>
+                <tr><td>Křesadlo</td><td></td><td>1 stříbrný</td></tr>
+                <tr><td>Olej do lucerny</td><td>0,5 l</td><td>5 měďáků</td></tr>
+                <tr><td>Troud</td><td></td><td>1 mědák</td></tr>
+
+                <tr><td>Lano tenké</td><td>5 m</td><td>6 měďáků</td></tr>
+                <tr><td>Lano střední</td><td>5 m</td><td>1 stříbrný</td></tr>
+                <tr><td>Lano silné</td><td>5 m</td><td>2 stříbrné</td></tr>
+
+                <tr><td>Lopata</td><td></td><td>3 stříbrné</td></tr>
+                <tr><td>Krumpáč</td><td></td><td>5 stříbrných</td></tr>
+                <tr><td>Skoba</td><td>10 ks</td><td>4 měďáky</td></tr>
+                <tr><td>Hřebíky</td><td>10 ks</td><td>2 měďáky</td></tr>
+                <tr><td>Sochor</td><td></td><td>6 stříbrných</td></tr>
+
+                <tr><td>Paklíče</td><td></td><td>1 zlatý</td></tr>
+                <tr><td>Paklíč</td><td></td><td>3 stříbrné</td></tr>
+                <tr><td>Kleště</td><td></td><td>2 stříbrné</td></tr>
+                <tr><td>Kladivo</td><td></td><td>2 stříbrné</td></tr>
+
+                <tr><td>Láhev</td><td>1 l, skleněná</td><td>6 měďáků</td></tr>
+                <tr><td>Láhev</td><td>2 l, skleněná</td><td>1 stříbrný</td></tr>
+                <tr><td>Flakonek hliněný</td><td></td><td>2 měďáky</td></tr>
+                <tr><td>Flakonek skleněný</td><td></td><td>5 měďáků</td></tr>
+
+                <tr><td>Vak na vodu</td><td>3 l</td><td>2 stříbrné</td></tr>
+                <tr><td>Vak na vodu</td><td>6 l</td><td>4 stříbrné</td></tr>
+
+                <tr><td>Papír</td><td>10 ks</td><td>3 stříbrné</td></tr>
+                <tr><td>Kniha (prázdný zápisník)</td><td></td><td>1 zlatý</td></tr>
+                <tr><td>Inkoust</td><td></td><td>1 stříbrný</td></tr>
+                <tr><td>Motouzek</td><td>10 m</td><td>2 měďáky</td></tr>
+                <tr><td>Měšec</td><td></td><td>4 měďáky</td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="tabulka-blok">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Předmět</th>
+                    <th>Množství / velikost</th>
+                    <th>Cena</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                
+                <tr><td>Torna malá</td><td></td><td>2 stříbrné</td></tr>
+                <tr><td>Torna velká</td><td></td><td>5 stříbrných</td></tr>
+                <tr><td>Batoh</td><td></td><td>4 stříbrné</td></tr>
+                <tr><td>Tašnice</td><td></td><td>1 stříbrný</td></tr>
+
+                <tr><td>Nit</td><td>20 m</td><td>1 mědák</td></tr>
+                <tr><td>Jehla kostěná</td><td></td><td>1 mědák</td></tr>
+                <tr><td>Jehla kovová</td><td></td><td>3 měďáky</td></tr>
+
+                <tr><td>Deka</td><td></td><td>5 stříbrných</td></tr>
+                <tr><td>Deka teplá</td><td></td><td>1 zlatý</td></tr>
+                <tr><td>Spací pytel</td><td></td><td>8 stříbrných</td></tr>
+                <tr><td>Spací pytel zimní</td><td></td><td>2 zlaté</td></tr>
+
+                <tr><td>Plachta</td><td>2 × 2 m</td><td>2 stříbrné</td></tr>
+                <tr><td>Plachta</td><td>4 × 4 m</td><td>5 stříbrných</td></tr>
+                <tr><td>Plátno</td><td>1 × 2 m</td><td>1 stříbrný</td></tr>
+                <tr><td>Plátno barvené</td><td>1 × 2 m</td><td>3 stříbrné</td></tr>
+
+                <tr><td>Kapesník</td><td></td><td>2 měďáky</td></tr>
+                <tr><td>Šátek</td><td></td><td>5 měďáků</td></tr>
+
+                <tr><td>Stan typu A</td><td>2 osoby</td><td>3 zlaté</td></tr>
+                <tr><td>Stan typu A</td><td>4 osoby</td><td>6 zlatých</td></tr>
+                <tr><td>Velký stan</td><td></td><td>15 zlatých</td></tr>
+
+                <tr><td>Past malá</td><td></td><td>1 stříbrný</td></tr>
+                <tr><td>Past střední</td><td></td><td>3 stříbrné</td></tr>
+                <tr><td>Past velká</td><td></td><td>7 stříbrných</td></tr>
+
+                <tr><td>Truhlička</td><td></td><td>2 stříbrné</td></tr>
+                <tr><td>Truhla střední</td><td></td><td>8 stříbrných</td></tr>
+                <tr><td>Truhla velká</td><td></td><td>2 zlaté</td></tr>
+
+                <tr><td>Soudek</td><td>10 l</td><td>3 stříbrné</td></tr>
+                <tr><td>Sud</td><td>50 l</td><td>1 zlatý</td></tr>
+                <tr><td>Sud</td><td>100 l</td><td>2 zlaté</td></tr>
+                <tr><td>Sud</td><td>200 l</td><td>4 zlaté</td></tr>
+
+                <tr><td>Kotlík</td><td>2 l</td><td>3 stříbrné</td></tr>
+                <tr><td>Kotlík</td><td>5 l</td><td>7 stříbrných</td></tr>
+
+                <tr><td>Kotvička (malá železná kotva)</td><td></td><td>5 zlatých</td></tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+<h2>Zvířata</h2>
+<div class="tabulky-vedle-sebe">
+<div class="tabulka-blok">
+<h3>Hospodářská zvířata</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zvíře</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr><td>Slepice</td><td>3 měďáky</td></tr>
+        <tr><td>Kohout</td><td>5 měďáků</td></tr>
+        <tr><td>Kachna</td><td>6 měďáků</td></tr>
+        <tr><td>Husa</td><td>1 stříbrný</td></tr>
+        <tr><td>Králík</td><td>4 měďáky</td></tr>
+        <tr><td>Koza</td><td>8 stříbrných</td></tr>
+        <tr><td>Ovce</td><td>1 zlatý</td></tr>
+        <tr><td>Prase</td><td>2 zlaté</td></tr>
+        <tr><td>Tele</td><td>3 zlaté</td></tr>
+        <tr><td>Kráva</td><td>6 zlatých</td></tr>
+        <tr><td>Vůl</td><td>12 zlatých</td></tr>
+        <tr><td>Osel</td><td>8 zlatých</td></tr>
+        <tr><td>Mezek</td><td>15 zlatých</td></tr>
+    </tbody>
+</table>
+<h2>Produkty ze zvířat</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Produkt</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Tucet vajec</td>
+            <td>2 měďáky</td>
+        </tr>
+
+        <tr>
+            <td>Vlna z jedné ovce</td>
+            <td>3 stříbrné</td>
+        </tr>
+
+        <tr>
+            <td>Kůže z krávy</td>
+            <td>1 zlatý</td>
+        </tr>
+
+        <tr>
+            <td>Husí peří (polštářová náplň)</td>
+            <td>5 měďáků</td>
+        </tr>
+    </tbody>
+</table>
+    </div>
+
+    <div class="tabulka-blok">
+<h3>Koně</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zvíře</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr><td>Kůň</td><td></td></tr>
+        <tr><td>Pony / malý kůň</td><td>8 zlatých</td></tr>
+        <tr><td>Soumarský kůň</td><td>12 zlatých</td></tr>
+        <tr><td>Běžný jezdecký kůň</td><td>20 zlatých</td></tr>
+        <tr><td>Válečný kůň</td><td>80 zlatých</td></tr>
+        <tr><td>Rytířský destrier</td><td>150 zlatých a více</td></tr>
+    </tbody>
+</table>
+
+<h3>Psi a lovecká zvířata</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zvíře</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr><td>Vesnický pes</td><td>5 měďáků</td></tr>
+        <tr><td>Hlídací pes</td><td>5 stříbrných</td></tr>
+        <tr><td>Lovecký pes</td><td>3 zlaté</td></tr>
+        <tr><td>Vysoce cvičený lovecký pes</td><td>10 zlatých</td></tr>
+        <tr><td>Sokol</td><td>15 zlatých</td></tr>
+        <tr><td>Ušlechtilý lovecký sokol</td><td>50 zlatých a více</td></tr>
+    </tbody>
+</table>
+
+<h3>Exotická a vzácná zvířata</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Zvíře</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr><td>Páv</td><td>5 zlatých</td></tr>
+        <tr><td>Labuť</td><td>8 zlatých</td></tr>
+        <tr><td>Medvěd (živý)</td><td>20 zlatých</td></tr>
+        <tr><td>Cvičená opice</td><td>30 zlatých</td></tr>
+    </tbody>
+</table>
+    </div>
+
+    </div>
+    </div>
+
+
+</main>
+
+</body>
+</html>

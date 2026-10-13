@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Správa království</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("../pozadi.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #eee4d2;
+            font-family: Georgia, serif;
+        }
+
+        .page {
+            width: min(900px, 94vw);
+            margin: 40px auto;
+            padding: 40px;
+            background: rgba(20, 17, 14, 0.92);
+            border: 2px solid #6f5a3e;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #d8c29d;
+        }
+
+        .podnadpis {
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 17px;
+        }
+
+        .rozcestnik {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .sekce {
+            padding: 25px 15px;
+            text-align: center;
+            border: 1px solid #6f5a3e;
+            background: rgba(30, 25, 20, 0.85);
+        }
+
+        .sekce h2 {
+            margin-top: 0;
+            color: #d8c29d;
+            font-size: 23px;
+        }
+
+        .sekce p {
+            min-height: 40px;
+            line-height: 1.5;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-family: Georgia, serif;
+            font-size: 17px;
+            color: #eee4d2;
+            background: #33291e;
+            border: 1px solid #8a704d;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background: #473827;
+            border-color: #b39468;
+        }
+
+        .zpet {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .page {
+                padding: 20px;
+                margin: 20px auto;
+            }
+
+            .rozcestnik {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <h1>Správa království</h1>
+
+    <div class="podnadpis">
+        Administrace Lutavského království
+    </div>
+
+    <div class="rozcestnik">
+
+        <div class="sekce">
+            <h2>Zbraně</h2>
+            <p>Správa zbraní a jejich bojových vlastností.</p>
+            <button onclick="location.href='admin-zbrane.html'">
+                Otevřít
+            </button>
+        </div>
+
+        <div class="sekce">
+            <h2>Alchymie</h2>
+            <p>Správa lektvarů, jedů, mastí a receptů.</p>
+            <button onclick="alert('Správa alchymie zatím není hotová.')">
+                Otevřít
+            </button>
+        </div>
+
+        <div class="sekce">
+            <h2>Bestiář</h2>
+            <p>Správa tvorů a příšer</p>
+            <button onclick="alert('Správa předmětů zatím není hotová.')">
+                Otevřít
+            </button>
+        </div>
+
+        <div class="sekce">
+            <h2>Pravidla hry</h2>
+            <p>Správa herních pravidel a dalších hodnot.</p>
+            <button onclick="alert('Správa pravidel zatím není hotová.')">
+                Otevřít
+            </button>
+        </div>
+
+    </div>
+
+    <div class="zpet">
+        <button onclick="location.href='../index.html'">
+            Zpět do hry
+        </button>
+    </div>
+
+</div>
+
+</body>
+</html>

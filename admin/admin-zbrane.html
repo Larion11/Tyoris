@@ -1,0 +1,696 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Správa zbraní</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url("../pozadi.jpg");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #eee4d2;
+    font-family: Georgia, serif;
+}
+
+.page {
+    width: min(1100px, 94vw);
+    margin: 35px auto;
+    padding: 30px;
+    background: rgba(20, 17, 14, 0.94);
+    border: 2px solid #6f5a3e;
+    box-shadow: 0 0 25px #000;
+}
+
+h1 {
+    text-align: center;
+    color: #d8c29d;
+}
+
+h2 {
+    color: #d8c29d;
+    margin-top: 30px;
+}
+
+button {
+    padding: 9px 15px;
+    margin: 4px;
+    background: #33291e;
+    color: #eee4d2;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+}
+
+button:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+input, select {
+    width: 100%;
+    padding: 9px;
+    background: #211b15;
+    color: #eee4d2;
+    border: 1px solid #6f5a3e;
+    border-radius: 4px;
+    font-family: Georgia, serif;
+}
+
+label {
+    display: block;
+    margin: 12px 0 5px;
+    color: #d8c29d;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 18px;
+}
+
+.actions {
+    margin-top: 18px;
+}
+
+#zprava {
+    margin: 15px 0;
+    padding: 10px;
+    white-space: pre-wrap;
+}
+
+#zprava:empty {
+    display: none;
+}
+
+.chyba {
+    color: #ffaaaa;
+}
+
+.uspech {
+    color: #c4e4a8;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #6f5a3e;
+    text-align: left;
+}
+
+th {
+    background: #33291e;
+    color: #d8c29d;
+}
+
+tr:nth-child(even) {
+    background: rgba(70, 55, 39, 0.25);
+}
+
+td button {
+    margin: 2px;
+}
+
+#stavPrihlaseni {
+    text-align: center;
+    color: #d8c29d;
+}
+
+@media (max-width: 600px) {
+    .page {
+        padding: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Vyskakovací okno */
+.modal-pozadi {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-pozadi[hidden] {
+    display: none;
+}
+
+.modal-okno {
+    width: min(420px, 100%);
+    padding: 25px;
+    text-align: center;
+    background: #14110e;
+    border: 2px solid #6f5a3e;
+    box-shadow: 0 0 25px #000;
+}
+
+.modal-okno h2 {
+    margin-top: 0;
+    color: #d8c29d;
+}
+
+.modal-okno p {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.modal-akce {
+    margin-top: 20px;
+}
+
+.modal-akce .potvrdit {
+    background: #54251f;
+    border-color: #a65c4e;
+}
+
+.modal-akce .potvrdit:hover {
+    background: #71352b;
+}
+
+.modal-akce .zrusit {
+    background: #33291e;
+}
+#obsah > .actions:last-child {
+    text-align: center;
+    margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+    <h1>Správa zbraní</h1>
+
+    <p id="stavPrihlaseni">Ověřuji přihlášení...</p>
+    <div id="zprava" role="status"></div>
+
+    <div id="obsah" hidden>
+
+        <h2 id="nadpisFormulare">Přidat zbraň</h2>
+
+        <form id="formular">
+            <input type="hidden" id="id">
+
+            <div class="form-grid">
+                <div>
+                    <label for="nazev">Název zbraně</label>
+                    <input id="nazev" required maxlength="150">
+                </div>
+
+                <div>
+                    <label for="typ">Typ zbraně</label>
+                    <select id="typ" required>
+                        <option value="">-- Vyber typ --</option>
+                        <option value="meče">Meče</option>
+                        <option value="Sekery / palcáty">Sekery/Palcáty</option>
+                        <option value="Dřevcové">Dřevcové</option>
+                        <option value="Krátké">Krátké</option>
+                        <option value="Střelné">Střelné</option>
+                        <option value="Vrhací">Vrhací</option>
+                        <option value="Štít">Štít</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="utok">Útok</label>
+                    <input id="utok" type="number" step="1" value="0">
+                </div>
+
+                <div>
+                    <label for="strelecky_utok">Střelecký útok</label>
+                    <input id="strelecky_utok" type="number" step="1" value="0">
+                </div>
+
+                <div>
+                    <label for="kryt">Kryt</label>
+                    <input id="kryt" type="number" step="1" value="0">
+                </div>
+
+                <div>
+                    <label for="poskozeni">Poškození</label>
+                    <input id="poskozeni" type="text" maxlength="100">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" id="ulozit">Přidat zbraň</button>
+                <button type="button" id="zrusit" hidden>Zrušit úpravu</button>
+            </div>
+        </form>
+
+        <h2>Seznam zbraní</h2>
+
+        <button type="button" id="obnovit">Obnovit seznam</button>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Název</th>
+                        <th>Typ</th>
+                        <th>Útok</th>
+                        <th>Střelecký útok</th>
+                        <th>Kryt</th>
+                        <th>Poškození</th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody id="seznam">
+                    <tr>
+                        <td colspan="7">Načítám zbraně...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button type="button" id="zpet">Zpět do administrace</button>
+        </div>
+
+    </div>
+</div>
+
+<div id="modalPozadi" class="modal-pozadi" hidden>
+    <div class="modal-okno" role="dialog"
+         aria-modal="true" aria-labelledby="modalNadpis">
+        <h2 id="modalNadpis">Potvrzení</h2>
+        <p id="modalText"></p>
+        <div class="modal-akce">
+            <button type="button" id="modalPotvrdit"
+                    class="potvrdit">Potvrdit</button>
+            <button type="button" id="modalZrusit"
+                    class="zrusit">Zrušit</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const zprava = document.getElementById("zprava");
+const obsah = document.getElementById("obsah");
+const seznam = document.getElementById("seznam");
+const formular = document.getElementById("formular");
+
+
+const modalPozadi = document.getElementById("modalPozadi");
+const modalNadpis = document.getElementById("modalNadpis");
+const modalText = document.getElementById("modalText");
+const modalPotvrdit = document.getElementById("modalPotvrdit");
+const modalZrusit = document.getElementById("modalZrusit");
+
+function potvrzovaciOkno(nadpis, text) {
+    return new Promise((resolve) => {
+        modalNadpis.textContent = nadpis;
+        modalText.textContent = text;
+        modalPozadi.hidden = false;
+
+        function uklidit(vysledek) {
+            modalPozadi.hidden = true;
+            modalPotvrdit.removeEventListener("click", potvrdit);
+            modalZrusit.removeEventListener("click", zrusit);
+            modalPozadi.removeEventListener("click", klikMimo);
+            document.removeEventListener("keydown", klavesa);
+            resolve(vysledek);
+        }
+
+        function potvrdit() {
+            uklidit(true);
+        }
+
+        function zrusit() {
+            uklidit(false);
+        }
+
+        function klikMimo(event) {
+            if (event.target === modalPozadi) {
+                zrusit();
+            }
+        }
+
+        function klavesa(event) {
+            if (event.key === "Escape") {
+                zrusit();
+            }
+        }
+
+        modalPotvrdit.addEventListener("click", potvrdit);
+        modalZrusit.addEventListener("click", zrusit);
+        modalPozadi.addEventListener("click", klikMimo);
+        document.addEventListener("keydown", klavesa);
+    });
+}
+
+function zobrazZpravu(text, chyba = false) {
+    zprava.textContent = text;
+    zprava.className = chyba ? "chyba" : "uspech";
+}
+
+function chybaDatabaze(chyba) {
+    console.error(chyba);
+    zobrazZpravu(
+        "Operace se nepodařila: " +
+        (chyba.message || "Neznámá chyba."),
+        true
+    );
+}
+
+function cislo(id) {
+    return Number(document.getElementById(id).value);
+}
+
+async function overitAdmina() {
+    const { data: { session }, error } =
+        await supabaseClient.auth.getSession();
+
+    if (error) {
+        document.getElementById("stavPrihlaseni").textContent =
+            "Nepodařilo se ověřit přihlášení.";
+        zobrazZpravu(error.message, true);
+        return;
+    }
+
+    if (!session) {
+        document.getElementById("stavPrihlaseni").textContent =
+            "Nejsi přihlášen. Přihlas se do hry a stránku znovu otevři.";
+        return;
+    }
+
+    const { data: admin, error: adminChyba } =
+        await supabaseClient
+            .from("admini")
+            .select("user_id")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+
+    if (adminChyba) {
+        document.getElementById("stavPrihlaseni").textContent =
+            "Nepodařilo se ověřit administrátorská práva.";
+        zobrazZpravu(adminChyba.message, true);
+        return;
+    }
+
+    if (!admin) {
+        document.getElementById("stavPrihlaseni").textContent =
+            "Tento účet nemá administrátorská práva.";
+        return;
+    }
+
+    document.getElementById("stavPrihlaseni").textContent =
+        "Přihlášený administrátor";
+
+    obsah.hidden = false;
+    await nacistZbrane();
+}
+
+async function nacistZbrane() {
+    seznam.innerHTML =
+        '<tr><td colspan="7">Načítám zbraně...</td></tr>';
+
+    const { data, error } = await supabaseClient
+        .from("zbrane")
+        .select("id, nazev, typ, utok, strelecky_utok, kryt, poskozeni")
+        .order("id", { ascending: true });
+
+    if (error) {
+        seznam.innerHTML =
+            '<tr><td colspan="7">Zbraně se nepodařilo načíst.</td></tr>';
+        chybaDatabaze(error);
+        return;
+    }
+
+    seznam.replaceChildren();
+
+    if (!data || data.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 7;
+        td.textContent = "Zatím tu nejsou žádné zbraně.";
+        tr.appendChild(td);
+        seznam.appendChild(tr);
+        return;
+    }
+
+    for (const zbran of data) {
+        const tr = document.createElement("tr");
+
+        for (const hodnota of [
+            zbran.nazev,
+            zbran.typ,
+            zbran.utok,
+            zbran.strelecky_utok,
+            zbran.kryt,
+            zbran.poskozeni
+        ]) {
+            const td = document.createElement("td");
+            td.textContent = hodnota ?? "";
+            tr.appendChild(td);
+        }
+
+        const akce = document.createElement("td");
+
+        const upravit = document.createElement("button");
+        upravit.type = "button";
+        upravit.textContent = "Upravit";
+        upravit.addEventListener("click", () => upravitZbran(zbran));
+
+        const smazat = document.createElement("button");
+        smazat.type = "button";
+        smazat.textContent = "Smazat";
+        smazat.addEventListener("click", () => smazatZbran(zbran));
+
+        akce.append(upravit, smazat);
+        tr.appendChild(akce);
+        seznam.appendChild(tr);
+    }
+}
+
+function upravitZbran(zbran) {
+    document.getElementById("id").value = zbran.id;
+    document.getElementById("nazev").value = zbran.nazev ?? "";
+    document.getElementById("typ").value = zbran.typ ?? "";
+    document.getElementById("utok").value = zbran.utok ?? 0;
+    document.getElementById("strelecky_utok").value =
+        zbran.strelecky_utok ?? 0;
+    document.getElementById("kryt").value = zbran.kryt ?? 0;
+    document.getElementById("poskozeni").value = zbran.poskozeni ?? "";
+
+    document.getElementById("nadpisFormulare").textContent =
+        "Upravit zbraň";
+    document.getElementById("ulozit").textContent = "Uložit změny";
+    document.getElementById("zrusit").hidden = false;
+
+    formular.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetFormulare() {
+    formular.reset();
+    document.getElementById("id").value = "";
+    document.getElementById("utok").value = 0;
+    document.getElementById("strelecky_utok").value = 0;
+    document.getElementById("kryt").value = 0;
+    document.getElementById("nadpisFormulare").textContent = "Přidat zbraň";
+    document.getElementById("ulozit").textContent = "Přidat zbraň";
+    document.getElementById("zrusit").hidden = true;
+}
+
+formular.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const id = document.getElementById("id").value;
+
+    const zbran = {
+        nazev: document.getElementById("nazev").value.trim(),
+        typ: document.getElementById("typ").value,
+       utok: document.getElementById("utok").value.trim() === ""
+    ? null
+    : cislo("utok"),
+
+strelecky_utok: document.getElementById("strelecky_utok").value.trim() === ""
+    ? null
+    : cislo("strelecky_utok"),
+
+kryt: document.getElementById("kryt").value.trim() === ""
+    ? null
+    : cislo("kryt"),
+        poskozeni: document.getElementById("poskozeni").value.trim()
+    };
+
+   const pouzivaUtok = [
+    "Meče",
+    "Sekery / palcáty",
+    "Dřevcové",
+    "Krátké",
+    "Štít"
+].includes(zbran.typ);
+
+const pouzivaStreleckyUtok = [
+    "Střelné",
+    "Vrhací"
+].includes(zbran.typ);
+
+const pouzivaKryt = pouzivaUtok;
+
+const pouzivaPoskozeni = zbran.typ !== "Štít";
+
+if (
+    !zbran.nazev ||
+    !zbran.typ ||
+    (pouzivaPoskozeni && !zbran.poskozeni) ||
+    (pouzivaUtok && zbran.utok === null) ||
+    (pouzivaStreleckyUtok && zbran.strelecky_utok === null) ||
+    (pouzivaKryt && zbran.kryt === null)
+) {
+    zobrazZpravu("Vyplň všechna povinná pole správně.", true);
+    return;
+}
+
+    const tlacitko = document.getElementById("ulozit");
+    tlacitko.disabled = true;
+
+    try {
+        let vysledek;
+
+        if (id) {
+            vysledek = await supabaseClient
+                .from("zbrane")
+                .update(zbran)
+                .eq("id", id);
+        } else {
+            vysledek = await supabaseClient
+                .from("zbrane")
+                .insert([zbran]);
+        }
+
+        if (vysledek.error) {
+            chybaDatabaze(vysledek.error);
+            return;
+        }
+
+        resetFormulare();
+        zobrazZpravu(id ? "Zbraň byla upravena." : "Zbraň byla přidána.");
+        await nacistZbrane();
+    } catch (error) {
+        chybaDatabaze(error);
+    } finally {
+        tlacitko.disabled = false;
+    }
+});
+
+
+async function smazatZbran(zbran) {
+    const potvrzeno = await potvrzovaciOkno(
+        "Smazat zbraň",
+        `Opravdu chceš smazat zbraň „${zbran.nazev}“?`
+    );
+
+    if (!potvrzeno) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("zbrane")
+        .delete()
+        .eq("id", zbran.id);
+
+    if (error) {
+        chybaDatabaze(error);
+        return;
+    }
+
+    zobrazZpravu("Zbraň byla smazána.");
+    await nacistZbrane();
+}
+
+
+document.getElementById("zrusit").addEventListener("click", resetFormulare);
+document.getElementById("obnovit").addEventListener("click", nacistZbrane);
+
+document.getElementById("zpet").addEventListener("click", () => {
+    location.href = "admin.html";
+});
+
+document.getElementById("typ").addEventListener("change", function () {
+    const typ = this.value;
+
+    const pouzivaUtok = [
+        "Meče",
+        "Sekery / Palcáty",
+        "Dřevcové",
+        "Krátké",
+        "Štít"
+    ].includes(typ);
+
+    const pouzivaStreleckyUtok = [
+        "Střelné",
+        "Vrhací"
+    ].includes(typ);
+
+    const pouzivaKryt = [
+        "Meče",
+        "Sekery / Palcáty",
+        "Dřevcové",
+        "Krátké",
+        "Štít"
+    ].includes(typ);
+
+    document.getElementById("utok").value =
+        pouzivaUtok ? document.getElementById("utok").value : "";
+
+    document.getElementById("strelecky_utok").value =
+        pouzivaStreleckyUtok
+            ? document.getElementById("strelecky_utok").value
+            : "";
+
+    document.getElementById("kryt").value =
+        pouzivaKryt ? document.getElementById("kryt").value : "";
+
+    document.getElementById("poskozeni").value =
+        typ === "Štít" ? "" : document.getElementById("poskozeni").value;
+});
+overitAdmina();
+</script>
+
+</body>
+</html>
