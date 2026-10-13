@@ -54,10 +54,11 @@
         border: 1px solid #8a704d;
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(0,0,0,.5);
-        #tlacitkoAdmin[hidden] {
+  
+    }
+    #tlacitkoAdmin[hidden] {
     display: none !important;
 }
-    }
     button:hover {
         background: #473827;
         border-color: #b39468;
@@ -273,9 +274,9 @@ async function zkontrolovatAdmina(userId) {
         console.error("Nepodařilo se ověřit administrátora:", error);
         return;
     }
-console.log("Kontrola administrátora:", userId, data);
+
     tlacitko.hidden = !data;
-    console.log("Viditelnost administrace:", tlacitko.hidden);
+    
 }
 
 async function zkontrolovatPrihlaseni() {
