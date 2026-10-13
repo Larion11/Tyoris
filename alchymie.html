@@ -114,16 +114,33 @@
             background: #473827;
             border-color: #b39468;
         }
+
 .alchymie-tabulky {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
+    width: 100%;
 }
 
 .alchymie-tabulky .sekce {
+    min-width: 0;
     margin-bottom: 0;
     padding: 15px;
 }
+
+.alchymie-tabulky .alchymie-tabulka {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.alchymie-tabulky .alchymie-tabulka th:first-child {
+    width: 55%;
+}
+
+.alchymie-tabulky .alchymie-tabulka th:nth-child(2) {
+    width: 45%;
+}
+
 
 .alchymie-tabulky h2 {
     font-size: 21px;
