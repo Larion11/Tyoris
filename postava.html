@@ -1597,9 +1597,9 @@ const intuice = hodnotaAtributu("intuice");
     document.getElementById("utokZaklad").value = sila + hbitost;
     document.getElementById("krytZaklad").value = sila + zrcnost;
     document.getElementById("streleckyUtok").value = zrcnost + intuice;
-    document.getElementById("uhybZaklad").value =
+document.getElementById("uhybZaklad").value =
     hbitost + intuice +
-    (Number(document.getElementById("schopnostHodnota0").value) || 0);
+    (Number(postava.schopnostiPokrok?.[0]) || 0);
     prepocitatCelkoveUtoky();
     prepocitatCelkovyStreleckyUtok();
     prepocitatCelkovePoskozeni();
