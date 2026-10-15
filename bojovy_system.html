@@ -1,0 +1,611 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bojový systém</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body {
+    background: transparent;
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.obsah {
+    width: 100%;
+    padding: 0 5px 25px;
+}
+
+h2 {
+    margin: 20px 0 22px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid #6f5a3e;
+    color: #d6c19e;
+    font-size: 27px;
+    font-weight: normal;
+}
+
+h3 {
+    margin: 26px 0 12px;
+    color: #d6c19e;
+    font-size: 21px;
+    font-weight: normal;
+}
+
+p {
+    margin: 0 0 14px;
+}
+
+ul {
+    margin: 8px 0 18px;
+    padding-left: 25px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+.pravidlo {
+    margin: 0 0 25px;
+}
+
+.karta {
+    margin: 0 0 22px;
+    padding: 15px 18px;
+    background: rgba(42, 33, 24, .55);
+    border-left: 3px solid #6f5a3e;
+}
+
+.karta h3 {
+    margin-top: 0;
+}
+
+.vzorec {
+    margin: 10px 0;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, .25);
+    color: #e8dfcf;
+    border: 1px solid #4e3d2a;
+    overflow-wrap: anywhere;
+}
+
+.zvyrazneni {
+    color: #d6c19e;
+}
+
+table {
+    width: 100%;
+    margin: 15px 0 25px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #6f5a3e;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    color: #d6c19e;
+    background: rgba(71, 56, 39, .65);
+    font-weight: normal;
+}
+
+td {
+    background: rgba(18, 15, 12, .35);
+}
+
+.poznamka {
+    color: #c6b79e;
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 16px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 19px;
+    }
+
+    .karta {
+        padding: 12px;
+    }
+
+    th, td {
+        padding: 7px;
+        overflow-wrap: anywhere;
+    }
+}
+</style>
+</head>
+
+<body>
+<main class="obsah">
+
+<h2>Základní bojové hodnoty</h2>
+
+<p>
+Bojové hodnoty postavy se vypočítávají z příslušných atributů,
+schopnosti pro daný typ zbraně, bonusů a postihů konkrétní zbraně
+a postihu za zbroj.
+</p>
+
+<table>
+<thead>
+<tr>
+    <th>Hodnota</th>
+    <th>Výpočet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Útok</td>
+    <td>Síla + Hbitost + Schopnost zbraně − Postih zbroje</td>
+</tr>
+<tr>
+    <td>Kryt</td>
+    <td>Síla + Zručnost + Schopnost zbraně − Postih zbroje</td>
+</tr>
+<tr>
+    <td>Střelecký útok</td>
+    <td>Intuice + Zručnost + Schopnost zbraně − Postih zbroje</td>
+</tr>
+<tr>
+    <td>Úhyb</td>
+    <td>Akrobacie − Postih zbroje</td>
+</tr>
+<tr>
+    <td>Obrana</td>
+    <td>Kryt nebo Úhyb</td>
+</tr>
+</tbody>
+</table>
+
+<div class="karta">
+<h3>Úhyb</h3>
+<p>
+Akrobacie se vypočítává jako Hbitost + Intuice + body získané
+za zvýšení schopnosti Akrobacie. Tyto body se následně započítají
+do Úhybu.
+</p>
+</div>
+
+<div class="karta">
+<h3>Poškození zbraně</h3>
+<p>
+Poškození zbraně se vypočítává podle konkrétní zbraně a Síly
+postavy. Výjimkou jsou kuše.
+</p>
+</div>
+
+<div class="karta">
+<h3>Výpočet zbroje</h3>
+<div class="vzorec">
+Zbroj = součet hodnot všech částí zbroje / 2
+</div>
+</div>
+
+<div class="karta">
+<h3>Postih zbroje</h3>
+<p>
+Postih zbroje se vypočítává ze Zbroje a Síly postavy.
+Za každých 2,5 bodu Síly se postih snižuje o 1.
+</p>
+<p>
+Postih se započítává do Útoku, Krytu, Úhybu a Plížení.
+</p>
+</div>
+
+<div class="karta">
+<h3>Hod na bojovou akci</h3>
+<p>
+Pro Útok, Kryt, Úhyb a Střelecký útok se hází jednou dvacetistěnnou
+kostkou (1k20). Výsledek hodu se přičte k příslušné bojové hodnotě.
+</p>
+<div class="vzorec">
+Výsledek = bojová hodnota + hod 1k20
+</div>
+</div>
+
+<div class="karta">
+<h3>Výpočet poškození</h3>
+<div class="vzorec">
+Poškození = Poškození zbraně − Zbroj protivníka
+</div>
+</div>
+
+
+<h2>Průběh boje</h2>
+
+<p>
+Běžné bojové kolo se skládá ze souběžného Útoku a Krytu nebo Úhybu
+u obou bojujících postav.
+</p>
+
+<div class="karta">
+<h3>Vyhodnocení střetu</h3>
+<ul>
+<li>
+<strong class="zvyrazneni">Útok je vyšší než Kryt nebo Úhyb:</strong>
+útok je úspěšný a útočník způsobí poškození.
+</li>
+<li>
+<strong class="zvyrazneni">Kryt nebo Úhyb je vyšší než Útok:</strong>
+útok je odražen nebo mu obránce uhne a nevznikne žádné poškození.
+</li>
+</ul>
+</div>
+
+
+<h2>Boj proti více nepřátelům</h2>
+
+<div class="karta">
+<h3>Boj proti dvěma nepřátelům</h3>
+<p>
+Postava si určí, na kterého nepřítele útočí. Proti druhému se pouze
+brání a může použít jen ten druh obrany, který nepoužila proti
+prvnímu nepříteli.
+</p>
+<p>
+Pokud proti prvnímu nepříteli použila Kryt, proti druhému musí použít
+Úhyb, a naopak.
+</p>
+<p>
+Při obraně proti druhému nepříteli hází postava dvakrát a použije
+horší výsledek.
+</p>
+</div>
+
+<div class="karta">
+<h3>Boj proti třem a více nepřátelům</h3>
+<p>
+Proti dalším nepřátelům už postava nemůže používat hody kostkou.
+Místo nich se počítá její základní hodnota Úhybu.
+</p>
+</div>
+
+
+<h2>Odhad</h2>
+
+<p>
+Pokud postava úspěšně použije na protivníka schopnost Odhad,
+získává pro boj s tímto konkrétním protivníkem bonus k Útoku,
+Krytu a Úhybu, případně také k Plížení.
+</p>
+
+<div class="vzorec">
+Bonus: +1 až +3 podle výsledku hodu
+</div>
+
+<p>
+PJ může postavě také sdělit, zda se protivník snaží používat
+nějakou Fintu.
+</p>
+
+
+<h2>Napadení</h2>
+
+<p>
+Napadení nastává, když někdo zahájí boj náhlým a otevřeným útokem,
+aniž by se předem snažil skrývat nebo nepozorovaně přiblížit
+k protivníkovi.
+</p>
+
+<p>
+Může jít například o situaci, kdy někdo náhle vyběhne z místnosti
+s křikem a zbraní v ruce, zaútočí na jinou postavu nebo se nečekaně
+objeví na bojišti a okamžitě zaútočí.
+</p>
+
+<p>
+Napadení může nastat také tehdy, když je postava připravena bojovat,
+ale neví, odkud nebo od koho útok přijde.
+</p>
+
+<div class="karta">
+<h3>Účinek napadení</h3>
+<p>
+Útočník získává výhodu při hodu na Útok: hází dvakrát 1k20
+a použije vyšší výsledek.
+</p>
+<p>
+Tato výhoda platí pouze pro první kolo boje.
+</p>
+</div>
+
+
+<h2>Útok ze zálohy</h2>
+
+<p>
+Útok ze zálohy nastává, když se útočník nepozorovaně připlíží k cíli
+a zaútočí na něj v tichosti, aniž by cíl útok očekával nebo si
+útočníka všiml.
+</p>
+
+<p>
+Základem je utajení, překvapení a využití okamžiku, kdy protivník
+není připraven na boj.
+</p>
+
+<div class="karta">
+<h3>Provedení útoku</h3>
+<ul>
+<li>Útočník místo běžného hodu na Útok hází na Plížení.</li>
+<li>K hodu na Plížení se přičítá bonus nebo postih dané zbraně.</li>
+<li>Cíl se nemůže aktivně bránit ani provést protiútok.</li>
+<li>
+Proti útoku se použije pouze základní hodnota Krytu nebo Úhybu
+cíle, podle toho, jakým způsobem by se běžně bránil.
+K této hodnotě se nepřičítá hod 1k20.
+</li>
+<li>
+Pokud výsledek Plížení útočníka překoná základní hodnotu obrany
+cíle, útok zasáhne.
+</li>
+<li>
+Poškození se vypočítá podle běžných pravidel.
+</li>
+</ul>
+<p>
+Útok ze zálohy platí pouze pro první kolo boje.
+Útočník při něm může použít určité finty.
+</p>
+</div>
+
+
+<h2>Boj na dálku</h2>
+
+<h3>Vzdálenost střelby</h3>
+
+<p>
+Každá střelná nebo vrhací zbraň má uvedeny tři hodnoty vzdálenosti.
+Například krátký luk: 10 m / 25 m / 50 m.
+</p>
+
+<table>
+<thead>
+<tr>
+    <th>Vzdálenost</th>
+    <th>Účinek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>První hodnota</td>
+    <td>Bonus k poškození +1.</td>
+</tr>
+<tr>
+    <td>Druhá hodnota</td>
+    <td>Bez postihu a bez bonusu.</td>
+</tr>
+<tr>
+    <td>Třetí hodnota</td>
+    <td>Postih ke Střeleckému útoku −2 a k poškození −2.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Pohyb a podmínky střelby</h3>
+
+<table>
+<thead>
+<tr>
+    <th>Situace</th>
+    <th>Postih ke Střeleckému útoku</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Střelba na stojící postavu nebo nepohyblivý cíl</td>
+    <td>Bez postihu a bonusu.</td>
+</tr>
+<tr>
+    <td>Střelba na pohyblivý cíl</td>
+    <td>−1 až −5 podle rozhodnutí PJ.</td>
+</tr>
+<tr>
+    <td>Střelba během chůze</td>
+    <td>−1.</td>
+</tr>
+<tr>
+    <td>Střelba během běhu</td>
+    <td>−3.</td>
+</tr>
+<tr>
+    <td>Střelec v přímém střetu s protivníkem útočícím kontaktně</td>
+    <td>−2.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Podle situace může PJ určit další postihy, například kvůli mlze,
+tmě, porostu nebo jiným překážkám.
+</p>
+
+<div class="karta">
+<h3>Obrana proti střelným a vrhacím zbraním</h3>
+<p>
+Střelné a vrhací zbraně lze krýt pouze za použití štítu.
+Bez štítu musí postava použít Úhyb.
+</p>
+</div>
+
+<div class="karta">
+<h3>Nabíjení</h3>
+<p>
+Každá střelná nebo vrhací zbraň má uvedenou hodnotu Nabíjení.
+Ta určuje, kolik kol trvá, než lze zbraň znovu použít.
+</p>
+</div>
+
+
+<h2>Finty</h2>
+
+<p>
+Finty jsou bojové, přesněji šermířské triky, kterými bojovník
+upravuje svou strategii, aby dokázal přemoci například lépe
+vycvičeného nebo vybaveného nepřítele.
+</p>
+
+<p>
+Každá finta má své výhody i postihy. Bojovník rozhoduje, kdy a kterou
+použije.
+</p>
+
+<div class="karta">
+<p>
+Postava může použít pouze jednu fintu v daném kole.
+Následující kolo musí proběhnout bez fint, tedy běžným způsobem.
+</p>
+</div>
+
+
+<h3>Rychlý úder</h3>
+
+<p>
+Postava zaútočí na nepřítele dvěma rychlými útoky.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<ul>
+<li>Lze použít pouze s lehkými zbraněmi.</li>
+<li>Lze použít při přepadení.</li>
+<li>Postava hází dvakrát na Útok.</li>
+<li>Každý úspěšný útok způsobí běžné poškození zbraně.</li>
+</ul>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Postava hází dvakrát na Kryt nebo Úhyb a použije nižší výsledek.
+</p>
+</div>
+
+
+<h3>Mířené bodnutí</h3>
+
+<p>
+Postava bodnou zbraní míří na slabě chráněná místa v protivníkově
+zbroji.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<ul>
+<li>Lze použít pouze s bodnými zbraněmi.</li>
+<li>Lze použít při přepadení.</li>
+<li>
+Úspěšný zásah ignoruje polovinu zbroje zasaženého nepřítele.
+</li>
+</ul>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Postava hází dvakrát na Útok a použije nižší výsledek.
+</p>
+</div>
+
+
+<h3>Mocný úder</h3>
+
+<p>
+Postava vloží všechnu svou sílu a štěstí do jediného ničivého útoku.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<p>
+K poškození se připočítává polovina poškození zbraně navíc.
+</p>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Postava v tomto kole souboje nemá hod na Kryt ani na Úhyb.
+</p>
+</div>
+
+
+<h3>Odzbrojení</h3>
+
+<p>
+Postava se pokusí protivníkovi vyrazit zbraň z ruky.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<p>
+Pokud jsou Útok a Kryt postavy vyšší než Útok nepřítele,
+postava mu vyrazí zbraň z ruky.
+</p>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Pokud byl Útok nebo Kryt postavy nižší, protivník na ni ihned
+provede další Útok. Napadená postava se může bránit pouze Krytem
+nebo Úhybem.
+</p>
+</div>
+
+
+<h3>Bojový styl</h3>
+
+<p>
+Postava upřednostňuje agresivní útok a nedbá příliš na vlastní obranu.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<p>
+Postava hází dvakrát na Útok a použije vyšší výsledek.
+</p>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Postava hází dvakrát na Kryt nebo Úhyb a použije nižší výsledek.
+</p>
+</div>
+
+
+<h3>Obranný styl</h3>
+
+<p>
+Postava upřednostňuje svou obranu před útočením na nepřítele.
+</p>
+
+<div class="karta">
+<p><strong class="zvyrazneni">Účinek</strong></p>
+<p>
+Postava hází dvakrát na Kryt nebo Úhyb a použije vyšší výsledek.
+</p>
+
+<p><strong class="zvyrazneni">Postih</strong></p>
+<p>
+Postava hází dvakrát na Útok a použije nižší výsledek.
+</p>
+</div>
+
+</main>
+</body>
+</html>

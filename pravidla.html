@@ -301,7 +301,12 @@ li {
         >
             Povahové rysy
         </button>
-
+<button
+    class="zalozka"
+    onclick="zobrazZalozku('boj')"
+>
+    Bojový systém
+</button>
     </nav>
 
 
@@ -484,7 +489,23 @@ li {
             "
         ></iframe>
     </section>
+<!-- BOJOVÝ SYSTÉM -->
 
+<section
+    id="boj"
+    class="obsah-zalozky"
+    style="display: none;"
+>
+    <iframe
+        src="bojovy_system.html"
+        style="
+            width: 100%;
+            height: 900px;
+            border: none;
+            display: block;
+        "
+    ></iframe>
+</section>
     <button
         class="zpet"
         type="button"
@@ -504,18 +525,21 @@ function zobrazZalozku(zalozka) {
     const vyroba = document.getElementById("vyroba");
     const schopnosti = document.getElementById("schopnosti");
     const rysy = document.getElementById("rysy");
+    const boj = document.getElementById("boj");
 
     const tlacitka = document.querySelectorAll(".zalozka");
 
     vyroba.style.display = zalozka === "vyroba" ? "block" : "none";
     schopnosti.style.display = zalozka === "schopnosti" ? "block" : "none";
     rysy.style.display = zalozka === "rysy" ? "block" : "none";
+    boj.style.display = zalozka === "boj" ? "block" : "none";
 
     tlacitka.forEach(t => t.classList.remove("aktivni"));
 
     if (zalozka === "vyroba") tlacitka[0].classList.add("aktivni");
     if (zalozka === "schopnosti") tlacitka[1].classList.add("aktivni");
     if (zalozka === "rysy") tlacitka[2].classList.add("aktivni");
+    if (zalozka === "boj") tlacitka[3].classList.add("aktivni");
 }
 
 
