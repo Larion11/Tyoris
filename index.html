@@ -23,24 +23,38 @@
         color: #e8dfcf;
         font-family: Georgia, "Times New Roman", serif;
     }
-    .page {
-        width: min(1240px, 96vw);
-        min-height: 600px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid #6f5a3e;
-        box-shadow: 0 0 40px rgba(0,0,0,.75), inset 0 0 50px rgba(0,0,0,.4);
-        background: rgba(18,15,12,.88);
-    }
-    h1 {
-        margin: 0 0 55px;
-        font-size: clamp(42px, 7vw, 76px);
-        font-weight: normal;
-        letter-spacing: 2px;
-        text-shadow: 0 3px 8px #000;
-    }
+ 
+.page {
+    width: min(1100px, 96vw);
+    min-height: 600px;
+    padding: 45px 35px 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    border: 2px solid #6f5a3e;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.75),
+        inset 0 0 50px rgba(0,0,0,.4);
+
+    background: rgba(18,15,12,.92);
+}
+   
+h1 {
+    margin: 0 0 55px;
+    font-size: clamp(42px, 7vw, 76px);
+    font-weight: normal;
+    letter-spacing: 4px;
+    color: #d8bd8b;
+    text-shadow:
+        0 2px 3px #000,
+        0 0 18px rgba(180, 130, 65, 0.3);
+    text-align: center;
+}
+
     
     #stavPrihlaseni {
     margin-top: -35px;
@@ -67,9 +81,28 @@
         border-color: #b39468;
         
     }
-    button {
-    margin: 5px;
+   
+button {
+    padding: 17px 34px;
+    font-family: inherit;
+    font-size: 22px;
+    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #403222 0%,
+        #241b13 100%
+    );
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 230, 180, 0.08);
+    transition: background 0.2s, border-color 0.2s;
 }
+
+
+
     #seznamPostav {
     display: flex;
     flex-direction: column;
@@ -78,33 +111,74 @@
     margin-top: 35px;
 }
 
+
+
 .postava {
+    position: relative;
     display: block;
-    min-width: 280px;
-    padding: 13px 25px;
+    width: 100%;
+    min-width: 0;
+    padding: 16px 30px;
 
     text-align: center;
     text-decoration: none;
 
     font-family: Georgia, "Times New Roman", serif;
-    font-size: 21px;
+    font-size: 20px;
+    letter-spacing: 1px;
 
-    color: #eee4d2;
-    background: #33291e;
+    color: #e8d5b2;
+    background:
+        linear-gradient(135deg, #30251b, #19130f 55%, #30251b);
 
-    border: 1px solid #8a704d;
+    border: 1px solid #806744;
+    outline: 1px solid rgba(128, 103, 68, 0.35);
+    outline-offset: 3px;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.5),
+        inset 0 0 18px rgba(180, 130, 65, 0.08);
+
+    transition: background 0.2s, border-color 0.2s;
+}
+
+/* Drobné ornamenty po stranách */
+.postava::before,
+.postava::after {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b39468;
+    font-size: 18px;
+}
+
+.postava::before {
+    content: "❧";
+    left: 9px;
+}
+
+.postava::after {
+    content: "❧";
+    right: 9px;
+    transform: translateY(-50%) scaleX(-1);
 }
 
 .postava:hover {
-    background: #473827;
-    border-color: #b39468;
+    color: #fff0d1;
+    background: linear-gradient(135deg, #493724, #2b2016, #493724);
+    border-color: #c4a16b;
+    outline-color: rgba(196, 161, 107, 0.6);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.6),
+        inset 0 0 22px rgba(180, 130, 65, 0.13);
 }
+
+
 .radek-postavy {
     display: flex;
     align-items: center;
     gap: 8px;
+    width: 100%;
 }
 
 .radek-postavy .postava {
@@ -187,6 +261,85 @@
 .paticka span {
     font-style: italic;
 }
+
+#prihlaseni {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.udaje-prihlaseni {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+#prihlaseni input {
+    flex: 0 1 260px;
+    width: 260px;
+    min-width: 0;
+    margin: 0;
+}
+
+.tlacitka-prihlaseni {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.tlacitka-prihlaseni button {
+    margin: 0;
+}
+
+
+/* Oddělení přihlašování od dalších akcí */
+.page > button {
+    margin-top: 18px;
+}
+
+
+.hlavni-obsah {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+    width: 100%;
+    margin-top: 100px;
+    align-items: start;
+}
+
+.leva-strana,
+.prava-strana {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.leva-strana #seznamPostav {
+    margin-top: 0;
+    width: 100%;
+    max-width: 400px;
+}
+
+@media (max-width: 650px) {
+    .hlavni-obsah {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+}
+.nadpis-postav {
+    margin: 12px 0 0;
+    font-size: 22px;
+    color: #d6bd91;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -205,9 +358,9 @@ const supabaseClient = window.supabase.createClient(
 
     <h1>Vítejte dobrodruzi</h1>
     
-    <div id="stavPrihlaseni"></div>
-
-    <div id="prihlaseni">
+ <div id="stavPrihlaseni"></div>
+<div id="prihlaseni">
+    <div class="udaje-prihlaseni">
         <input
             type="email"
             id="email"
@@ -219,32 +372,48 @@ const supabaseClient = window.supabase.createClient(
             id="heslo"
             placeholder="Heslo"
         >
-
-<button id="tlacitkoPrihlaseni" onclick="prihlasit()">Přihlásit</button>
-
-<button type="button" onclick="window.location.href='registrace.html'">
-    Registrovat se
-</button>
-
-<div style="text-align: right; margin-bottom: 35px;">
-    <button type="button" onclick="zapomenuteHeslo()">
-        Zapomenuté heslo
-    </button>
-</div>
-        
     </div>
-        <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
+
+    <div class="tlacitka-prihlaseni">
+        <button id="tlacitkoPrihlaseni" onclick="prihlasit()">
+            Přihlásit
+        </button>
+
+        <button type="button" onclick="window.location.href='registrace.html'">
+            Registrovat se
+        </button>
+
+        <button type="button" onclick="zapomenuteHeslo()">
+            Zapomenuté heslo
+        </button>
+    </div>
+</div>
+
+
+<div class="hlavni-obsah">
+   
+<div class="leva-strana">
+    <button onclick="vytvoritPostavu()">Vytvořit novou postavu</button>
+
+    <h2 class="nadpis-postav">Tvé postavy</h2>
+
+    <div id="seznamPostav"></div>
+</div>
+
+    <div class="prava-strana">
         <button type="button" onclick="window.open('pravidla.html', '_blank')">
-    Pravidla
-</button>
-<button
-    type="button"
-    id="tlacitkoAdmin"
-    hidden
-    onclick="window.location.href='admin/admin.html'">
-    Administrace
-</button>
-            <div id="seznamPostav"></div>
+            Pravidla
+        </button>
+
+        <button
+            type="button"
+            id="tlacitkoAdmin"
+            hidden
+            onclick="window.location.href='admin/admin.html'">
+            Administrace
+        </button>
+    </div>
+</div>
 
     <div class="paticka">
         Vytvořila Larion ve spolupráci s Gerym, nejlepším Chat-GPT<br>
