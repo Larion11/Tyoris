@@ -60,13 +60,14 @@
         }
 
         .alchymie-tabulka th {
-             background: linear-gradient(
+          background: linear-gradient(
         180deg,
         rgba(210, 190, 155, 0.85) 0%,
         rgba(190, 165, 125, 0.75) 50%,
         rgba(145, 120, 85, 0.75) 100%
     );
-    color: #1a1510;
+            color: #1a1510;
+            font-size: 16px;
             border: 1px solid #6f5a3e;
             padding: 10px;
         }
@@ -202,6 +203,7 @@
         rgba(190, 165, 125, 0.75) 50%,
         rgba(145, 120, 85, 0.75) 100%
     );
+    font-size: 18px;
     color: #1a1510;
     text-align: center;
 }
@@ -226,6 +228,8 @@
 
 .tabulka-vyroba input[type="checkbox"] {
     accent-color: rgb(190, 165, 125);
+    transform: scale(1.7);
+    
 }      
    
 .recepty {
@@ -253,6 +257,28 @@
     border: 1px solid #6f5a3e;
     padding: 8px;
     vertical-align: top;
+}
+
+
+
+.tabulka-recepty td:first-child {
+    background: rgba(40, 30, 20, 0.95);
+    color: #b5a080;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.tabulka-recepty td:first-child.recept-znamy {
+    background: rgba(75, 56, 35, 0.9);
+    color: #e6c995;
+}
+
+.tabulka-recepty tbody tr:hover td {
+    background: rgba(85, 65, 42, 0.8);
+}
+
+.tabulka-recepty tbody tr:hover td:first-child {
+    background: rgba(105, 78, 45, 0.9);
 }
 
 .tabulka-recepty th {
@@ -319,6 +345,19 @@
     padding: 5px 8px;
     font-size: 14px;
 } 
+.tabulka-recepty .znam-recept {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.tabulka-recepty .znam-recept input {
+    accent-color: rgb(190, 165, 125);
+    transform: scale(1.3);
+    margin-right: 6px;
+    cursor: pointer;
+}
 /* Vlastní vyskakovací okno */
 
 .vlastni-okno-pozadi {
@@ -428,12 +467,12 @@ const supabaseClient = window.supabase.createClient(
                 </tr>
 
                 <tr>
-                    <td>Plyvník</td>
+                    <td>Plivník</td>
                     <td>
                         <div class="mnozstvi">
-                            <button type="button" onclick="zmenitMnozstvi('plyvnik', -1)">−</button>
-                            <span class="cislo" id="plyvnik">0</span>
-                            <button type="button" onclick="zmenitMnozstvi('plyvnik', 1)">+</button>
+                            <button type="button" onclick="zmenitMnozstvi('plivnik', -1)">−</button>
+                            <span class="cislo" id="plivnik">0</span>
+                            <button type="button" onclick="zmenitMnozstvi('plivnik', 1)">+</button>
                         </div>
                     </td>
                 </tr>
@@ -688,14 +727,7 @@ const supabaseClient = window.supabase.createClient(
                 <td>Aparatura</td>
                 <td><input type="checkbox" id="aparatura"></td>
             </tr>
-            <tr>
-                <td>Miska</td>
-                <td><input type="checkbox" id="miska"></td>
-            </tr>
-            <tr>
-                <td>Nádoba</td>
-                <td><input type="checkbox" id="nadoba"></td>
-            </tr>
+           
         </tbody>
     </table>
 
@@ -744,6 +776,22 @@ const supabaseClient = window.supabase.createClient(
         <button type="button" onclick="zmenitMnozstvi('sira', -1)">−</button>
         <span id="sira">0</span>
         <button type="button" onclick="zmenitMnozstvi('sira', 1)">+</button>
+    </td>
+</tr>
+            <tr>
+    <td>Miska</td>
+    <td>
+        <button type="button" onclick="zmenitMnozstvi('miska', -1)">−</button>
+        <span id="miska">0</span>
+        <button type="button" onclick="zmenitMnozstvi('miska', 1)">+</button>
+    </td>
+</tr>
+            <tr>
+    <td>Nádoba</td>
+    <td>
+        <button type="button" onclick="zmenitMnozstvi('nadoba', -1)">−</button>
+        <span id="nadoba">0</span>
+        <button type="button" onclick="zmenitMnozstvi('nadoba', 1)">+</button>
     </td>
 </tr>
         </tbody>
@@ -912,7 +960,7 @@ async function ulozitAlchymii() {
     postava.alchymie = {
 
         rudaNat: parseInt(document.getElementById("rudaNat").textContent) || 0,
-        plyvnik: parseInt(document.getElementById("plyvnik").textContent) || 0,
+        plivnik: parseInt(document.getElementById("plivnik").textContent) || 0,
         hertel: parseInt(document.getElementById("hertel").textContent) || 0,
         zobatec: parseInt(document.getElementById("zobatec").textContent) || 0,
         mecovnicek: parseInt(document.getElementById("mecovnicek").textContent) || 0,
@@ -938,14 +986,19 @@ async function ulozitAlchymii() {
         luj: parseInt(document.getElementById("luj").textContent) || 0,
         alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
         sira: parseInt(document.getElementById("sira").textContent) || 0,
+        miska: parseInt(document.getElementById("miska").textContent) || 0,
+        nadoba: parseInt(document.getElementById("nadoba").textContent) || 0,
 
         sadaVareni: document.getElementById("sadaVareni").checked,
         aparatura: document.getElementById("aparatura").checked,
-        miska: document.getElementById("miska").checked,
-        nadoba: document.getElementById("nadoba").checked,
+   
 
-        recepty: postava.alchymie && postava.alchymie.recepty
+               recepty: postava.alchymie && postava.alchymie.recepty
             ? postava.alchymie.recepty
+            : {},
+
+        znameRecepty: postava.alchymie && postava.alchymie.znameRecepty
+            ? postava.alchymie.znameRecepty
             : {}
     };
 
@@ -968,6 +1021,7 @@ document.getElementById("ulozeno").textContent = "Uloženo.";
 setTimeout(function() {
     document.getElementById("ulozeno").textContent = "";
 }, 2000);
+
 }
 
 
@@ -994,7 +1048,10 @@ function nacistAlchemii() {
     if (prvek.type === "checkbox") {
         prvek.checked = alchymie[klic];
     } else {
-        prvek.textContent = alchymie[klic];
+        prvek.textContent =
+    (klic === "miska" || klic === "nadoba")
+        ? (parseInt(alchymie[klic]) || 0)
+        : alchymie[klic];
     }
 
 });
@@ -1007,156 +1064,177 @@ if (alchymie.recepty) {
         }
     });
 }
+if (alchymie.znameRecepty) {
+    Object.keys(alchymie.znameRecepty).forEach(function(id) {
+        const checkbox = document.getElementById("znam-" + id);
+
+       if (checkbox) {
+    checkbox.checked = alchymie.znameRecepty[id] === true;
+
+    checkbox.closest("td").classList.toggle(
+        "recept-znamy",
+        checkbox.checked
+    );
+}
+    });
+}
 }
 const receptyLektvaryData = [
-
     {
         id: "rudolazskeVino",
         jmeno: "Rudolažské víno",
         popis: "Lehce alkoholický, temně rudý a mírně léčivý lektvar. Silná kořeněná vůně a nasládlá chuť.",
-        vyroba: "3× Rudá nať, voda, sada na vaření",
+        vyroba: "3× Rudá nať, voda, nádoba, sada na vaření",
         ucinek: "Působí 2 dny. Každý den vyléčí = 1/2 OD + 1.",
         narocnost: 15
     },
-
     {
         id: "darJagaw",
         jmeno: "Dar Jagaw",
         popis: "Silný léčivý lektvar, žluté barvy, aromatické vůně a nahořklé chuti.",
-        vyroba: "Zlatníček, Červenka, Hertel, voda, aparatura",
-        ucinek: "Ihned vyléčí 2× OD + 4.",
+        vyroba: "Zlatníček, Červenka, Hertel, nádoba, voda, aparatura",
+        ucinek: "Ihned vyléčí 3 × OD.",
         narocnost: 30
     },
-
     {
         id: "jaskovoLektvar",
         jmeno: "Jaškovo lektvar",
         popis: "Prastarý lektvar posilující imunitu, vytvořený jedním ze zakladatelů řádu Prozření.",
-        vyroba: "2× Kysle, Třapalka, voda, sada na vaření",
-        ucinek: "Odolnost nemoci / jedy +5, účinkuje 3–4 dny.",
+        vyroba: "2× Kysle, Třapalka, nádoba, voda, sada na vaření",
+        ucinek: "Odolnost nemoci +5, účinkuje 3 dny.",
         narocnost: 20
     },
-
     {
         id: "sladkyPrach",
         jmeno: "Sladký prach",
         popis: "Mírně návykový šnupací prášek, silně posilující.",
-        vyroba: "Sladký ořech, Dubovenka, sada na vaření",
-        ucinek: "Všechny SCH, kde je užita Hbitost +5 / ÚT/KR/UH +2, 12 hodin. Poté -3 / -1.",
+        vyroba: "Sladký ořech, Dubovenka, miska, sada na vaření",
+        ucinek: "Hbitost +2, působí 2 hodiny.",
         narocnost: 18
     },
-
     {
         id: "morskyZaludek",
         jmeno: "Mořský žaludek",
         popis: "Hustý nažloutlý nápoj velmi nepříjemné chuti.",
-        vyroba: "Kysle, Červenka, Pálivý jazyk, Sladký ořech, sada na vaření",
+        vyroba: "Kysle, Červenka, Pálivý jazyk, Sladký ořech, nádoba, voda, sada na vaření",
         ucinek: "Na den výrazně potlačuje nevolnost a závratě způsobené plavbou a houpáním lodi.",
         narocnost: 20
     },
-
     {
         id: "silaHrysala",
         jmeno: "Síla Hryšala",
         popis: "Hustý hnědý lektvar s výraznou ořechovou chutí.",
-        vyroba: "Dubovenka, Sladký ořech, Zobatec, voda, sada na vaření",
-        ucinek: "Břemena +4, 6 hodin.",
+        vyroba: "Dubovenka, Sladký ořech, Zobatec, nádoba, voda, sada na vaření",
+        ucinek: "Břemena +4, působí 6 hodin.",
         narocnost: 22
     },
-
     {
         id: "druhyDech",
         jmeno: "Druhý dech",
         popis: "Světle zelený lektvar s ostrou bylinnou vůní.",
-        vyroba: "Mečovníček, Třapalka, Kysle, Červenka, voda, sada na vaření",
-        ucinek: "Atletika +4, 6 hodin.",
+        vyroba: "Mečovníček, Třapalka, Kysle, Červenka, nádoba, voda, sada na vaření",
+        ucinek: "Atletika +4, působí 6 hodin.",
         narocnost: 22
     },
-
     {
         id: "okoLovce",
         jmeno: "Oko lovce",
         popis: "Zlatavý nápoj s nahořklou chutí.",
-        vyroba: "Zlatníček, Zobatec, Korálky, voda, sada na vaření",
-        ucinek: "Všímavost +4, 6 hodin.",
+        vyroba: "Zlatníček, Zobatec, Korálky, nádoba, voda, sada na vaření",
+        ucinek: "Všímavost +4, působí 6 hodin.",
         narocnost: 24
     },
-
     {
         id: "pevnePouto",
         jmeno: "Pevné pouto",
         popis: "Hustý jantarový lektvar s lehce kovovou chutí.",
-        vyroba: "Zobatec, Třapalka, Kameníček, voda, aparatura",
-        ucinek: "Odolnost jedy a nemoce +10 na 5 dnů.",
+        vyroba: "Zobatec, Třapalka, Kameníček, nádoba, voda, aparatura",
+        ucinek: "Odolnost nemoci +10 na 5 dnů.",
         narocnost: 28
     },
-
     {
         id: "serumZapomneni",
         jmeno: "Sérum zapomnění",
         popis: "Průhledný lektvar bez chuti a téměř bez zápachu.",
-        vyroba: "Slizník, Skřítě, 2× Kysle, Korálky, aparatura",
-        ucinek: "Po požití způsobí výpadek paměti na poslední 2 dny. Jedy 25, poté Sebeovládání 25.",
+        vyroba: "Slizník, Skřítě, 2× Kysle, Korálky, nádoba, voda, aparatura",
+        ucinek: "Po požití způsobí výpadek paměti na poslední 2 dny (jedy 25), poté Sebeovládání 25.",
         narocnost: 28
+    },
+    {
+        id: "telomorkaProtijed",
+        jmeno: "Tělomorka protijed",
+        popis: "Nažloutlý lektvar výrazné chuti.",
+        vyroba: "2× Červenka, Hertel, voda, nádoba, sada na vaření",
+        ucinek: "Vyléčí efekt otravy Tělomorkou.",
+        narocnost: 20
+    },
+    {
+        id: "kralovrahProtijed",
+        jmeno: "Královrah protijed",
+        popis: "Sytě zelený lektvar s příjemnou bylinnou chutí a nepříjemným zápachem.",
+        vyroba: "Skřítě, 2× Loukotník, Třapalka, voda, nádoba, aparatura",
+        ucinek: "Vyléčí efekt otravy Královrahem.",
+        narocnost: 25
+    },
+    {
+        id: "cernyVdovecProtijed",
+        jmeno: "Černý vdovec protijed",
+        popis: "Velmi zapáchající lektvar černé barvy a hořké chuti.",
+        vyroba: "2× Plivník, Skřítě, 2× Slizník, nádoba, voda, aparatura",
+        ucinek: "Vyléčí efekt otravy Černým vdovcem.",
+        narocnost: 30
     }
-
 ];
-const receptyJedyData = [
 
+const receptyJedyData = [
     {
         id: "telomorka",
         jmeno: "Tělomorka",
-        popis: "Silný jed napadající tělesné funkce.",
-        vyroba: "2× Červenka, Mečovníček, voda, sada na vaření",
-        ucinek: "Jedy 20. Při neúspěchu každý den − OD + 1.",
+        popis: "Slabý jed nažloutlé barvy, lehké nasládlé chuti a vůně.",
+        vyroba: "2× Červenka, Mečovníček, voda, nádoba, sada na vaření",
+        ucinek: "OD Jedy 20. Každý den Jedy / 20 = neúspěch −1/2 OD.",
         narocnost: 20
     },
-
     {
         id: "kralovrah",
         jmeno: "Královrah",
-        popis: "Silný jed určený k pomalému oslabení oběti.",
-        vyroba: "Skřítě, 2× Korálky, Třapalka, voda, aparatura",
-        ucinek: "OD Jedy 25. Každý den Jedy 28 = neúspěch − OD + 1.",
+        popis: "Středně silný jed bez barvy, zápachu a chuti.",
+        vyroba: "Skřítě, 2× Korálky, Třapalka, voda, nádoba, aparatura",
+        ucinek: "OD Jedy 25. Každý den Jedy 28 = neúspěch −OD +1.",
         narocnost: 25
     },
-
     {
         id: "polibekVdovy",
         jmeno: "Polibek vdovy",
-        popis: "Velmi nebezpečný jed s pomalým nástupem účinku.",
-        vyroba: "3× Avelinská růže, Rudá nať, Slizník, 2× Červenka, voda, aparatura",
-        ucinek: "OD Jedy 32. Každý den Jedy −10 = neúspěch −2× OD + 5.",
+        popis: "Nejsilnější známý jed, který používají Avelinské vdovy. Bez zápachu, lehce nasládlý, bez barvy.",
+        vyroba: "3× Avelinská růže, Rudá nať, Slizník, 2× Červenka, voda, nádoba, aparatura",
+        ucinek: "OD Jedy 32. Každý den Jedy 35 = neúspěch −2× OD +5.",
         narocnost: 35
     },
-
     {
         id: "pavucinka",
         jmeno: "Pavučinka",
-        popis: "Jed způsobující rychlou paralýzu.",
-        vyroba: "2× Loukotník, Hertel, aparatura, voda",
-        ucinek: "Jedy 30, okamžitá paralýza. Každou hodinu Jedy −5.",
+        popis: "Žlutý lektvar trpké chuti, bez zápachu.",
+        vyroba: "2× Loukotník, Hertel, nádoba, aparatura, voda",
+        ucinek: "Jedy 30, okamžitá paralýza. Osoba vnímá vše, co se kolem děje. Každou hodinu Jedy −5.",
         narocnost: 25
     },
-
     {
         id: "nocniMura",
         jmeno: "Noční můra",
-        popis: "Jed způsobující uspání po vdechnutí.",
-        vyroba: "Kysle, Pálivý jazyk, Mečovníček, aparatura",
-        ucinek: "Způsobí uspání cíle po vdechnutí, Jedy 20. Každou hodinu Jedy −2.",
+        popis: "Uspávací prášek, lehce aromatický, kyselé chuti. Při snech způsobuje zlé sny.",
+        vyroba: "Kysle, Pálivý jazyk, Mečovníček, miska, aparatura",
+        ucinek: "Po vdechnutí způsobí uspání cíle, Jedy 22. Každou hodinu Jedy −2.",
         narocnost: 20
     },
-
     {
         id: "cernyVdovec",
         jmeno: "Černý vdovec",
-        popis: "Silný a nebezpečný jed.",
-        vyroba: "2× Plyvník, Slizník, Skřítě, 2× Korálky, aparatura",
-        ucinek: "Silný jed. Jedy 28. Při neúspěchu každý den − OD + 4.",
+        popis: "Hustý černofialový jed bez výrazného zápachu.",
+        vyroba: "2× Plivník, Slizník, Skřítě, 2× Korálky, nádoba, voda, aparatura",
+        ucinek: "Silný jed. Jedy 30. Při neúspěchu každý den −OD +4.",
         narocnost: 30
     }
-
 ];
 
 const receptyMastiData = [
@@ -1164,57 +1242,58 @@ const receptyMastiData = [
         id: "lecivyMed",
         jmeno: "Léčivý med",
         popis: "Zlatavá sladká mast urychlující léčení.",
-        vyroba: "Lůj, Mečovníček, Kysle, sada na vaření",
-        ucinek: "Působí 4 dny. Každý den vyléčí = OD + 1.",
+        vyroba: "Lůj, Mečovníček, Kysle, miska, sada na vaření",
+        ucinek: "Působí 4 dny. Každý den vyléčí = OD +1.",
         narocnost: 20
     },
     {
         id: "palivaMast",
         jmeno: "Pálivá mast",
-        popis: "Hřejivá mast, užívaná vojáky na prokrvení svalů.",
-        vyroba: "Lůj, Třapalka, Pálivý jazyk, sada na vaření",
-        ucinek: "Výdrž + 5, působí 1 den.",
+        popis: "Hřejivá mast užívaná vojáky na prokrvení svalů.",
+        vyroba: "Lůj, Třapalka, Pálivý jazyk, miska, sada na vaření",
+        ucinek: "Výdrž +5, působí 1 den.",
         narocnost: 16
     },
     {
         id: "krevniZastavovac",
         jmeno: "Krevní zastavovač",
         popis: "Hustá tmavě zelená mast s výraznou bylinnou vůní.",
-        vyroba: "2× Loukotník, Mečovníček, Zlatníček, Lůj, sada na vaření",
-        ucinek: "Přiložený na čerstvou ránu zastaví krvácení a urychlí její zacelení. Nevyléčí samotné zranění. (Ošetření + 7)",
+        vyroba: "2× Loukotník, Mečovníček, Zlatníček, Lůj, miska, sada na vaření",
+        ucinek: "Přiložený na čerstvou ránu zastaví krvácení a urychlí její zacelení. Ošetření +7.",
         narocnost: 22
     },
     {
         id: "bezstopovyBalzam",
         jmeno: "Bezstopový balzám",
         popis: "Šedavá mast téměř bez vůně. Po nanesení zanechá na kůži lehce chladivý pocit.",
-        vyroba: "Smradlavka, Hertel, Sladký ořech, Lůj, sada na vaření",
-        ucinek: "Na 12 hodin výrazně potlačí přirozený pach těla. Ztíží stopování podle čichu.",
+        vyroba: "Smradlavka, Hertel, Sladký ořech, Lůj, miska, sada na vaření",
+        ucinek: "Na 24 hodin výrazně potlačí přirozený pach těla. Ztíží stopování podle čichu.",
         narocnost: 20
     },
     {
         id: "certik",
         jmeno: "Čertík",
         popis: "Modravá mast, která při dotyku pálí jako oheň.",
-        vyroba: "Kameníček, Pálivý jazyk, Kysle, Lůj, aparatura",
-        ucinek: "10 dávek, každá dávka zvyšuje poškození zbraně +2 (pokud alespoň 1 projde zbrojí).",
+        vyroba: "Kameníček, Pálivý jazyk, síra, Lůj, miska, aparatura",
+        ucinek: "10 dávek. Každá dávka zvyšuje poškození zbraně o 2, pokud alespoň 1 poškození projde zbrojí.",
         narocnost: 23
     }
 ];
+
 const receptyOstatniData = [
     {
         id: "cichaciSul",
         jmeno: "Čichací sůl",
         popis: "Bílý prášek s velmi ostrým, štiplavým zápachem. Uchovává se v malé lahvičce.",
         vyroba: "Třapalka, Smradlavka, sůl, miska",
-        ucinek: "Po přičichnutí okamžitě probere omráčeného nebo spícího člověka. Na krátkou dobu odstraní ospalost. (Výdrž +3)",
+        ucinek: "Po přičichnutí okamžitě probere omráčeného nebo spícího člověka. Na krátkou dobu odstraní ospalost. Výdrž +3.",
         narocnost: 15
     },
     {
         id: "kyselinaLeptava",
         jmeno: "Kyselina leptavá",
         popis: "Čirá až slabě nažloutlá kapalina. Silně leptá kov, dřevo i kůži.",
-        vyroba: "Hertel, Pálivý jazyk, voda, aparatura",
+        vyroba: "Hertel, Pálivý jazyk, alkohol, nádoba, voda, aparatura",
         ucinek: "Dokáže naleptat měkké kovy (poškození 4 Ž).",
         narocnost: 22
     },
@@ -1222,7 +1301,7 @@ const receptyOstatniData = [
         id: "kyselinaZrava",
         jmeno: "Kyselina žravá",
         popis: "Hustší tmavá kapalina, která při kontaktu s povrchem slabě kouří.",
-        vyroba: "Slizník, Plyvník, alkohol, voda, aparatura",
+        vyroba: "Slizník, Plyvník, alkohol, síra, voda, aparatura",
         ucinek: "Silná kyselina. Dokáže rozleptat i tvrdé kovy a slitiny (poškození 10 Ž).",
         narocnost: 30
     },
@@ -1230,7 +1309,7 @@ const receptyOstatniData = [
         id: "krevniStopar",
         jmeno: "Krevní stopař",
         popis: "Tmavě červený roztok, který se nanáší na předmět nebo místo, kde mohla být krev.",
-        vyroba: "Rudá nať, Červenka, Korálky, voda, sada na vaření",
+        vyroba: "Rudá nať, Červenka, Korálky, voda, nádoba, sada na vaření",
         ucinek: "Po nanesení se zbarví, pokud je v okolí krev. Čerstvá krev reaguje silněji. Funguje i na malé množství zaschlé krve.",
         narocnost: 18
     },
@@ -1238,7 +1317,7 @@ const receptyOstatniData = [
         id: "slabyJedokaz",
         jmeno: "Slabý jedokaz",
         popis: "Čirá tekutina, která se po kontaktu s jedem zbarví.",
-        vyroba: "Zlatníček, Červenka, Skřítě, voda, aparatura",
+        vyroba: "Zlatníček, Červenka, 1× Skřítě, nádoba, voda, aparatura",
         ucinek: "Odhalí přítomnost jedů (Královrah, Tělomorka) v jídle, nápoji nebo na předmětu.",
         narocnost: 25
     },
@@ -1254,25 +1333,25 @@ const receptyOstatniData = [
         id: "zlatyRytir",
         jmeno: "Zlatý rytíř",
         popis: "Zlatý parfém s příjemnou vůní.",
-        vyroba: "Sladký ořech, Zlatníček, Korálky, voda, aparatura",
-        ucinek: "Dovednosti, kde je užito Charisma +3, 6 hodin.",
+        vyroba: "Sladký ořech, Zlatníček, Korálky, nádoba, voda, aparatura",
+        ucinek: "Charisma +3, působí 6 hodin.",
         narocnost: 24
     },
     {
         id: "mluvka",
         jmeno: "Mluvka",
         popis: "Téměř bezbarvá kapalina, lehce nahořklá.",
-        vyroba: "Zlatníček, Slizník, Červenka, Kameníček, aparatura",
-        ucinek: "Po požití má postižený značně ztíženou možnost vědomě lhát. Trvá přibližně 1 hodinu.",
+        vyroba: "Zlatníček, Slizník, Červenka, Kameníček, nádoba, voda, aparatura",
+        ucinek: "Po požití má postižený značně ztíženou možnost vědomě lhát. Trvá přibližně 1 hodinu. Přetvářka −15.",
         narocnost: 30
     },
     {
         id: "cisticiRoztok",
         jmeno: "Čistící roztok",
         popis: "Průhledná tekutina s lehce antiseptickou vůní.",
-        vyroba: "Loukotník, Kameníček, Mečovníček, voda, sada na vaření",
-        ucinek: "Po vyčištění rány odstraní nečistoty a výrazně snižuje riziko zanícení. (Ošetření +5)",
-        narocnost: 19
+        vyroba: "Loukotník, Kameníček, Mečovníček, nádoba, voda, sada na vaření",
+        ucinek: "Po vyčištění rány odstraní nečistoty a výrazně snižuje riziko zanícení. Ošetření +5.",
+        narocnost: 21
     }
 ];
 
@@ -1282,7 +1361,7 @@ const receptyOstatniData = [
 
 const surovinyID = {
     "Rudá nať": "rudaNat",
-    "Plyvník": "plyvnik",
+    "Plivník": "plivnik",
     "Hertel": "hertel",
     "Zobatec": "zobatec",
     "Mečovníček": "mecovnicek",
@@ -1308,14 +1387,15 @@ const surovinyID = {
     "voda": "voda",
     "Lůj": "luj",
     "alkohol": "alkohol",
-    "síra": "sira"
+    "síra": "sira",
+    "miska": "miska",
+    "nádoba": "nadoba"
 };
 
 const pomuckyID = {
     "sada na vaření": "sadaVareni",
     "aparatura": "aparatura",
-    "miska": "miska",
-    "nádoba": "nadoba"
+  
 };
 
 
@@ -1405,6 +1485,15 @@ async function vyrobit(recept) {
         zobrazitHlasku("Nejdřív ulož alchymii.");
         return;
     }
+    if (
+    !postava.alchymie.znameRecepty ||
+    postava.alchymie.znameRecepty[recept.id] !== true
+) {
+    zobrazitHlasku(
+        "Tento recept ještě neznáš:\n" + recept.jmeno
+    );
+    return;
+}
 
     const receptData = zpracovatRecept(recept);
 
@@ -1669,6 +1758,34 @@ function zobrazitHlasku(text, nadpis = "Alchymie") {
 
     pozadi.style.display = "flex";
 }
+async function zmenitZnalostReceptu(id, znam) {
+    if (!postava) return;
+
+    if (!postava.alchymie) {
+        postava.alchymie = {};
+    }
+
+    if (!postava.alchymie.znameRecepty) {
+        postava.alchymie.znameRecepty = {};
+    }
+
+    postava.alchymie.znameRecepty[id] = znam;
+
+    const checkbox = document.getElementById("znam-" + id);
+    const bunkaNazvu = checkbox.closest("td");
+
+    bunkaNazvu.classList.toggle("recept-znamy", znam);
+
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({ data: postava })
+        .eq("id", idPostavy);
+
+    if (error) {
+        console.error("Chyba při ukládání znalosti receptu:", error);
+        zobrazitHlasku("Znalost receptu se nepodařilo uložit.");
+    }
+}
 async function ulozitAlchymiiBezHlasky() {
 
     if (!postava) return;
@@ -1676,7 +1793,7 @@ async function ulozitAlchymiiBezHlasky() {
     postava.alchymie = {
 
         rudaNat: parseInt(document.getElementById("rudaNat").textContent) || 0,
-        plyvnik: parseInt(document.getElementById("plyvnik").textContent) || 0,
+        plivnik: parseInt(document.getElementById("plivnik").textContent) || 0,
         hertel: parseInt(document.getElementById("hertel").textContent) || 0,
         zobatec: parseInt(document.getElementById("zobatec").textContent) || 0,
         mecovnicek: parseInt(document.getElementById("mecovnicek").textContent) || 0,
@@ -1702,13 +1819,15 @@ async function ulozitAlchymiiBezHlasky() {
         luj: parseInt(document.getElementById("luj").textContent) || 0,
         alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
         sira: parseInt(document.getElementById("sira").textContent) || 0,
+        miska: parseInt(document.getElementById("miska").textContent) || 0,
+        nadoba: parseInt(document.getElementById("nadoba").textContent) || 0,
 
         sadaVareni: document.getElementById("sadaVareni").checked,
         aparatura: document.getElementById("aparatura").checked,
-        miska: document.getElementById("miska").checked,
-        nadoba: document.getElementById("nadoba").checked,
+     
+                recepty: postava.alchymie.recepty || {},
 
-        recepty: postava.alchymie.recepty || {}
+        znameRecepty: postava.alchymie.znameRecepty || {}
     };
 
    const { error } = await supabaseClient
@@ -1731,7 +1850,17 @@ function zobrazitReceptyOstatni() {
         const radek = document.createElement("tr");
 
         radek.innerHTML = `
-            <td>${recept.jmeno}</td>
+            <td>
+    ${recept.jmeno}
+    <label class="znam-recept">
+        <input
+            type="checkbox"
+            id="znam-${recept.id}"
+            onchange="zmenitZnalostReceptu('${recept.id}', this.checked)"
+        >
+        Znám recept
+    </label>
+</td>
             <td>${recept.popis}</td>
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
@@ -1770,7 +1899,17 @@ function zobrazitReceptyMasti() {
         const radek = document.createElement("tr");
 
         radek.innerHTML = `
-            <td>${recept.jmeno}</td>
+            <td>
+    ${recept.jmeno}
+    <label class="znam-recept">
+        <input
+            type="checkbox"
+            id="znam-${recept.id}"
+            onchange="zmenitZnalostReceptu('${recept.id}', this.checked)"
+        >
+        Znám recept
+    </label>
+</td>
             <td>${recept.popis}</td>
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
@@ -1808,7 +1947,17 @@ function zobrazitReceptyJedy() {
         const radek = document.createElement("tr");
 
         radek.innerHTML = `
-            <td>${recept.jmeno}</td>
+            <td>
+    ${recept.jmeno}
+    <label class="znam-recept">
+        <input
+            type="checkbox"
+            id="znam-${recept.id}"
+            onchange="zmenitZnalostReceptu('${recept.id}', this.checked)"
+        >
+        Znám recept
+    </label>
+</td>
             <td>${recept.popis}</td>
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
@@ -1850,7 +1999,17 @@ function zobrazitReceptyLektvary() {
         const radek = document.createElement("tr");
 
         radek.innerHTML = `
-            <td>${recept.jmeno}</td>
+            <td>
+    ${recept.jmeno}
+    <label class="znam-recept">
+        <input
+            type="checkbox"
+            id="znam-${recept.id}"
+            onchange="zmenitZnalostReceptu('${recept.id}', this.checked)"
+        >
+        Znám recept
+    </label>
+</td>
             <td>${recept.popis}</td>
             <td>${recept.vyroba}</td>
             <td>${recept.ucinek}</td>
