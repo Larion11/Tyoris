@@ -812,7 +812,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Nároky</th>
+                <th>Obtížnost</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -832,7 +832,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Nároky</th>
+                <th>Obtížnost</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -852,7 +852,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Nároky</th>
+                <th>Obtížnost</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -872,7 +872,7 @@ const supabaseClient = window.supabase.createClient(
                 <th>Popis</th>
                 <th>Výroba</th>
                 <th>Účinek</th>
-                <th>Nároky</th>
+                <th>Obtížnost</th>
                 <th>Počet</th>
                 <th>Vyrobit</th>
             </tr>
@@ -1548,10 +1548,11 @@ async function vyrobit(recept) {
     }
 
     // Vlastní potvrzovací okno
+   
     zobrazitPotvrzeni(
-        "Podařilo se ti vyrobit:\n" +
-        recept.jmeno +
-        "?\n\n" +
+        "Výroba: " + recept.jmeno +
+        "\nObtížnost: " + recept.narocnost +
+        "\n\nPodařilo se ti výrobek vytvořit?\n\n" +
         "Rozhodni podle výsledku svého hodu kostkou.",
 
         // ANO
