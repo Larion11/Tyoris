@@ -98,8 +98,11 @@ label {
 
 .povahove-rysy {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .povahovy-rys { cursor: pointer; }
@@ -207,12 +210,7 @@ textarea {
     min-height: 150px;
     resize: vertical;
 }
-.povahove-rysy {
-    display: flex;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 30px;
-}
+
 
 .povahove-rysy .pole {
     background: rgba(18, 15, 12, 0.9);
