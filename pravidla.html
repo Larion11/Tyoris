@@ -63,58 +63,57 @@ body {
 
 /* Záložky */
 
+
+/* Záložky */
+
 .zalozky {
-
     display: flex;
-
     justify-content: center;
-
     gap: 8px;
-
     margin-bottom: 35px;
-
     border-bottom: 1px solid #6f5a3e;
-
     padding-bottom: 10px;
-
     flex-wrap: wrap;
 }
 
-
 .zalozka {
-
-    padding: 12px 22px;
-
-    font: inherit;
-
+    padding: 17px 34px;
+    font-family: inherit;
     font-size: 18px;
-
-    color: #d6c19e;
-
-    background: #2a2118;
-
-    border: 1px solid #6f5a3e;
-
+    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #403222 0%,
+        #241b13 100%
+    );
+    border: 1px solid #8a704d;
+    border-radius: 4px;
     cursor: pointer;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 230, 180, 0.08);
+    transition: background 0.2s, border-color 0.2s;
 }
-
 
 .zalozka:hover {
-
-    background: #3b2d20;
-
-    border-color: #8a704d;
+    background: linear-gradient(
+        180deg,
+        #51402b 0%,
+        #332519 100%
+    );
+    border-color: #b39468;
 }
-
 
 .zalozka.aktivni {
-
-    background: #473827;
-
-    border-color: #b39468;
-
-    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #5a452e 0%,
+        #35271a 100%
+    );
+    border-color: #c4a477;
+    color: #fff0d5;
 }
+
 
 
 /* Obsah záložky */
@@ -390,7 +389,7 @@ li {
 
                 <li>
                     Hráč si může vybrat
-                    <span class="zvyrazneni">0–2 Rysy postavy</span>.
+                    <span class="zvyrazneni">0–3 Rysy postavy</span>.
                 </li>
 
                 <li>
