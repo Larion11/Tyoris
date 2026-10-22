@@ -2914,23 +2914,38 @@ function otevritBestiar() {
         "_blank"
     );
 }
-function otevritZpravy() {
 
-    const okno = window.open("zpravy.html", "_blank");
+function otevritZpravy() {
+    const postavaId = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    if (!postavaId) {
+        alert("Nepodařilo se zjistit ID postavy.");
+        return;
+    }
+
+    const okno = window.open(
+        "zpravy.html?id=" + encodeURIComponent(postavaId),
+        "_blank"
+    );
 
     const kontrola = setInterval(async function() {
-
         if (okno && okno.closed) {
-
             clearInterval(kontrola);
-
             await zkontrolovatNoveZpravy();
         }
-
     }, 500);
 }
 
+
+
 async function zkontrolovatNoveZpravy() {
+    const postavaId = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    if (!postavaId) return;
 
     const { data: { user } } =
         await supabaseClient.auth.getUser();
@@ -2941,28 +2956,36 @@ async function zkontrolovatNoveZpravy() {
         await supabaseClient
             .from("zpravy")
             .select("*", { count: "exact", head: true })
-            .eq("prijemce_id", user.id)
+            .eq("prijemce_postava_id", Number(postavaId))
             .eq("precteno", false);
 
     if (error) {
-        console.error("Chyba při kontrole nových zpráv:", error);
+        console.error(
+            "Chyba při kontrole nových zpráv:",
+            error
+        );
         return;
     }
 
     const upozorneni =
         document.getElementById("upozorneniZpravy");
 
-    if (count > 0) {
-        upozorneni.style.display = "inline";
-    } else {
-        upozorneni.style.display = "none";
-    }
+    if (!upozorneni) return;
+
+    upozorneni.style.display =
+        count > 0 ? "inline" : "none";
 }
 
+
 function sledovatNoveZpravy() {
+    const postavaId = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    if (!postavaId) return;
 
     supabaseClient
-        .channel("nove-zpravy")
+        .channel("nove-zpravy-" + postavaId)
         .on(
             "postgres_changes",
             {
@@ -2970,25 +2993,20 @@ function sledovatNoveZpravy() {
                 schema: "public",
                 table: "zpravy"
             },
-            async function(payload) {
-
-                const { data: { user } } =
-                    await supabaseClient.auth.getUser();
-
-                if (!user) return;
-
-                if (payload.new.prijemce_id !== user.id) return;
-
-                const upozorneni =
-                    document.getElementById("upozorneniZpravy");
-
-                if (upozorneni) {
-                    upozorneni.style.display = "inline";
+            function(payload) {
+                if (
+                    Number(payload.new.prijemce_postava_id)
+                    !== Number(postavaId)
+                ) {
+                    return;
                 }
+
+                zkontrolovatNoveZpravy();
             }
         )
         .subscribe();
 }
+
 </script>
 
 </body>

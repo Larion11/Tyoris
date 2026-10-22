@@ -160,7 +160,15 @@ const supabaseClient = window.supabase.createClient(
 <div id="obsahZprav"></div>
 <script>
 async function zobrazitDorucene() {
+    const postavaId = new URLSearchParams(
+        window.location.search
+    ).get("id");
 
+    if (!postavaId) {
+        document.getElementById("obsahZprav").innerHTML =
+            "<p>Chybí ID postavy. Otevři zprávy z archu postavy.</p>";
+        return;
+    }
     const obsah = document.getElementById("obsahZprav");
 
     const { data: { user } } =
@@ -175,7 +183,7 @@ async function zobrazitDorucene() {
     await supabaseClient
         .from("zpravy")
         .select("*")
-        .eq("prijemce_id", user.id)
+        .eq("prijemce_postava_id", Number(postavaId))
         .order("odeslano", { ascending: false });
 
 if (error) {
@@ -185,38 +193,54 @@ if (error) {
 }
 
 const odesilatele = [...new Set(
-    zpravy.map(zprava => zprava.odesilatel_id)
+    zpravy
+        .map(zprava => zprava.odesilatel_postava_id)
+        .filter(id => id !== null)
 )];
 
 let jmenaOdesilatelu = {};
 
 if (odesilatele.length > 0) {
-
     const { data: postavy, error: chybaPostav } =
         await supabaseClient
             .from("verejne_postavy")
-            .select("jmeno, user_id")
-            .in("user_id", odesilatele);
+            .select("id, jmeno")
+            .in("id", odesilatele);
 
-   if (!chybaPostav && postavy) {
-    postavy.forEach(function(postava) {
-        jmenaOdesilatelu[postava.user_id] = postava.jmeno;
-    });
+    if (!chybaPostav && postavy) {
+        postavy.forEach(function(postava) {
+            jmenaOdesilatelu[postava.id] = postava.jmeno;
+        });
+    }
 }
 
 obsah.innerHTML = "";
 
 if (zpravy.length === 0) {
     obsah.innerHTML = "<p>Nemáš žádné zprávy.</p>";
+
+    if (window.opener && !window.opener.closed) {
+        window.opener.zkontrolovatNoveZpravy();
+    }
+
     return;
 }
 
 for (const zprava of zpravy) {
 if (!zprava.precteno) {
-    await supabaseClient
+    const { error: chybaPrecteni } = await supabaseClient
         .from("zpravy")
         .update({ precteno: true })
-        .eq("id", zprava.id);
+        .eq("id", zprava.id)
+        .eq("prijemce_postava_id", Number(postavaId));
+
+    if (chybaPrecteni) {
+        console.error(
+            "Chyba při označení zprávy jako přečtené:",
+            chybaPrecteni
+        );
+    }
+
 }
 
     const radek = document.createElement("div");
@@ -231,7 +255,7 @@ radek.innerHTML =
 (zprava.predmet || "(bez předmětu)") +
 "</strong><br>" +
 "<small style='color:#c5a878;'>Od: " +
-(jmenaOdesilatelu[zprava.odesilatel_id] || "Neznámý odesílatel") +
+(jmenaOdesilatelu[zprava.odesilatel_postava_id] || "Neznámý odesílatel") +
 "</small><br>" +
 "<small style='color:#b9a68b;'>" +
 (zprava.odeslano
@@ -283,8 +307,11 @@ obsahRadku.appendChild(tlacitkoSmazat);
 radek.appendChild(obsahRadku);
        obsah.appendChild(radek);
 }
+if (window.opener && !window.opener.closed) {
+    window.opener.zkontrolovatNoveZpravy();
 }
 }
+
 
 async function novaZprava() {
 
@@ -301,7 +328,7 @@ async function novaZprava() {
    const { data: postavy, error } =
     await supabaseClient
         .from("verejne_postavy")
-        .select("jmeno, user_id")
+        .select("id, jmeno, user_id")
         .order("jmeno");
 
     if (error) {
@@ -314,7 +341,7 @@ async function novaZprava() {
 
     postavy.forEach(function(postava) {
        moznosti +=
-    `<option value="${postava.user_id}">${postava.jmeno}</option>`;
+    `<option value="${postava.id}" data-user-id="${postava.user_id}">${postava.jmeno}</option>`;
     });
 
     obsah.innerHTML = `
@@ -416,7 +443,10 @@ async function odeslatZpravu() {
         return;
     }
 
-    const prijemce = document.getElementById("prijemceZpravy").value;
+    const vyberPrijemce = document.getElementById("prijemceZpravy");
+const prijemce = vyberPrijemce.value;
+const prijemceUserId =
+    vyberPrijemce.selectedOptions[0]?.dataset.userId;
     const predmet = document.getElementById("predmetZpravy").value.trim();
     const text = document.getElementById("textZpravy").value.trim();
 
@@ -430,16 +460,27 @@ async function odeslatZpravu() {
         return;
     }
 
-    const { error } =
-        await supabaseClient
-            .from("zpravy")
-            .insert({
-                odesilatel_id: user.id,
-                prijemce_id: prijemce,
-                predmet: predmet || null,
-                text: text,
-                precteno: false
-            });
+ const postavaId = new URLSearchParams(
+    window.location.search
+).get("id");
+
+if (!postavaId) {
+    zobrazitPotvrzeni("Chybí ID odesílající postavy.");
+    return;
+}
+
+const { error } =
+    await supabaseClient
+        .from("zpravy")
+        .insert({
+            odesilatel_id: user.id,
+            prijemce_id: prijemceUserId,
+            odesilatel_postava_id: Number(postavaId),
+            prijemce_postava_id: Number(prijemce),
+            predmet: predmet || null,
+            text: text,
+            precteno: false
+        });
 
     if (error) {
         console.error("Chyba při odesílání zprávy:", error);
@@ -500,7 +541,10 @@ async function smazatZpravu(id) {
             .from("zpravy")
             .delete()
             .eq("id", id)
-            .eq("prijemce_id", user.id)
+            .eq(
+    "prijemce_postava_id",
+    Number(new URLSearchParams(window.location.search).get("id"))
+)
             .select("id");
 
         if (error) {
