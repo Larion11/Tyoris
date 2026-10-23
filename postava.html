@@ -1106,10 +1106,10 @@ Vybrat portrét
 
         <div class="magicke-hodnoty-prava">
 
-            <div class="magicka-hodnota">
-                <div class="sekce-hlavicka">Náboj</div>
-                <input type="number" id="naboj" min="0" value="0">
-            </div>
+<div class="magicka-hodnota">
+    <div class="sekce-hlavicka">Náboj</div>
+    <input type="number" id="naboj" min="0" value="0">
+</div>
 
             <div class="magicka-hodnota">
                 <div class="sekce-hlavicka">Dosah</div>
@@ -1596,10 +1596,12 @@ function prepocitatPoZmeneEfektu() {
     aktualizovatZobrazeneAtributy();
 
     prepocitatZivoty();
+    prepocitatDosahAHorizont();
     prepocitatOdolnosti();
     prepocitatZbroj();
     prepocitatBoj();
     prepocitatSchopnosti();
+    
 }
 
 
@@ -1625,6 +1627,23 @@ function prepocitatZivoty() {
     });
 
     document.getElementById("maxZivoty").textContent = maxZivoty;
+}
+
+function prepocitatDosahAHorizont() {
+    const moudrost = hodnotaAtributu("moudrost");
+    const intuice = hodnotaAtributu("intuice");
+
+    // Součet bodů u naučených kouzel zatím nemáme napojený.
+    const bodyKouzel = 0;
+
+    const dosah = (2 * moudrost) + bodyKouzel;
+    const horizont = dosah + intuice + (bodyKouzel / 2);
+
+    const vystupDosah = document.getElementById("dosah");
+    const vystupHorizont = document.getElementById("horizont");
+
+    if (vystupDosah) vystupDosah.textContent = dosah;
+    if (vystupHorizont) vystupHorizont.textContent = horizont;
 }
 
 
@@ -2088,6 +2107,7 @@ function zmenitAtribut(id, zmena) {
     aktualizovatZobrazeneAtributy();
 
     prepocitatZivoty();
+    prepocitatDosahAHorizont();
     prepocitatOdolnosti();
     prepocitatZbroj();
     prepocitatBoj();
@@ -2530,6 +2550,7 @@ document.getElementById("zbyvajiciBodyAtributu").textContent =
     Math.max(0, 32 - soucetAtributu);
 
     document.getElementById("zivoty").value = postava.zivoty || "";
+    document.getElementById("naboj").value = postava.naboj ?? 0;
 
  
 
@@ -2565,6 +2586,7 @@ document.getElementById("zbyvajiciBodyAtributu").textContent =
     nacistSchopnosti();
 
     prepocitatZivoty();
+    prepocitatDosahAHorizont();
     prepocitatOdolnosti();
     prepocitatZbroj();
     prepocitatBoj();
@@ -2934,6 +2956,7 @@ postava.atributyRozdeleny =
 
 
     postava.zivoty = document.getElementById("zivoty").value;
+    postava.naboj = document.getElementById("naboj").value;
 
     
     for (let i = 1; i <= 5; i++) {
