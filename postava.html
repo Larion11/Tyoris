@@ -1629,24 +1629,45 @@ function prepocitatZivoty() {
     document.getElementById("maxZivoty").textContent = maxZivoty;
 }
 
-function prepocitatDosahAHorizont() {
+
+async function prepocitatDosahAHorizont() {
     const moudrost = hodnotaAtributu("moudrost");
     const intuice = hodnotaAtributu("intuice");
 
-    // Součet bodů u naučených kouzel zatím nemáme napojený.
-    const bodyKouzel = 0;
+    try {
+        const { data: radek, error } = await supabaseClient
+            .from("postavy")
+            .select("data")
+            .eq("id", id)
+            .single();
 
-    const dosah = (2 * moudrost) + bodyKouzel;
-    const horizont = dosah + intuice + (bodyKouzel / 2);
+        if (error) throw error;
 
-    const vystupDosah = document.getElementById("dosah");
-    const vystupHorizont = document.getElementById("horizont");
+        const dataPostavy = radek.data || {};
+        const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+        const hodnotySfery = dataPostavy.hodnotySfery || {};
 
-    if (vystupDosah) vystupDosah.textContent = dosah;
-    if (vystupHorizont) vystupHorizont.textContent = horizont;
+        let bodyKouzel = 0;
+
+        if (dataPostavy.magickaSkola === "prazdnota") {
+            bodyKouzel = naucenaKouzla.reduce((soucet, klicKouzla) => {
+                return soucet +
+                    Math.max(0, Number(hodnotySfery[klicKouzla]) || 0);
+            }, 0);
+        }
+
+        const dosah = (2 * moudrost) + bodyKouzel;
+        const horizont = Math.floor(dosah + intuice + (bodyKouzel / 2));
+
+        document.getElementById("dosah").textContent = dosah;
+        document.getElementById("horizont").textContent = horizont;
+    } catch (chyba) {
+        console.error(
+            "Nepodařilo se vypočítat Dosah a Horizont:",
+            chyba
+        );
+    }
 }
-
-
 
 
 
