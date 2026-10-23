@@ -569,10 +569,7 @@ checkbox.addEventListener("change", async function () {
 nacistVyberSkoly();
 </script>
 <script>
-const klientKouzlaMatera = window.supabase.createClient(
-    "https://xahjqqyjaxbhdmairkfr.supabase.co",
-    "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu"
-);
+const klientKouzlaMatera = supabaseClient;
 
 const idPostavyMatera =
     new URLSearchParams(window.location.search).get("id");
