@@ -369,7 +369,93 @@ textarea {
 }
 
 .zivoty-lomitko { font-size: 24px; }
-.zivoty-radek input { width: 80px; 
+.zivoty-radek input {
+    width: 80px;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+
+.magicke-hodnoty {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    
+}
+
+/* Levá buňka – Životy */
+.zivoty-bunka {
+    flex: 0 0 auto;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    padding: 10px 14px;
+}
+
+.zivoty-bunka .zivoty-radek {
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+/* Pravá buňka – Náboj, Dosah a Horizont */
+.magicke-hodnoty-prava {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: stretch;
+    gap: 12px;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    padding: 10px 14px;
+    
+}
+
+.magicka-hodnota {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+.magicka-hodnota .sekce-hlavicka {
+    text-align: center;
+}
+
+.magicka-hodnota input[type="number"] {
+    width: 80px;
+    box-sizing: border-box;
+    max-width: 100%;
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+.magicka-hodnota > div:last-child {
+    padding: 12px 8px;
+    font-size: 20px;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .magicke-hodnoty {
+        flex-direction: column;
+    }
+
+    .zivoty-bunka {
+        align-self: flex-start;
+    }
+
+    .magicke-hodnoty-prava {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .magicka-hodnota .sekce-hlavicka {
+        padding: 8px 4px;
+        font-size: 16px;
+    }
 }
 
 
@@ -1003,16 +1089,41 @@ Vybrat portrét
 
 <div class="statistiky-spodni">
 
+
 <div class="sekce zivoty-efekty">
-<div class="sekce-hlavicka">Životy</div>
 
-<div class="zivoty-radek">
-<span class="zivoty-max" id="maxZivoty">5</span>
-<span class="zivoty-lomitko">/</span>
-<input type="number" id="zivoty" min="0">
-</div>
+    <div class="magicke-hodnoty">
 
-<div class="sekce-hlavicka">Efekty</div>
+        <div class="zivoty-bunka">
+            <div class="sekce-hlavicka">Životy</div>
+            <div class="zivoty-radek">
+                <span class="zivoty-max" id="maxZivoty">5</span>
+                <span class="zivoty-lomitko">/</span>
+                <input type="number" id="zivoty" min="0">
+            </div>
+        </div>
+
+        <div class="magicke-hodnoty-prava">
+
+            <div class="magicka-hodnota">
+                <div class="sekce-hlavicka">Náboj</div>
+                <input type="number" id="naboj" min="0" value="0">
+            </div>
+
+            <div class="magicka-hodnota">
+                <div class="sekce-hlavicka">Dosah</div>
+                <div id="dosah">0</div>
+            </div>
+
+            <div class="magicka-hodnota">
+                <div class="sekce-hlavicka">Horizont</div>
+                <div id="horizont">0</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sekce-hlavicka">Efekty</div>
 
 
 <div class="efekty">
