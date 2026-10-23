@@ -7,23 +7,14 @@
 <title>Moc Prázdnota</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    min-height: 100%;
-}
-
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
 body {
     background: transparent;
     color: #e8dfcf;
     font-family: Georgia, "Times New Roman", serif;
     padding: 0;
 }
-
 .page {
     width: 100%;
     min-height: 100vh;
@@ -31,7 +22,6 @@ body {
     padding: 24px 28px 30px;
     background: rgba(18,15,12,.96);
 }
-
 h1 {
     margin: 0 0 12px;
     text-align: center;
@@ -40,7 +30,6 @@ h1 {
     letter-spacing: 2px;
     text-shadow: 0 3px 8px #000;
 }
-
 .nadpis-magie {
     position: relative;
     margin-bottom: 12px;
@@ -110,13 +99,67 @@ h1 {
         transform: none;
     }
 }
-.podnadpis {
-    text-align: center;
-    color: #d6c19e;
-    font-size: 25px;
-    margin: 0 0 40px;
+.nadpis-kouzla {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 42px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #6f5a3e;
 }
 
+.nadpis-kouzla h2 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex: 1;
+}
+
+.vyber-kouzla {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    color: #d6c19e;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vyber-kouzla input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vyber-kouzla input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.vyber-kouzla input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
+.vyber-kouzla input:disabled {
+    opacity: 1;
+    cursor: default;
+}
 h2 {
     margin: 42px 0 20px;
     padding-bottom: 10px;
@@ -125,26 +168,19 @@ h2 {
     font-size: 29px;
     font-weight: normal;
 }
-
 h3 {
     margin: 0 0 18px;
     color: #d6c19e;
     font-size: 23px;
     font-weight: normal;
 }
-
-
-.kouzlo {
-    margin-bottom: 38px;
-}
-
+.kouzlo { margin-bottom: 38px; }
 .urovne {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     align-items: stretch;
 }
-
 .uroven {
     min-width: 0;
     margin: 0;
@@ -153,27 +189,12 @@ h3 {
     border: 1px solid #57442f;
     border-radius: 4px;
 }
-
-@media (max-width: 800px) {
-    .urovne {
-        grid-template-columns: 1fr;
-    }
-}
-
-
 .popis {
     margin: 0 0 20px;
     font-size: 18px;
     line-height: 1.65;
 }
-
-
-.parametry {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
+.parametry { display: flex; flex-direction: column; gap: 10px; }
 .parametr {
     padding: 12px 14px;
     background: rgba(0,0,0,.2);
@@ -181,79 +202,21 @@ h3 {
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
-
 .parametr strong {
     display: block;
     margin-bottom: 4px;
     color: #d6c19e;
     font-weight: normal;
 }
-
-
-.zpet {
-    display: block;
-    margin: 45px auto 0;
-    padding: 17px 34px;
-    font-family: inherit;
-    font-size: 22px;
-    color: #eee4d2;
-    background: linear-gradient(
-        180deg,
-        #403222 0%,
-        #241b13 100%
-    );
-    border: 1px solid #8a704d;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow:
-        0 3px 8px rgba(0,0,0,.5),
-        inset 0 1px 0 rgba(255,230,180,.08);
-    transition: background .2s, border-color .2s;
+@media (max-width: 800px) {
+    .urovne { grid-template-columns: 1fr; }
 }
-
-.zpet:hover {
-    background: linear-gradient(
-        180deg,
-        #51402b 0%,
-        #332519 100%
-    );
-    border-color: #b39468;
-}
-
 @media (max-width: 600px) {
-    body {
-        padding: 20px 10px;
-    }
-
-    .page {
-        width: 100%;
-        padding: 20px 14px 25px;
-    }
-
-    h2 {
-        font-size: 25px;
-    }
-
-    h3 {
-        font-size: 21px;
-    }
-
-    .uroven {
-        padding: 16px;
-    }
-
-    .parametry {
-        grid-template-columns: 1fr;
-    }
-
-    .popis {
-        font-size: 17px;
-    }
-
-    .zpet {
-        font-size: 19px;
-        padding: 14px 28px;
-    }
+    .page { width: 100%; padding: 20px 14px 25px; }
+    h2 { font-size: 25px; }
+    h3 { font-size: 21px; }
+    .uroven { padding: 16px; }
+    .popis { font-size: 17px; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -274,7 +237,13 @@ h3 {
 <!-- ZAPÁLENÍ / UHAŠENÍ -->
 
 <section class="kouzlo">
-<h2>Zapálení / Uhašení</h2>
+<div class="nadpis-kouzla">
+    <h2>Zapálení / Uhašení</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="zapalení_uhaseni">
+        Naučeno
+    </label>
+</div>
 
 <div class="urovne">
 <div class="uroven">
@@ -321,7 +290,13 @@ Zapálení velkého hořlavého místa nebo předmětu
 <!-- ZMĚNA POČASÍ -->
 
 <section class="kouzlo">
-<h2>Změna počasí</h2>
+<div class="nadpis-kouzla">
+    <h2>Změna počasí</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="zmena_pocasi">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -367,7 +342,13 @@ na ploše 1 × 1 km.
 <!-- SVĚTLO / TMA -->
 
 <section class="kouzlo">
-<h2>Světlo / Tma</h2>
+<div class="nadpis-kouzla">
+    <h2>Světlo / Tma</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="svetlo_tma">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -422,7 +403,13 @@ vystřelit do prostoru, kde setrvává po určitou dobu.
 <!-- CHLAD / TEPLO -->
 
 <section class="kouzlo">
-<h2>Chlad / Teplo</h2>
+<div class="nadpis-kouzla">
+    <h2>Chlad / Teplo</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="chlad_teplo">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -469,8 +456,13 @@ o rozloze 30 × 30 m.
 
 <!-- OHNIVÝ / LEDOVÝ PROJEKTIL -->
 
-<section class="kouzlo">
+<div class="nadpis-kouzla">
 <h2>Ohnivý / Ledový projektil</h2>
+<label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="ohnivy_ledovy_projektil">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -525,7 +517,13 @@ střelecký útok s bonusem +1.
 <!-- ZVUK / TICHO -->
 
 <section class="kouzlo">
-<h2>Zvuk / Ticho</h2>
+<div class="nadpis-kouzla">
+    <h2>Zvuk / Ticho</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="zvuk_ticho">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -674,7 +672,100 @@ checkbox.addEventListener("change", async function () {
 
 nacistVyberSkoly();
 </script>
+<script>
+const klientKouzla = supabaseClient;
 
+const idPostavyKouzla =
+    new URLSearchParams(window.location.search).get("id");
+
+const seznamCheckboxu = document.querySelectorAll(
+    ".vyber-kouzla input[data-kouzlo]"
+);
+
+async function nacistNaucenaKouzla() {
+    seznamCheckboxu.forEach(cb => cb.disabled = true);
+
+    if (!idPostavyKouzla) {
+        console.error("Chybí ID postavy.");
+        return;
+    }
+
+    const { data: radek, error } = await klientKouzla
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavyKouzla)
+        .single();
+
+    if (error) {
+        console.error("Nepodařilo se načíst kouzla:", error);
+        alert("Nepodařilo se načíst naučená kouzla.");
+        return;
+    }
+
+    const dataPostavy = radek.data || {};
+    const maSpravnouSkolu = dataPostavy.magickaSkola === "prazdnota";
+    const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+    seznamCheckboxu.forEach(cb => {
+        cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
+        cb.disabled = !maSpravnouSkolu;
+    });
+}
+
+seznamCheckboxu.forEach(cb => {
+    cb.addEventListener("change", async () => {
+        cb.disabled = true;
+
+        const { data: radek, error: chybaNacteni } = await klientKouzla
+            .from("postavy")
+            .select("data")
+            .eq("id", idPostavyKouzla)
+            .single();
+
+        if (chybaNacteni) {
+            alert("Nepodařilo se načíst postavu.");
+            console.error(chybaNacteni);
+            await nacistNaucenaKouzla();
+            return;
+        }
+
+        const dataPostavy = radek.data || {};
+
+        if (dataPostavy.magickaSkola !== "prazdnota") {
+            alert("Postava nemá vybranou školu Prázdnota.");
+            await nacistNaucenaKouzla();
+            return;
+        }
+
+        const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+        if (cb.checked) {
+            if (!naucenaKouzla.includes(cb.dataset.kouzlo)) {
+                naucenaKouzla.push(cb.dataset.kouzlo);
+            }
+        } else {
+            const index = naucenaKouzla.indexOf(cb.dataset.kouzlo);
+            if (index !== -1) naucenaKouzla.splice(index, 1);
+        }
+
+        dataPostavy.naucenaKouzla = naucenaKouzla;
+
+        const { error: chybaUlozeni } = await klientKouzla
+            .from("postavy")
+            .update({ data: dataPostavy })
+            .eq("id", idPostavyKouzla);
+
+        if (chybaUlozeni) {
+            alert("Kouzlo se nepodařilo uložit.");
+            console.error(chybaUlozeni);
+        }
+
+        await nacistNaucenaKouzla();
+    });
+});
+
+nacistNaucenaKouzla();
+</script>
 </body>
 </html>
 

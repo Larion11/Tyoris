@@ -97,6 +97,67 @@ h1 {
         transform: none;
     }
 }
+.nadpis-kouzla {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 42px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #6f5a3e;
+}
+
+.nadpis-kouzla h2 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex: 1;
+}
+
+.vyber-kouzla {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    color: #d6c19e;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vyber-kouzla input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vyber-kouzla input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.vyber-kouzla input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
+.vyber-kouzla input:disabled {
+    opacity: 1;
+    cursor: default;
+}
 h2 {
     margin: 42px 0 20px;
     padding-bottom: 10px;
@@ -168,7 +229,13 @@ h3 {
     </label>
 </div>
 <section class="kouzlo">
-<h2>Detekce</h2>
+<div class="nadpis-kouzla">
+    <h2>Detekce</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_detekce">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -200,7 +267,13 @@ h3 {
 </div>
 </section>
 <section class="kouzlo">
-<h2>Tělo z kamene</h2>
+<div class="nadpis-kouzla">
+    <h2>Tělo z kamene</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_telo_z_kamene">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -238,7 +311,13 @@ h3 {
 </div>
 </section>
 <section class="kouzlo">
-<h2>Telekineze</h2>
+<div class="nadpis-kouzla">
+    <h2>Telekineze</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_telekineze">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -273,7 +352,13 @@ h3 {
 </div>
 </section>
 <section class="kouzlo">
-<h2>Změna stavu</h2>
+<div class="nadpis-kouzla">
+    <h2>Změna stavu</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_zmena_stavu">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -308,7 +393,13 @@ h3 {
 </div>
 </section>
 <section class="kouzlo">
-<h2>Kamenná sprška</h2>
+<div class="nadpis-kouzla">
+    <h2>Kamenná sprška</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_kamenna_sprska">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -343,7 +434,13 @@ h3 {
 </div>
 </section>
 <section class="kouzlo">
-<h2>Formování</h2>
+<div class="nadpis-kouzla">
+    <h2>Formování</h2>
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="matera_formovani">
+        Naučeno
+    </label>
+</div>
 <div class="urovne">
 <div class="uroven">
 <h3>1. úroveň</h3>
@@ -471,6 +568,100 @@ checkbox.addEventListener("change", async function () {
 
 nacistVyberSkoly();
 </script>
+<script>
+const klientKouzlaMatera = window.supabase.createClient(
+    "https://xahjqqyjaxbhdmairkfr.supabase.co",
+    "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu"
+);
 
+const idPostavyMatera =
+    new URLSearchParams(window.location.search).get("id");
+
+const checkboxyMatera = document.querySelectorAll(
+    '.vyber-kouzla input[data-kouzlo^="matera_"]'
+);
+
+async function nacistKouzlaMatera() {
+    checkboxyMatera.forEach(cb => cb.disabled = true);
+
+    if (!idPostavyMatera) return;
+
+    const { data: radek, error } = await klientKouzlaMatera
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavyMatera)
+        .single();
+
+    if (error) {
+        console.error("Nepodařilo se načíst kouzla Matera:", error);
+        alert("Nepodařilo se načíst naučená kouzla.");
+        return;
+    }
+
+    const dataPostavy = radek.data || {};
+    const maSpravnouSkolu = dataPostavy.magickaSkola === "matera";
+    const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+    checkboxyMatera.forEach(cb => {
+        cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
+        cb.disabled = !maSpravnouSkolu;
+    });
+}
+
+checkboxyMatera.forEach(cb => {
+    cb.addEventListener("change", async () => {
+        cb.disabled = true;
+
+        const { data: radek, error: chybaNacteni } =
+            await klientKouzlaMatera
+                .from("postavy")
+                .select("data")
+                .eq("id", idPostavyMatera)
+                .single();
+
+        if (chybaNacteni) {
+            alert("Nepodařilo se načíst postavu.");
+            console.error(chybaNacteni);
+            await nacistKouzlaMatera();
+            return;
+        }
+
+        const dataPostavy = radek.data || {};
+
+        if (dataPostavy.magickaSkola !== "matera") {
+            alert("Postava nemá vybranou školu Matera.");
+            await nacistKouzlaMatera();
+            return;
+        }
+
+        const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+        if (cb.checked) {
+            if (!naucenaKouzla.includes(cb.dataset.kouzlo)) {
+                naucenaKouzla.push(cb.dataset.kouzlo);
+            }
+        } else {
+            const index = naucenaKouzla.indexOf(cb.dataset.kouzlo);
+            if (index !== -1) naucenaKouzla.splice(index, 1);
+        }
+
+        dataPostavy.naucenaKouzla = naucenaKouzla;
+
+        const { error: chybaUlozeni } = await klientKouzlaMatera
+            .from("postavy")
+            .update({ data: dataPostavy })
+            .eq("id", idPostavyMatera);
+
+        if (chybaUlozeni) {
+            alert("Kouzlo se nepodařilo uložit.");
+            console.error(chybaUlozeni);
+        }
+
+        await nacistKouzlaMatera();
+    });
+});
+
+nacistKouzlaMatera();
+</script>
 </body>
 </html>
