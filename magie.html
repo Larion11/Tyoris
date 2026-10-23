@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sféristika – Moc Prázdnota</title>
+<title>Sféristika</title>
 
 <style>
 * {
@@ -20,26 +19,26 @@ body {
 body {
     background-image: url("pozadi-magie.jpg");
     background-position: center;
-            background-size: cover;
-            background-attachment: fixed;
+    background-size: cover;
+    background-attachment: fixed;
     color: #e8dfcf;
     font-family: Georgia, "Times New Roman", serif;
-    padding: 40px 20px;
+    padding: 30px 20px;
 }
 
 .page {
-    width: min(1100px, 95vw);
+    width: min(1200px, 96vw);
     margin: 0 auto;
-    padding: 35px 45px 45px;
+    padding: 30px 35px 35px;
     border: 2px solid #6f5a3e;
     box-shadow:
         0 0 40px rgba(0,0,0,.75),
         inset 0 0 50px rgba(0,0,0,.4);
-    background: rgba(18,15,12,.88);
+    background: rgba(18,15,12,.90);
 }
 
 h1 {
-    margin: 0 0 12px;
+    margin: 0 0 25px;
     text-align: center;
     font-size: clamp(32px, 5vw, 52px);
     font-weight: normal;
@@ -47,98 +46,20 @@ h1 {
     text-shadow: 0 3px 8px #000;
 }
 
-.podnadpis {
-    text-align: center;
-    color: #d6c19e;
-    font-size: 25px;
-    margin: 0 0 40px;
-}
-
-h2 {
-    margin: 42px 0 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #6f5a3e;
-    color: #d6c19e;
-    font-size: 29px;
-    font-weight: normal;
-}
-
-h3 {
-    margin: 0 0 18px;
-    color: #d6c19e;
-    font-size: 23px;
-    font-weight: normal;
-}
-
-
-.kouzlo {
-    margin-bottom: 38px;
-}
-
-.urovne {
+.vyber {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
-    align-items: stretch;
+    margin-bottom: 20px;
 }
 
-.uroven {
+button {
     min-width: 0;
-    margin: 0;
-    padding: 18px;
-    background: rgba(42,33,24,.55);
-    border: 1px solid #57442f;
-    border-radius: 4px;
-}
-
-@media (max-width: 800px) {
-    .urovne {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-.popis {
-    margin: 0 0 20px;
-    font-size: 18px;
-    line-height: 1.65;
-}
-
-
-.parametry {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.parametr {
-    padding: 12px 14px;
-    background: rgba(0,0,0,.2);
-    border-left: 2px solid #8a704d;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.parametr strong {
-    display: block;
-    margin-bottom: 4px;
-    color: #d6c19e;
-    font-weight: normal;
-}
-
-
-.zpet {
-    display: block;
-    margin: 45px auto 0;
-    padding: 17px 34px;
+    padding: 16px 18px;
     font-family: inherit;
-    font-size: 22px;
+    font-size: clamp(17px, 2vw, 22px);
     color: #eee4d2;
-    background: linear-gradient(
-        180deg,
-        #403222 0%,
-        #241b13 100%
-    );
+    background: linear-gradient(180deg, #403222 0%, #241b13 100%);
     border: 1px solid #8a704d;
     border-radius: 4px;
     cursor: pointer;
@@ -148,52 +69,55 @@ h3 {
     transition: background .2s, border-color .2s;
 }
 
-.zpet:hover {
-    background: linear-gradient(
-        180deg,
-        #51402b 0%,
-        #332519 100%
-    );
+button:hover {
+    background: linear-gradient(180deg, #51402b 0%, #332519 100%);
     border-color: #b39468;
 }
 
-@media (max-width: 600px) {
+button.aktivni {
+    background: linear-gradient(180deg, #665033 0%, #382719 100%);
+    border-color: #d0ad77;
+    box-shadow: 0 0 10px rgba(190,165,125,.25);
+}
+
+.obsah {
+    width: 100%;
+    height: 75vh;
+    min-height: 520px;
+    display: block;
+    border: 1px solid #6f5a3e;
+    background: rgba(18,15,12,.96);
+}
+
+.zpet {
+    display: block;
+    margin: 22px auto 0;
+    padding: 12px 28px;
+    font-size: 19px;
+}
+
+@media (max-width: 650px) {
     body {
-        padding: 20px 10px;
+        padding: 15px 8px;
     }
 
     .page {
         width: 100%;
-        padding: 25px 16px 30px;
+        padding: 22px 12px;
     }
 
-    .podnadpis {
-        font-size: 21px;
-    }
-
-    h2 {
-        font-size: 25px;
-    }
-
-    h3 {
-        font-size: 21px;
-    }
-
-    .uroven {
-        padding: 16px;
-    }
-
-    .parametry {
+    .vyber {
         grid-template-columns: 1fr;
+        gap: 9px;
     }
 
-    .popis {
-        font-size: 17px;
+    button {
+        padding: 13px 12px;
     }
 
-    .zpet {
-        font-size: 19px;
-        padding: 14px 28px;
+    .obsah {
+        height: 72vh;
+        min-height: 420px;
     }
 }
 </style>
@@ -201,320 +125,45 @@ h3 {
 
 <body>
 <main class="page">
+    <h1>Sféristika</h1>
 
-<h1>Sféristika</h1>
-<p class="podnadpis">Moc Prázdnota</p>
+    <nav class="vyber" aria-label="Výběr magické školy">
+        <button type="button" class="aktivni"
+            data-soubor="moc_prazdnota.html"
+            onclick="zobrazitMoc(this)">Moc Prázdnota</button>
 
-<!-- ZAPÁLENÍ / UHAŠENÍ -->
+        <button type="button"
+            data-soubor="moc_zivot.html"
+            onclick="zobrazitMoc(this)">Moc Život</button>
 
-<section class="kouzlo">
-<h2>Zapálení / Uhašení</h2>
+        <button type="button"
+            data-soubor="moc_matera.html"
+            onclick="zobrazitMoc(this)">Moc Matera</button>
+    </nav>
 
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Zapálení snadno hořlavého malého předmětu
-(suchá tráva, papír, knot) / uhašení malého plamínku.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>11</div>
-<div class="parametr"><strong>Náboj</strong>5</div>
-<div class="parametr"><strong>Délka vyvolání</strong>3 akce / −1 akce za +1 náboj</div>
-</div>
-</div>
+<iframe id="obsahMagie" class="obsah" src="" title="Obsah vybrané magické školy"></iframe>
 
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Zapálení lehce hořlavého většího předmětu
-(suché dřevo) / uhašení ohně.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>17</div>
-<div class="parametr"><strong>Náboj</strong>8</div>
-<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / −1 akce za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Zapálení velkého hořlavého místa nebo předmětu
-(dřevěný dům, strom, kus pole) / uhašení požáru.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>25</div>
-<div class="parametr"><strong>Náboj</strong>13</div>
-<div class="parametr"><strong>Délka vyvolání</strong>10 akcí / −1 akce za +1 náboj</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- ZMĚNA POČASÍ -->
-
-<section class="kouzlo">
-<h2>Změna počasí</h2>
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Vytvoření mlhy, slabého větru nebo lehkého deště
-na ploše 10 × 10 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>16</div>
-<div class="parametr"><strong>Náboj</strong>10</div>
-<div class="parametr"><strong>Délka vyvolání</strong>30 akcí / −2 akce za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Vytvoření husté mlhy, silného větru nebo deště
-na ploše 100 × 100 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>22</div>
-<div class="parametr"><strong>Náboj</strong>16</div>
-<div class="parametr"><strong>Délka vyvolání</strong>40 akcí / −3 akce za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Vytvoření husté mlhy, bouře, silného větru nebo malého tornáda
-na ploše 1 × 1 km.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>28</div>
-<div class="parametr"><strong>Náboj</strong>21</div>
-<div class="parametr"><strong>Délka vyvolání</strong>60 akcí / −4 akce za +2 náboje</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- SVĚTLO / TMA -->
-
-<section class="kouzlo">
-<h2>Světlo / Tma</h2>
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává slabé světlo
-nebo lehce pohlcuje světlo. Zdroj se vytvoří v jeho ruce a může jej
-následovat po určitou dobu, nebo jej sesílatel může vystřelit do prostoru,
-kde setrvává po určitou dobu.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>9</div>
-<div class="parametr"><strong>Náboj</strong>5</div>
-<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>2 akce</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává silné světlo
-nebo pohlcuje světlo. Zdroj se vytvoří v jeho ruce a může jej
-následovat po určitou dobu, nebo jej sesílatel může vystřelit do prostoru,
-kde setrvává po určitou dobu.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>13</div>
-<div class="parametr"><strong>Náboj</strong>7</div>
-<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává oslepující
-světlo nebo pohlcuje veškeré světlo. Zdroj se vytvoří v jeho ruce
-a může jej následovat po určitou dobu, nebo jej sesílatel může
-vystřelit do prostoru, kde setrvává po určitou dobu.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>18</div>
-<div class="parametr"><strong>Náboj</strong>9</div>
-<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- CHLAD / TEPLO -->
-
-<section class="kouzlo">
-<h2>Chlad / Teplo</h2>
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Sesílatel lehce zvýší nebo sníží teplotu na malém prostoru
-o rozloze 5 × 5 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>8</div>
-<div class="parametr"><strong>Náboj</strong>4</div>
-<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Sesílatel zvýší nebo sníží teplotu na prostoru o rozloze 15 × 15 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>15</div>
-<div class="parametr"><strong>Náboj</strong>8</div>
-<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Sesílatel extrémně zvýší nebo sníží teplotu na prostoru
-o rozloze 30 × 30 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>24</div>
-<div class="parametr"><strong>Náboj</strong>12</div>
-<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>10 akcí / −2 akce za +1 náboj</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- OHNIVÝ / LEDOVÝ PROJEKTIL -->
-
-<section class="kouzlo">
-<h2>Ohnivý / Ledový projektil</h2>
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Sesílateli se v ruce vytvoří slabý magický projektil, který může
-vystřelit na cíl nebo do prostoru. Střelba projektilu se počítá jako
-střelecký útok s bonusem +1.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>5; ignoruje polovinu zbroje. Může zapálit snadno zápalné cíle.</div>
-<div class="parametr"><strong>Poškození – Ledový projektil</strong>5; po dopadu se roztříští v okruhu 2 m a způsobí zranění 2.</div>
-<div class="parametr"><strong>Obtížnost</strong>12</div>
-<div class="parametr"><strong>Náboj</strong>6</div>
-<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Sesílateli se v ruce vytvoří magický projektil, který může vystřelit
-na cíl nebo do prostoru. Střelba projektilu se počítá jako
-střelecký útok s bonusem +1.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>11; ignoruje polovinu zbroje. Může zapálit zápalné předměty.</div>
-<div class="parametr"><strong>Poškození – Ledový projektil</strong>11; po dopadu se roztříští v okruhu 4 m a způsobí zranění 5.</div>
-<div class="parametr"><strong>Obtížnost</strong>21</div>
-<div class="parametr"><strong>Náboj</strong>11</div>
-<div class="parametr"><strong>Délka vyvolání</strong>4 akce / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Sesílateli se v ruce vytvoří silný magický projektil, který může
-vystřelit na cíl nebo do prostoru. Střelba projektilu se počítá jako
-střelecký útok s bonusem +1.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>20; ignoruje polovinu zbroje. Může zapálit zápalné předměty.</div>
-<div class="parametr"><strong>Poškození – Ledový projektil</strong>20; po dopadu se roztříští v okruhu 5 m a způsobí zranění 10.</div>
-<div class="parametr"><strong>Obtížnost</strong>26</div>
-<div class="parametr"><strong>Náboj</strong>19</div>
-<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- ZVUK / TICHO -->
-
-<section class="kouzlo">
-<h2>Zvuk / Ticho</h2>
-<div class="urovne">
-<div class="uroven">
-<h3>1. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří konkrétní slabý zvuk, který zná, nebo lehce ztlumí
-všechny zvuky v okolí na ploše 10 × 10 m, a to až do vzdálenosti 30 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>7</div>
-<div class="parametr"><strong>Náboj</strong>9</div>
-<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>2. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří konkrétní hlasitý zvuk, který zná, nebo ztlumí
-všechny zvuky v okolí na ploše 30 × 30 m, a to až do vzdálenosti 80 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>14</div>
-<div class="parametr"><strong>Náboj</strong>13</div>
-<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +1 náboj</div>
-<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-
-<div class="uroven">
-<h3>3. úroveň</h3>
-<p class="popis">
-Sesílatel vytvoří konkrétní extrémně hlasitý zvuk, který zná,
-nebo absolutní nepřerušitelné ticho v okolí na ploše 50 × 50 m,
-a to až do vzdálenosti 130 m.
-</p>
-<div class="parametry">
-<div class="parametr"><strong>Poškození – Hlasitý zvuk</strong>4; může způsobit status Psychický šok. Hod na sebeovládání.</div>
-<div class="parametr"><strong>Obtížnost</strong>23</div>
-<div class="parametr"><strong>Náboj</strong>19</div>
-<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +2 náboje</div>
-<div class="parametr"><strong>Délka vyvolání</strong>7 akcí / zkrácení o 1 akci za +1 náboj</div>
-</div>
-</div>
-</div>
-</section>
-
-<button
-    class="zpet"
-    type="button"
-    onclick="window.close()"
->
-    Zavřít
-</button>
-
+    <button type="button" class="zpet" onclick="window.close()">Zavřít</button>
 </main>
+
+<script>
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+
+if (idPostavy) {
+    document.getElementById("obsahMagie").src =
+        `moc_prazdnota.html?id=${encodeURIComponent(idPostavy)}`;
+}
+function zobrazitMoc(tlacitko) {
+    const iframe = document.getElementById("obsahMagie");
+    const soubor = tlacitko.dataset.soubor;
+
+   iframe.src = `${soubor}?id=${encodeURIComponent(idPostavy)}`;
+
+    document.querySelectorAll(".vyber button").forEach(button => {
+        button.classList.toggle("aktivni", button === tlacitko);
+    });
+}
+</script>
 </body>
 </html>

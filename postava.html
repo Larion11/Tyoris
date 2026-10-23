@@ -2905,7 +2905,10 @@ function otevritAlchemii() {
     );
 }
 function otevritMagii() {
-    window.open("magie.html", "_blank");
+    window.open(
+        "magie.html?id=" + encodeURIComponent(id),
+        "_blank"
+    );
 }
 
 function otevritBestiar() {

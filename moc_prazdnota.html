@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moc Prázdnota</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: transparent;
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+    padding: 0;
+}
+
+.page {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px 28px 30px;
+    background: rgba(18,15,12,.96);
+}
+
+h1 {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: clamp(32px, 5vw, 40px);
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px #000;
+}
+
+.nadpis-magie {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.nadpis-magie h1 {
+    margin-bottom: 0;
+}
+
+.vyber-magie {
+    position: absolute;
+    left: calc(50% + 180px);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    color: #d6c19e;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.vyber-magie input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.vyber-magie input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.vyber-magie input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
+.vyber-magie input:disabled {
+    opacity: 1;
+    cursor: default;
+}
+@media (max-width: 600px) {
+    .nadpis-magie {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .vyber-magie {
+        position: static;
+        transform: none;
+    }
+}
+.podnadpis {
+    text-align: center;
+    color: #d6c19e;
+    font-size: 25px;
+    margin: 0 0 40px;
+}
+
+h2 {
+    margin: 42px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #6f5a3e;
+    color: #d6c19e;
+    font-size: 29px;
+    font-weight: normal;
+}
+
+h3 {
+    margin: 0 0 18px;
+    color: #d6c19e;
+    font-size: 23px;
+    font-weight: normal;
+}
+
+
+.kouzlo {
+    margin-bottom: 38px;
+}
+
+.urovne {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
+.uroven {
+    min-width: 0;
+    margin: 0;
+    padding: 18px;
+    background: rgba(42,33,24,.55);
+    border: 1px solid #57442f;
+    border-radius: 4px;
+}
+
+@media (max-width: 800px) {
+    .urovne {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.popis {
+    margin: 0 0 20px;
+    font-size: 18px;
+    line-height: 1.65;
+}
+
+
+.parametry {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.parametr {
+    padding: 12px 14px;
+    background: rgba(0,0,0,.2);
+    border-left: 2px solid #8a704d;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.parametr strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #d6c19e;
+    font-weight: normal;
+}
+
+
+.zpet {
+    display: block;
+    margin: 45px auto 0;
+    padding: 17px 34px;
+    font-family: inherit;
+    font-size: 22px;
+    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #403222 0%,
+        #241b13 100%
+    );
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow:
+        0 3px 8px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,230,180,.08);
+    transition: background .2s, border-color .2s;
+}
+
+.zpet:hover {
+    background: linear-gradient(
+        180deg,
+        #51402b 0%,
+        #332519 100%
+    );
+    border-color: #b39468;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .page {
+        width: 100%;
+        padding: 20px 14px 25px;
+    }
+
+    h2 {
+        font-size: 25px;
+    }
+
+    h3 {
+        font-size: 21px;
+    }
+
+    .uroven {
+        padding: 16px;
+    }
+
+    .parametry {
+        grid-template-columns: 1fr;
+    }
+
+    .popis {
+        font-size: 17px;
+    }
+
+    .zpet {
+        font-size: 19px;
+        padding: 14px 28px;
+    }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+<main class="page">
+
+<div class="nadpis-magie">
+    <h1>Moc Prázdnota</h1>
+    <label class="vyber-magie">
+        <input type="checkbox" id="vybratPrazdnotu">
+        Vybrat školu
+    </label>
+</div>
+
+<!-- ZAPÁLENÍ / UHAŠENÍ -->
+
+<section class="kouzlo">
+<h2>Zapálení / Uhašení</h2>
+
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Zapálení snadno hořlavého malého předmětu
+(suchá tráva, papír, knot) / uhašení malého plamínku.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>11</div>
+<div class="parametr"><strong>Náboj</strong>5</div>
+<div class="parametr"><strong>Délka vyvolání</strong>3 akce / −1 akce za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Zapálení lehce hořlavého většího předmětu
+(suché dřevo) / uhašení ohně.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>17</div>
+<div class="parametr"><strong>Náboj</strong>8</div>
+<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / −1 akce za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Zapálení velkého hořlavého místa nebo předmětu
+(dřevěný dům, strom, kus pole) / uhašení požáru.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>25</div>
+<div class="parametr"><strong>Náboj</strong>13</div>
+<div class="parametr"><strong>Délka vyvolání</strong>10 akcí / −1 akce za +1 náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ZMĚNA POČASÍ -->
+
+<section class="kouzlo">
+<h2>Změna počasí</h2>
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Vytvoření mlhy, slabého větru nebo lehkého deště
+na ploše 10 × 10 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>16</div>
+<div class="parametr"><strong>Náboj</strong>10</div>
+<div class="parametr"><strong>Délka vyvolání</strong>30 akcí / −2 akce za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Vytvoření husté mlhy, silného větru nebo deště
+na ploše 100 × 100 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>22</div>
+<div class="parametr"><strong>Náboj</strong>16</div>
+<div class="parametr"><strong>Délka vyvolání</strong>40 akcí / −3 akce za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Vytvoření husté mlhy, bouře, silného větru nebo malého tornáda
+na ploše 1 × 1 km.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>28</div>
+<div class="parametr"><strong>Náboj</strong>21</div>
+<div class="parametr"><strong>Délka vyvolání</strong>60 akcí / −4 akce za +2 náboje</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SVĚTLO / TMA -->
+
+<section class="kouzlo">
+<h2>Světlo / Tma</h2>
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává slabé světlo
+nebo lehce pohlcuje světlo. Zdroj se vytvoří v jeho ruce a může jej
+následovat po určitou dobu, nebo jej sesílatel může vystřelit do prostoru,
+kde setrvává po určitou dobu.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>9</div>
+<div class="parametr"><strong>Náboj</strong>5</div>
+<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>2 akce</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává silné světlo
+nebo pohlcuje světlo. Zdroj se vytvoří v jeho ruce a může jej
+následovat po určitou dobu, nebo jej sesílatel může vystřelit do prostoru,
+kde setrvává po určitou dobu.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>13</div>
+<div class="parametr"><strong>Náboj</strong>7</div>
+<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří malý zdroj světla nebo tmy, který vydává oslepující
+světlo nebo pohlcuje veškeré světlo. Zdroj se vytvoří v jeho ruce
+a může jej následovat po určitou dobu, nebo jej sesílatel může
+vystřelit do prostoru, kde setrvává po určitou dobu.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>18</div>
+<div class="parametr"><strong>Náboj</strong>9</div>
+<div class="parametr"><strong>Doba účinku</strong>5 minut / +5 minut za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CHLAD / TEPLO -->
+
+<section class="kouzlo">
+<h2>Chlad / Teplo</h2>
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Sesílatel lehce zvýší nebo sníží teplotu na malém prostoru
+o rozloze 5 × 5 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>8</div>
+<div class="parametr"><strong>Náboj</strong>4</div>
+<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Sesílatel zvýší nebo sníží teplotu na prostoru o rozloze 15 × 15 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>15</div>
+<div class="parametr"><strong>Náboj</strong>8</div>
+<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Sesílatel extrémně zvýší nebo sníží teplotu na prostoru
+o rozloze 30 × 30 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>24</div>
+<div class="parametr"><strong>Náboj</strong>12</div>
+<div class="parametr"><strong>Doba účinku</strong>Ihned / +1 minuta za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>10 akcí / −2 akce za +1 náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- OHNIVÝ / LEDOVÝ PROJEKTIL -->
+
+<section class="kouzlo">
+<h2>Ohnivý / Ledový projektil</h2>
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Sesílateli se v ruce vytvoří slabý magický projektil, který může
+vystřelit na cíl nebo do prostoru. Střelba projektilu se počítá jako
+střelecký útok s bonusem +1.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>5; ignoruje polovinu zbroje. Může zapálit snadno zápalné cíle.</div>
+<div class="parametr"><strong>Poškození – Ledový projektil</strong>5; po dopadu se roztříští v okruhu 2 m a způsobí zranění 2.</div>
+<div class="parametr"><strong>Obtížnost</strong>12</div>
+<div class="parametr"><strong>Náboj</strong>6</div>
+<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Sesílateli se v ruce vytvoří magický projektil, který může vystřelit
+na cíl nebo do prostoru. Střelba projektilu se počítá jako
+střelecký útok s bonusem +1.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>11; ignoruje polovinu zbroje. Může zapálit zápalné předměty.</div>
+<div class="parametr"><strong>Poškození – Ledový projektil</strong>11; po dopadu se roztříští v okruhu 4 m a způsobí zranění 5.</div>
+<div class="parametr"><strong>Obtížnost</strong>21</div>
+<div class="parametr"><strong>Náboj</strong>11</div>
+<div class="parametr"><strong>Délka vyvolání</strong>4 akce / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Sesílateli se v ruce vytvoří silný magický projektil, který může
+vystřelit na cíl nebo do prostoru. Střelba projektilu se počítá jako
+střelecký útok s bonusem +1.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Poškození – Ohnivý projektil</strong>20; ignoruje polovinu zbroje. Může zapálit zápalné předměty.</div>
+<div class="parametr"><strong>Poškození – Ledový projektil</strong>20; po dopadu se roztříští v okruhu 5 m a způsobí zranění 10.</div>
+<div class="parametr"><strong>Obtížnost</strong>26</div>
+<div class="parametr"><strong>Náboj</strong>19</div>
+<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ZVUK / TICHO -->
+
+<section class="kouzlo">
+<h2>Zvuk / Ticho</h2>
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří konkrétní slabý zvuk, který zná, nebo lehce ztlumí
+všechny zvuky v okolí na ploše 10 × 10 m, a to až do vzdálenosti 30 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>7</div>
+<div class="parametr"><strong>Náboj</strong>9</div>
+<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>3 akce / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří konkrétní hlasitý zvuk, který zná, nebo ztlumí
+všechny zvuky v okolí na ploše 30 × 30 m, a to až do vzdálenosti 80 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>14</div>
+<div class="parametr"><strong>Náboj</strong>13</div>
+<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +1 náboj</div>
+<div class="parametr"><strong>Délka vyvolání</strong>5 akcí / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">
+Sesílatel vytvoří konkrétní extrémně hlasitý zvuk, který zná,
+nebo absolutní nepřerušitelné ticho v okolí na ploše 50 × 50 m,
+a to až do vzdálenosti 130 m.
+</p>
+<div class="parametry">
+<div class="parametr"><strong>Poškození – Hlasitý zvuk</strong>4; může způsobit status Psychický šok. Hod na sebeovládání.</div>
+<div class="parametr"><strong>Obtížnost</strong>23</div>
+<div class="parametr"><strong>Náboj</strong>19</div>
+<div class="parametr"><strong>Délka působení</strong>Ihned / +1 minuta za +2 náboje</div>
+<div class="parametr"><strong>Délka vyvolání</strong>7 akcí / zkrácení o 1 akci za +1 náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+
+
+</main>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+const checkbox = document.getElementById("vybratPrazdnotu");
+const mojeSkola = "prazdnota";
+
+async function nacistVyberSkoly() {
+    if (!idPostavy) {
+        checkbox.disabled = true;
+        alert("Chybí ID postavy. Školu nelze vybrat.");
+        return;
+    }
+
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        checkbox.disabled = true;
+        alert("Výběr školy se nepodařilo načíst.");
+        console.error(error);
+        return;
+    }
+
+    const vybranaSkola = radek.data?.magickaSkola ?? null;
+
+    checkbox.checked = vybranaSkola === mojeSkola;
+
+    // Pokud už má postava vybranou jakoukoli školu,
+    // výběr je trvalý a checkbox se uzamkne.
+    checkbox.disabled = vybranaSkola !== null;
+}
+
+checkbox.addEventListener("change", async function () {
+    if (!checkbox.checked) return;
+
+    checkbox.disabled = true;
+
+    const { data: radek, error: chybaNacteni } = await supabaseClient
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavy)
+        .single();
+
+    if (chybaNacteni) {
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        alert("Nepodařilo se ověřit výběr školy.");
+        console.error(chybaNacteni);
+        return;
+    }
+
+    const postavaData = radek.data || {};
+    const vybranaSkola = postavaData.magickaSkola ?? null;
+
+    if (vybranaSkola !== null) {
+        checkbox.checked = vybranaSkola === mojeSkola;
+        checkbox.disabled = true;
+
+        if (vybranaSkola !== mojeSkola) {
+            alert("Tato postava už má vybranou jinou magickou školu.");
+        }
+
+        return;
+    }
+
+    postavaData.magickaSkola = mojeSkola;
+
+    const { error: chybaUlozeni } = await supabaseClient
+        .from("postavy")
+        .update({ data: postavaData })
+        .eq("id", idPostavy);
+
+    if (chybaUlozeni) {
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        alert("Výběr školy se nepodařilo uložit.");
+        console.error(chybaUlozeni);
+        return;
+    }
+
+    checkbox.checked = true;
+    checkbox.disabled = true;
+});
+
+nacistVyberSkoly();
+</script>
+
+</body>
+</html>
+
