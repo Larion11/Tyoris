@@ -129,10 +129,11 @@ h1 {
     white-space: nowrap;
 }
 
+
 .hodnota-sfery input[type="number"] {
-    width: 80px;
+    width: 55px;
     box-sizing: border-box;
-    padding: 6px;
+    padding: 6px 2px;
     text-align: center;
     font-family: Georgia, "Times New Roman", serif;
     font-size: 18px;
@@ -140,9 +141,38 @@ h1 {
     background: #17130f;
     border: 1px solid #8a704d;
     border-radius: 4px;
+    appearance: textfield;
+    -moz-appearance: textfield;
 }
+
+.hodnota-sfery input[type="number"]::-webkit-inner-spin-button,
+.hodnota-sfery input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tlacitko-sfery {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    line-height: 1;
+    color: #eee4d2;
+    background: linear-gradient(180deg, #403222 0%, #241b13 100%);
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tlacitko-sfery:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .vyber-kouzla {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
@@ -150,8 +180,9 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
+    justify-self: end;
+    width: max-content;
 }
-
 .vyber-kouzla input {
     appearance: none;
     -webkit-appearance: none;
@@ -242,6 +273,19 @@ h3 {
     h3 { font-size: 21px; }
     .uroven { padding: 16px; }
     .popis { font-size: 17px; }
+}
+/* Úroveň kouzla, kterou postava ovládá */
+.uroven.umim {
+    background: rgba(120, 91, 48, 0.28);
+    border: 1px solid #c5a15e;
+    box-shadow: inset 0 0 12px rgba(197, 161, 94, 0.12);
+}
+
+/* Úroveň, kterou postava zatím neovládá */
+.uroven.neumim {
+    background: rgba(20, 16, 12, 0.65);
+    border: 1px solid #403326;
+    opacity: 0.65;
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -870,18 +914,72 @@ seznamCheckboxu.forEach(cb => {
 
 nacistNaucenaKouzla();
 </script>
+
 <script>
 const poleHodnotSfery = document.querySelectorAll("[data-hodnota-sfery]");
+const idPostavySfery = new URLSearchParams(window.location.search).get("id");
+const klientSfery = supabaseClient;
 
+// Vytvoření tlačítek − a + u všech hodnot Sféry.
+poleHodnotSfery.forEach(pole => {
+    const ovladani = document.createElement("span");
+    ovladani.style.display = "inline-flex";
+    ovladani.style.alignItems = "center";
+    ovladani.style.gap = "5px";
+
+    const minus = document.createElement("button");
+    minus.type = "button";
+    minus.className = "tlacitko-sfery";
+    minus.textContent = "−";
+    minus.setAttribute("aria-label", "Snížit hodnotu Sféry");
+
+    const plus = document.createElement("button");
+    plus.type = "button";
+    plus.className = "tlacitko-sfery";
+    plus.textContent = "+";
+    plus.setAttribute("aria-label", "Zvýšit hodnotu Sféry");
+
+    pole.parentNode.insertBefore(ovladani, pole);
+    ovladani.append(minus, pole, plus);
+
+    minus.addEventListener("click", () => {
+        if (pole.disabled) return;
+        pole.value = Math.max(0, Number(pole.value || 0) - 1);
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    plus.addEventListener("click", () => {
+        if (pole.disabled) return;
+        pole.value = Math.max(0, Number(pole.value || 0) + 1);
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+});
+function zvyraznitUrovneSfer() {
+    document.querySelectorAll(".kouzlo").forEach(kouzlo => {
+        const pole = kouzlo.querySelector("[data-hodnota-sfery]");
+        if (!pole) return;
+
+        const hodnota = Number(pole.value) || 0;
+
+        kouzlo.querySelectorAll(".uroven").forEach((uroven, index) => {
+            const urovnaUmi = hodnota >= index * 5;
+            uroven.classList.toggle("umim", urovnaUmi);
+            uroven.classList.toggle("neumim", !urovnaUmi);
+        });
+    });
+}
 async function nacistHodnotySfery() {
     poleHodnotSfery.forEach(pole => pole.disabled = true);
 
-    if (!idPostavyKouzla) return;
+    if (!idPostavySfery) {
+        console.error("Chybí ID postavy.");
+        return;
+    }
 
-    const { data: radek, error } = await klientKouzla
+    const { data: radek, error } = await klientSfery
         .from("postavy")
         .select("data")
-        .eq("id", idPostavyKouzla)
+        .eq("id", idPostavySfery)
         .single();
 
     if (error) {
@@ -896,18 +994,20 @@ async function nacistHodnotySfery() {
         pole.value = hodnoty[pole.dataset.hodnotaSfery] ?? 0;
         pole.disabled = radek.data?.magickaSkola !== "prazdnota";
     });
+ zvyraznitUrovneSfer();
 }
 
 poleHodnotSfery.forEach(pole => {
     pole.addEventListener("change", async () => {
         const hodnota = Math.max(0, Math.floor(Number(pole.value) || 0));
         pole.value = hodnota;
+        zvyraznitUrovneSfer();
         pole.disabled = true;
 
-        const { data: radek, error: chybaNacteni } = await klientKouzla
+        const { data: radek, error: chybaNacteni } = await klientSfery
             .from("postavy")
             .select("data")
-            .eq("id", idPostavyKouzla)
+            .eq("id", idPostavySfery)
             .single();
 
         if (chybaNacteni) {
@@ -928,10 +1028,10 @@ poleHodnotSfery.forEach(pole => {
         dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
         dataPostavy.hodnotySfery[pole.dataset.hodnotaSfery] = hodnota;
 
-        const { error: chybaUlozeni } = await klientKouzla
+        const { error: chybaUlozeni } = await klientSfery
             .from("postavy")
             .update({ data: dataPostavy })
-            .eq("id", idPostavyKouzla);
+            .eq("id", idPostavySfery);
 
         if (chybaUlozeni) {
             alert("Hodnotu Sféry se nepodařilo uložit.");
@@ -943,7 +1043,9 @@ poleHodnotSfery.forEach(pole => {
 });
 
 nacistHodnotySfery();
+zvyraznitUrovneSfer();
 </script>
+
 </body>
 </html>
 
