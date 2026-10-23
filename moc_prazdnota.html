@@ -854,9 +854,9 @@ async function nacistNaucenaKouzla() {
     const maSpravnouSkolu = dataPostavy.magickaSkola === "prazdnota";
     const naucenaKouzla = dataPostavy.naucenaKouzla || [];
 
-    seznamCheckboxu.forEach(cb => {
+      seznamCheckboxu.forEach(cb => {
         cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
-        cb.disabled = !maSpravnouSkolu;
+        cb.disabled = !maSpravnouSkolu || cb.checked;
     });
 }
 
@@ -909,10 +909,16 @@ seznamCheckboxu.forEach(cb => {
         }
 
         await nacistNaucenaKouzla();
+
+        if (cb.checked) {
+            cb.disabled = true;
+        }
     });
 });
 
-nacistNaucenaKouzla();
+nacistNaucenaKouzla().then(() => {
+    nacistHodnotySfery();
+});
 </script>
 
 <script>
@@ -957,12 +963,20 @@ poleHodnotSfery.forEach(pole => {
 function zvyraznitUrovneSfer() {
     document.querySelectorAll(".kouzlo").forEach(kouzlo => {
         const pole = kouzlo.querySelector("[data-hodnota-sfery]");
-        if (!pole) return;
+        const checkbox = kouzlo.querySelector("[data-kouzlo]");
 
-        const hodnota = Number(pole.value) || 0;
+        if (!pole || !checkbox) return;
+
+        const nauceno = checkbox.checked;
+        const hodnota = nauceno ? Number(pole.value) || 0 : 0;
+
+        if (!nauceno) {
+            pole.value = "";
+        }
 
         kouzlo.querySelectorAll(".uroven").forEach((uroven, index) => {
-            const urovnaUmi = hodnota >= index * 5;
+            const urovnaUmi = nauceno && hodnota >= index * 5;
+
             uroven.classList.toggle("umim", urovnaUmi);
             uroven.classList.toggle("neumim", !urovnaUmi);
         });
@@ -1043,7 +1057,7 @@ poleHodnotSfery.forEach(pole => {
 });
 
 nacistHodnotySfery();
-zvyraznitUrovneSfer();
+
 </script>
 
 </body>
