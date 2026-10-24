@@ -1058,6 +1058,80 @@ poleHodnotSfery.forEach(pole => {
 
 nacistHodnotySfery();
 
+async function nacistParametryMagie() {
+    const { data, error } = await supabaseClient
+        .from("magicke_parametry")
+        .select("*")
+        .eq("skola", "Prázdnota");
+
+    if (error) {
+        console.error("Chyba při načítání parametrů magie:", error);
+        return;
+    }
+
+    document.querySelectorAll(".kouzlo").forEach(kouzloEl => {
+        const inputSfery = kouzloEl.querySelector("[data-hodnota-sfery]");
+        if (!inputSfery) return;
+
+        const klicKouzla = inputSfery.dataset.hodnotaSfery;
+
+        kouzloEl.querySelectorAll(".uroven").forEach((urovenEl, index) => {
+            const cisloUrovne = index + 1;
+
+            urovenEl.querySelectorAll(".parametr").forEach(prvek => {
+                const nadpis = prvek.querySelector("strong");
+                if (!nadpis) return;
+
+                const nazevParametru = nadpis.textContent.trim();
+
+                const radek = data.find(p =>
+                    p.kouzlo === klicKouzla &&
+                    p.uroven === cisloUrovne &&
+                    p.parametr === nazevParametru
+                );
+
+                if (!radek) return;
+
+                const textHodnoty =
+                    radek.zaklad_text && radek.zaklad_text.trim() !== ""
+                        ? radek.zaklad_text
+                        : `${radek.hodnota ?? ""}${radek.jednotka ? " " + radek.jednotka : ""}`;
+
+                let zobrazeni = textHodnoty;
+
+                if (
+                    radek.pravidlo_navysovani &&
+                    radek.zmena_hodnoty !== null &&
+                    radek.zmena_naboje !== null
+                ) {
+                    const zmena = Number(radek.zmena_hodnoty);
+                    const jednotka = radek.zmena_jednotka
+                        ? " " + radek.zmena_jednotka
+                        : "";
+
+                    const slovniZmena = zmena < 0
+                        ? `−${Math.abs(zmena)}${jednotka}`
+                        : `+${zmena}${jednotka}`;
+
+                    zobrazeni += ` / ${slovniZmena} za +${radek.zmena_naboje} Náboj`;
+                }
+
+                Array.from(prvek.childNodes).forEach(uzel => {
+                    if (uzel !== nadpis) uzel.remove();
+                });
+
+                prvek.appendChild(
+                    document.createTextNode(" " + zobrazeni)
+                );
+            });
+        });
+    });
+
+    console.log("Parametry Prázdnoty načteny:", data);
+}
+
+nacistParametryMagie();
+
 </script>
 
 </body>

@@ -323,27 +323,45 @@ h3 {
 <h3>1. úroveň</h3>
 <p class="popis">Sesilatel se dotkne souvislé hmoty, například skály, země nebo kamenné zdi, a prostřednictvím ní vnímá její strukturu a uspořádání v okolí. Dokáže rozpoznat dutiny, chodby, průchody, změny v materiálu a přítomnost objektů či tvorů, kteří se nacházejí v dosahu kouzla až do vzdálenosti 100 m. V závislosti na materiálu, dutinách a dalších okolnostech se může vnímání zhoršovat (určí PJ).</p>
 <div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>8</div>
-<div class="parametr"><strong>Náboj</strong>5</div>
-<div class="parametr"><strong>Délka vyvolání</strong>20 akcí / −2 akce +1 Náboj</div>
+    <div class="parametr" data-parametr="Obtížnost">
+        <strong>Obtížnost</strong>8
+    </div>
+    <div class="parametr" data-parametr="Náboj">
+        <strong>Náboj</strong>5
+    </div>
+    <div class="parametr" data-parametr="Délka vyvolání">
+        <strong>Délka vyvolání</strong>20 akcí / −2 akce +1 Náboj
+    </div>
 </div>
 </div>
 <div class="uroven">
 <h3>2. úroveň</h3>
 <p class="popis">Sesilatel se dotkne souvislé hmoty, například skály, země nebo kamenné zdi, a prostřednictvím ní vnímá její strukturu a uspořádání v okolí. Dokáže rozpoznat dutiny, chodby, průchody, změny v materiálu a přítomnost objektů či tvorů, kteří se nacházejí v dosahu kouzla až do vzdálenosti 500 m. V závislosti na materiálu, dutinách a dalších okolnostech se může vnímání zhoršovat (určí PJ).</p>
 <div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>12</div>
-<div class="parametr"><strong>Náboj</strong>7</div>
-<div class="parametr"><strong>Délka vyvolání</strong>30 akcí / −3 akce +1 Náboj</div>
+    <div class="parametr" data-parametr="Obtížnost">
+        <strong>Obtížnost</strong>12
+    </div>
+    <div class="parametr" data-parametr="Náboj">
+        <strong>Náboj</strong>7
+    </div>
+    <div class="parametr" data-parametr="Délka vyvolání">
+        <strong>Délka vyvolání</strong>30 akcí / −3 akce +1 Náboj
+    </div>
 </div>
 </div>
 <div class="uroven">
 <h3>3. úroveň</h3>
 <p class="popis">Sesilatel se dotkne souvislé hmoty, například skály, země nebo kamenné zdi, a prostřednictvím ní vnímá její strukturu a uspořádání v okolí. Dokáže rozpoznat dutiny, chodby, průchody, změny v materiálu a přítomnost objektů či tvorů, kteří se nacházejí v dosahu kouzla až do vzdálenosti 1 km. V závislosti na materiálu, dutinách a dalších okolnostech se může vnímání zhoršovat (určí PJ).</p>
 <div class="parametry">
-<div class="parametr"><strong>Obtížnost</strong>16</div>
-<div class="parametr"><strong>Náboj</strong>10</div>
-<div class="parametr"><strong>Délka vyvolání</strong>50 akcí / −4 akce +1 Náboj</div>
+    <div class="parametr" data-parametr="Obtížnost">
+        <strong>Obtížnost</strong>16
+    </div>
+    <div class="parametr" data-parametr="Náboj">
+        <strong>Náboj</strong>10
+    </div>
+    <div class="parametr" data-parametr="Délka vyvolání">
+        <strong>Délka vyvolání</strong>50 akcí / −4 akce +1 Náboj
+    </div>
 </div>
 </div>
 </div>
@@ -924,7 +942,86 @@ async function inicializovatMateru() {
         alert("Nepodařilo se načíst kouzla nebo jejich hodnoty.");
     }
 }
+// Načtení parametrů magie z databáze
+// Načtení parametrů magie z databáze
 
+async function nacistParametryMagie() {
+    const { data, error } = await supabaseClient
+        .from("magicke_parametry")
+        .select("*")
+        .eq("skola", "Matera");
+
+    if (error) {
+        console.error("Chyba při načítání parametrů magie:", error);
+        return;
+    }
+
+    document.querySelectorAll(".kouzlo").forEach(kouzloEl => {
+        const inputSfery = kouzloEl.querySelector("[data-hodnota-sfery]");
+        if (!inputSfery) return;
+
+        const klicKouzla = inputSfery.dataset.hodnotaSfery;
+
+        kouzloEl.querySelectorAll(".uroven").forEach((urovenEl, index) => {
+            const cisloUrovne = index + 1;
+
+            urovenEl.querySelectorAll(".parametr").forEach(prvek => {
+                const nadpis = prvek.querySelector("strong");
+                if (!nadpis) return;
+
+                const nazevParametru = nadpis.textContent.trim();
+
+                const radek = data.find(p =>
+                    p.kouzlo === klicKouzla &&
+                    p.uroven === cisloUrovne &&
+                    p.parametr === nazevParametru
+                );
+
+                if (!radek) return;
+
+                const textHodnoty = radek.zaklad_text &&
+                    radek.zaklad_text.trim() !== ""
+                    ? radek.zaklad_text
+                    : `${radek.hodnota ?? ""}${radek.jednotka ? " " + radek.jednotka : ""}`;
+
+                // Základní hodnota
+                let zobrazeni = textHodnoty;
+
+                // Pravidlo navyšování, pokud je definované
+                if (
+                    radek.pravidlo_navysovani &&
+                    radek.zmena_hodnoty !== null &&
+                    radek.zmena_naboje !== null
+                ) {
+                    const zmena = Number(radek.zmena_hodnoty);
+                    const jednotka = radek.zmena_jednotka
+                        ? " " + radek.zmena_jednotka
+                        : "";
+                    const naboj = Number(radek.zmena_naboje);
+
+                    const slovniZmena = zmena < 0
+                        ? `−${Math.abs(zmena)}${jednotka}`
+                        : `+${zmena}${jednotka}`;
+
+                    zobrazeni += ` / ${slovniZmena} za +${naboj} Náboj`;
+                }
+
+                // Odstraní staré textové uzly, ale ponechá nadpis
+                Array.from(prvek.childNodes).forEach(uzel => {
+                    if (uzel !== nadpis) {
+                        uzel.remove();
+                    }
+                });
+
+                prvek.appendChild(document.createTextNode(" " + zobrazeni));
+            });
+        });
+    });
+
+    console.log("Parametry Matera načteny:", data);
+}
+
+nacistParametryMagie();
 inicializovatMateru();
 </script>
 
