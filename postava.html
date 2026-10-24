@@ -1647,20 +1647,26 @@ async function prepocitatDosahAHorizont() {
         const naucenaKouzla = dataPostavy.naucenaKouzla || [];
         const hodnotySfery = dataPostavy.hodnotySfery || {};
 
-        let bodyKouzel = 0;
-
-        if (dataPostavy.magickaSkola === "prazdnota") {
-            bodyKouzel = naucenaKouzla.reduce((soucet, klicKouzla) => {
+        const bodyKouzel = naucenaKouzla.reduce(
+            (soucet, klicKouzla) => {
                 return soucet +
-                    Math.max(0, Number(hodnotySfery[klicKouzla]) || 0);
-            }, 0);
-        }
+                    Math.max(
+                        0,
+                        Number(hodnotySfery[klicKouzla]) || 0
+                    );
+            },
+            0
+        );
 
         const dosah = (2 * moudrost) + bodyKouzel;
-        const horizont = Math.floor(dosah + intuice + (bodyKouzel / 2));
+
+        const horizont = Math.floor(
+            dosah + intuice + (bodyKouzel / 2)
+        );
 
         document.getElementById("dosah").textContent = dosah;
         document.getElementById("horizont").textContent = horizont;
+
     } catch (chyba) {
         console.error(
             "Nepodařilo se vypočítat Dosah a Horizont:",
@@ -1668,7 +1674,6 @@ async function prepocitatDosahAHorizont() {
         );
     }
 }
-
 
 
 function prepocitatOdolnosti() {
@@ -2861,7 +2866,11 @@ nacistZbrane();
 nacistPostavu();
 zkontrolovatNoveZpravy();
 sledovatNoveZpravy();
-
+setInterval(function() {
+    if (postava) {
+        prepocitatDosahAHorizont();
+    }
+}, 3000);
 function zobrazitPortret(data) {
     const obrazek = document.getElementById("obrazekPostavy");
     const bezPortretu = document.getElementById("bezPortretu");

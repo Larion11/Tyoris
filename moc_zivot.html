@@ -97,25 +97,79 @@ h1 {
         transform: none;
     }
 }
+
 .nadpis-kouzla {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin: 42px 0 20px;
-    padding-bottom: 10px;
+    gap: 12px;
     border-bottom: 1px solid #6f5a3e;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
 }
 
 .nadpis-kouzla h2 {
     margin: 0;
     padding: 0;
     border: none;
-    flex: 1;
+    min-width: 0;
+}
+
+.hodnota-sfery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    color: #d6c19e;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.hodnota-sfery input[type="number"] {
+    width: 55px;
+    box-sizing: border-box;
+    padding: 6px 2px;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    color: #eee4d2;
+    background: #17130f;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.hodnota-sfery input[type="number"]::-webkit-inner-spin-button,
+.hodnota-sfery input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tlacitko-sfery {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    line-height: 1;
+    color: #eee4d2;
+    background: linear-gradient(180deg, #403222 0%, #241b13 100%);
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tlacitko-sfery:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .vyber-kouzla {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
@@ -123,6 +177,8 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
+    justify-self: end;
+    width: max-content;
 }
 
 .vyber-kouzla input {
@@ -158,6 +214,7 @@ h1 {
     opacity: 1;
     cursor: default;
 }
+
 h2 {
     margin: 42px 0 20px;
     padding-bottom: 10px;
@@ -216,6 +273,19 @@ h3 {
     .uroven { padding: 16px; }
     .popis { font-size: 17px; }
 }
+
+.uroven.umim {
+    border-color: #b39468;
+    background: rgba(91, 70, 42, .55);
+    box-shadow: 0 0 8px rgba(214, 168, 79, .18);
+}
+
+.uroven.neumim {
+    opacity: .55;
+    border-color: #57442f;
+    background: rgba(20, 16, 12, .55);
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -232,6 +302,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Hojivý dotyk</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_hojivy_dotyk">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_hojivy_dotyk"
+        data-hodnota-sfery="zivot_hojivy_dotyk"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="zivot_hojivy_dotyk">
         Naučeno
@@ -270,6 +353,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Úprava těla</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_uprava_tela">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_uprava_tela"
+        data-hodnota-sfery="zivot_uprava_tela"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="zivot_uprava_tela">
         Naučeno
@@ -311,6 +407,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Způsob zranění</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_zpusob_zraneni">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_zpusob_zraneni"
+        data-hodnota-sfery="zivot_zpusob_zraneni"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="zivot_zpusob_zraneni">
         Naučeno
@@ -349,6 +458,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Psychické proniknutí</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_psychicke_proniknuti">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_psychicke_proniknuti"
+        data-hodnota-sfery="zivot_psychicke_proniknuti"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="zivot_psychicke_proniknuti">
         Naučeno
@@ -380,7 +502,130 @@ h3 {
 <div class="parametr"><strong>Délka vyvolání</strong>8 akcí / −1 akce +1 Náboj</div>
 </div></div>
 </div></section>
+
+<!-- VNÍMÁNÍ ŽIVOTA -->
+<section class="kouzlo">
+<div class="nadpis-kouzla">
+    <h2>Vnímání života</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_vnimani_zivota">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_vnimani_zivota"
+        data-hodnota-sfery="zivot_vnimani_zivota"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="zivot_vnimani_zivota">
+        Naučeno
+    </label>
+</div>
+
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">Sférista pomocí magie vnímá přítomnost živých organismů v blízkém okolí do 50 m. Dokáže určit přibližný směr a vzdálenost jednotlivých zdrojů života, nedokáže však určit jejich přesnou podobu ani totožnost.</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>8</div>
+<div class="parametr"><strong>Náboj</strong>5</div>
+<div class="parametr"><strong>Délka vyvolání</strong>20 akcí / −2 akce za +1 Náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">Sférista dokáže přesněji vnímat živé organismy v okolí do 200 m a rozlišovat jejich přibližnou velikost a základní biologický stav. Může například poznat, zda je tvor zraněný, nemocný, vyčerpaný nebo v bezvědomí.</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>12</div>
+<div class="parametr"><strong>Náboj</strong>7</div>
+<div class="parametr"><strong>Délka vyvolání</strong>30 akcí / −3 akce za +1 Náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">Sférista dokáže detailně vnímat životní projevy jednotlivých organismů v dosahu do 500 m. Může rozpoznat jejich přibližnou tělesnou stavbu, závažná zranění a výrazné odchylky od běžného biologického stavu. Dokáže také odlišit živého tvora od mrtvého těla.</p>
+<div class="parametry">
+<div class="parametr"><strong>Obtížnost</strong>16</div>
+<div class="parametr"><strong>Náboj</strong>10</div>
+<div class="parametr"><strong>Délka vyvolání</strong>50 akcí / −4 akce za +1 Náboj</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PŘIVOLÁNÍ SPÁNKU -->
+<section class="kouzlo">
+<div class="nadpis-kouzla">
+    <h2>Přivolání spánku</h2>
+    
+<div class="hodnota-sfery">
+    <label for="sfera_zivot_privolani_spanku">Hodnota Sféry</label>
+    <input
+        type="number"
+        id="sfera_zivot_privolani_spanku"
+        data-hodnota-sfery="zivot_privolani_spanku"
+        value="0"
+        min="0"
+        step="1"
+    >
+</div>
+
+    <label class="vyber-kouzla">
+        <input type="checkbox" data-kouzlo="zivot_privolani_spanku">
+        Naučeno
+    </label>
+</div>
+
+<div class="urovne">
+<div class="uroven">
+<h3>1. úroveň</h3>
+<p class="popis">Sférista pomocí magie postupně unavuje zvolený cíl do vzdálenosti 5 m. Cíl pociťuje narůstající únavu, která mu ztěžuje fyzickou činnost.</p>
+<div class="parametry">
+<div class="parametr"><strong>Střet</strong>40 / Výdrž cíle / Hodnota Sféry Sféristy</div>
+<div class="parametr"><strong>Neúspěch</strong>Efekt Únava</div>
+<div class="parametr"><strong>Úspěch</strong>Nic</div>
+<div class="parametr"><strong>Obtížnost</strong>10</div>
+<div class="parametr"><strong>Náboj</strong>12</div>
+<div class="parametr"><strong>Délka vyvolání</strong>10 akcí / −1 akce za +1 Náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>2. úroveň</h3>
+<p class="popis">Sférista pomocí magie prohlubuje únavu zvoleného cíle do vzdálenosti 10 m. Cíl pociťuje silné vyčerpání, které výrazně omezuje jeho soustředění a fyzickou činnost. Udržet pozornost nebo vykonávat náročnější činnosti je pro něj obtížné a začíná pociťovat silnou potřebu odpočinku. Kouzlo samo o sobě nezpůsobuje spánek ani bezvědomí.</p>
+<div class="parametry">
+<div class="parametr"><strong>Střet</strong>50 / Výdrž cíle / Hodnota Sféry Sféristy</div>
+<div class="parametr"><strong>Neúspěch</strong>Efekt Vysílení 1</div>
+<div class="parametr"><strong>Úspěch</strong>Efekt Únava</div>
+<div class="parametr"><strong>Obtížnost</strong>19</div>
+<div class="parametr"><strong>Náboj</strong>18</div>
+<div class="parametr"><strong>Délka vyvolání</strong>15 akcí / −1 akce za +1 Náboj</div>
+</div>
+</div>
+
+<div class="uroven">
+<h3>3. úroveň</h3>
+<p class="popis">Sférista pomocí magie uvede zvolený cíl do vzdálenosti 15 m do spánku. Cíl postupně ztrácí schopnost udržet pozornost, jeho tělo podléhá silné únavě a nakonec upadá do spánku. Probuzení může nastat přirozeně nebo v důsledku silného vnějšího podnětu.</p>
+<div class="parametry">
+<div class="parametr"><strong>Střet</strong>60 / Výdrž cíle / Hodnota Sféry Sféristy</div>
+<div class="parametr"><strong>Neúspěch</strong>Spánek</div>
+<div class="parametr"><strong>Úspěch</strong>Efekt Vysílení 1</div>
+<div class="parametr"><strong>Obtížnost</strong>27</div>
+<div class="parametr"><strong>Náboj</strong>25</div>
+<div class="parametr"><strong>Délka vyvolání</strong>20 akcí / −2 akce za +2 Náboje</div>
+</div>
+</div>
+</div>
+</section>
+
 </main>
+
 
 <script>
 const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
@@ -392,13 +637,102 @@ const supabaseClient = window.supabase.createClient(
 );
 
 const idPostavy = new URLSearchParams(window.location.search).get("id");
-const checkbox = document.getElementById("vybratZivot");
 const mojeSkola = "zivot";
+const checkboxSkoly = document.getElementById("vybratZivot");
 
+const checkboxyKouzel = document.querySelectorAll(
+    '.vyber-kouzla input[data-kouzlo^="zivot_"]'
+);
+
+const poleHodnotSfery = document.querySelectorAll(
+    "[data-hodnota-sfery]"
+);
+
+// Vytvoření tlačítek − a + pouze jednou.
+poleHodnotSfery.forEach(pole => {
+    const obal = pole.parentElement;
+
+    if (obal.querySelector(".tlacitko-sfery")) return;
+
+    const minus = document.createElement("button");
+    minus.type = "button";
+    minus.className = "tlacitko-sfery";
+    minus.textContent = "−";
+    minus.setAttribute("aria-label", "Snížit hodnotu Sféry");
+
+    const plus = document.createElement("button");
+    plus.type = "button";
+    plus.className = "tlacitko-sfery";
+    plus.textContent = "+";
+    plus.setAttribute("aria-label", "Zvýšit hodnotu Sféry");
+
+    pole.before(minus);
+    pole.after(plus);
+
+    minus.addEventListener("click", () => {
+        if (pole.disabled) return;
+
+        pole.value = Math.max(0, (Number(pole.value) || 0) - 1);
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    plus.addEventListener("click", () => {
+        if (pole.disabled) return;
+
+        pole.value = (Number(pole.value) || 0) + 1;
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+});
+
+// Ovládání polí a tlačítek podle naučení kouzla a vybrané školy.
+function aktualizovatOvládaniSfer() {
+    const maSpravnouSkolu = checkboxSkoly.checked;
+
+    poleHodnotSfery.forEach(pole => {
+        const klic = pole.dataset.hodnotaSfery;
+
+        const checkboxKouzla = document.querySelector(
+            `.vyber-kouzla input[data-kouzlo="${klic}"]`
+        );
+
+        const nauceno = checkboxKouzla?.checked === true;
+        const povoleno = maSpravnouSkolu && nauceno;
+
+        pole.disabled = !povoleno;
+
+        pole.parentElement
+            .querySelectorAll(".tlacitko-sfery")
+            .forEach(tlacitko => {
+                tlacitko.disabled = !povoleno;
+            });
+    });
+}
+
+// Zvýraznění zvládnutých úrovní.
+function zvyraznitUrovneSfer() {
+    document.querySelectorAll(".kouzlo").forEach(kouzlo => {
+        const pole = kouzlo.querySelector("[data-hodnota-sfery]");
+        const checkboxKouzla = kouzlo.querySelector("[data-kouzlo]");
+
+        if (!pole || !checkboxKouzla) return;
+
+        const nauceno = checkboxKouzla.checked;
+        const hodnota = nauceno ? Number(pole.value) || 0 : 0;
+
+        kouzlo.querySelectorAll(".uroven").forEach((uroven, index) => {
+            const umiUroven = nauceno && hodnota >= index * 5;
+
+            uroven.classList.toggle("umim", umiUroven);
+            uroven.classList.toggle("neumim", !umiUroven);
+        });
+    });
+}
+
+// Načtení výběru magické školy.
 async function nacistVyberSkoly() {
     if (!idPostavy) {
-        checkbox.disabled = true;
-        alert("Chybí ID postavy. Školu nelze vybrat.");
+        checkboxSkoly.disabled = true;
+        console.error("Chybí ID postavy.");
         return;
     }
 
@@ -409,161 +743,266 @@ async function nacistVyberSkoly() {
         .single();
 
     if (error) {
-        checkbox.disabled = true;
-        console.error(error);
+        checkboxSkoly.disabled = true;
+        console.error("Nepodařilo se načíst školu:", error);
         alert("Výběr školy se nepodařilo načíst.");
         return;
     }
 
     const vybranaSkola = radek.data?.magickaSkola ?? null;
 
-    checkbox.checked = vybranaSkola === mojeSkola;
-    checkbox.disabled = vybranaSkola !== null;
+    checkboxSkoly.checked = vybranaSkola === mojeSkola;
+    checkboxSkoly.disabled = vybranaSkola !== null;
+
+    aktualizovatOvládaniSfer();
 }
 
-checkbox.addEventListener("change", async function () {
-    if (!checkbox.checked || !idPostavy) return;
+// Výběr školy je trvalý.
+checkboxSkoly.addEventListener("change", async () => {
+    if (!checkboxSkoly.checked || !idPostavy) return;
 
-    checkbox.disabled = true;
+    checkboxSkoly.disabled = true;
 
-    const { data: radek, error: chybaNacteni } = await supabaseClient
+    const { data: radek, error } = await supabaseClient
         .from("postavy")
         .select("data")
         .eq("id", idPostavy)
         .single();
 
-    if (chybaNacteni) {
-        checkbox.checked = false;
-        checkbox.disabled = false;
-        console.error(chybaNacteni);
+    if (error) {
+        checkboxSkoly.checked = false;
+        checkboxSkoly.disabled = false;
+        console.error(error);
         alert("Nepodařilo se ověřit výběr školy.");
         return;
     }
 
-    const postavaData = radek.data || {};
-    const vybranaSkola = postavaData.magickaSkola ?? null;
+    const dataPostavy = radek.data || {};
+    const vybranaSkola = dataPostavy.magickaSkola ?? null;
 
     if (vybranaSkola !== null) {
-        checkbox.checked = vybranaSkola === mojeSkola;
+        checkboxSkoly.checked = vybranaSkola === mojeSkola;
 
         if (vybranaSkola !== mojeSkola) {
             alert("Tato postava už má vybranou jinou magickou školu.");
         }
 
+        aktualizovatOvládaniSfer();
         return;
     }
 
-    postavaData.magickaSkola = mojeSkola;
+    dataPostavy.magickaSkola = mojeSkola;
 
     const { error: chybaUlozeni } = await supabaseClient
         .from("postavy")
-        .update({ data: postavaData })
+        .update({ data: dataPostavy })
         .eq("id", idPostavy);
 
     if (chybaUlozeni) {
-        checkbox.checked = false;
-        checkbox.disabled = false;
+        checkboxSkoly.checked = false;
+        checkboxSkoly.disabled = false;
         console.error(chybaUlozeni);
         alert("Výběr školy se nepodařilo uložit.");
         return;
     }
 
-    checkbox.checked = true;
-    checkbox.disabled = true;
+    checkboxSkoly.checked = true;
+    checkboxSkoly.disabled = true;
+
+    await nacistNaucenaKouzla();
+    await nacistHodnotySfery();
 });
 
-nacistVyberSkoly();
-</script>
-<script>
-const klientKouzlaZivot = supabaseClient;
-const idPostavyZivot =
-    new URLSearchParams(window.location.search).get("id");
+// Načtení naučených kouzel.
+async function nacistNaucenaKouzla() {
+    checkboxyKouzel.forEach(cb => cb.disabled = true);
 
-const checkboxyZivot = document.querySelectorAll(
-    '.vyber-kouzla input[data-kouzlo^="zivot_"]'
-);
+    if (!idPostavy) return;
 
-async function nacistKouzlaZivot() {
-    checkboxyZivot.forEach(cb => cb.disabled = true);
-
-    if (!idPostavyZivot) return;
-
-    const { data: radek, error } = await klientKouzlaZivot
+    const { data: radek, error } = await supabaseClient
         .from("postavy")
         .select("data")
-        .eq("id", idPostavyZivot)
+        .eq("id", idPostavy)
         .single();
 
     if (error) {
-        console.error("Nepodařilo se načíst kouzla Života:", error);
+        console.error("Nepodařilo se načíst kouzla:", error);
         alert("Nepodařilo se načíst naučená kouzla.");
         return;
     }
 
     const dataPostavy = radek.data || {};
-    const maSpravnouSkolu = dataPostavy.magickaSkola === "zivot";
+    const maSpravnouSkolu = dataPostavy.magickaSkola === mojeSkola;
     const naucenaKouzla = dataPostavy.naucenaKouzla || [];
 
-    checkboxyZivot.forEach(cb => {
+    checkboxyKouzel.forEach(cb => {
         cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
-        cb.disabled = !maSpravnouSkolu;
+
+        // Naučené kouzlo nelze odškrtnout.
+        cb.disabled = !maSpravnouSkolu || cb.checked;
     });
+
+    aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
 }
 
-checkboxyZivot.forEach(cb => {
+// Naučení nového kouzla.
+checkboxyKouzel.forEach(cb => {
     cb.addEventListener("change", async () => {
         cb.disabled = true;
 
-        const { data: radek, error: chybaNacteni } =
-            await klientKouzlaZivot
-                .from("postavy")
-                .select("data")
-                .eq("id", idPostavyZivot)
-                .single();
+        if (!idPostavy) {
+            await nacistNaucenaKouzla();
+            return;
+        }
 
-        if (chybaNacteni) {
+        const { data: radek, error } = await supabaseClient
+            .from("postavy")
+            .select("data")
+            .eq("id", idPostavy)
+            .single();
+
+        if (error) {
+            console.error(error);
             alert("Nepodařilo se načíst postavu.");
-            console.error(chybaNacteni);
-            await nacistKouzlaZivot();
+            await nacistNaucenaKouzla();
             return;
         }
 
         const dataPostavy = radek.data || {};
 
-        if (dataPostavy.magickaSkola !== "zivot") {
+        if (dataPostavy.magickaSkola !== mojeSkola) {
             alert("Postava nemá vybranou školu Život.");
-            await nacistKouzlaZivot();
+            await nacistNaucenaKouzla();
             return;
         }
 
         const naucenaKouzla = dataPostavy.naucenaKouzla || [];
 
-        if (cb.checked) {
-            if (!naucenaKouzla.includes(cb.dataset.kouzlo)) {
-                naucenaKouzla.push(cb.dataset.kouzlo);
-            }
-        } else {
-            const index = naucenaKouzla.indexOf(cb.dataset.kouzlo);
-            if (index !== -1) naucenaKouzla.splice(index, 1);
+        if (cb.checked && !naucenaKouzla.includes(cb.dataset.kouzlo)) {
+            naucenaKouzla.push(cb.dataset.kouzlo);
         }
 
         dataPostavy.naucenaKouzla = naucenaKouzla;
 
-        const { error: chybaUlozeni } = await klientKouzlaZivot
+        const { error: chybaUlozeni } = await supabaseClient
             .from("postavy")
             .update({ data: dataPostavy })
-            .eq("id", idPostavyZivot);
+            .eq("id", idPostavy);
 
         if (chybaUlozeni) {
-            alert("Kouzlo se nepodařilo uložit.");
             console.error(chybaUlozeni);
+            alert("Kouzlo se nepodařilo uložit.");
         }
 
-        await nacistKouzlaZivot();
+        await nacistNaucenaKouzla();
+        await nacistHodnotySfery();
     });
 });
 
-nacistKouzlaZivot();
+// Načtení hodnot Sféry.
+async function nacistHodnotySfery() {
+    poleHodnotSfery.forEach(pole => pole.disabled = true);
+
+    if (!idPostavy) return;
+
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error("Nepodařilo se načíst hodnoty Sféry:", error);
+        alert("Hodnoty Sféry se nepodařilo načíst.");
+        return;
+    }
+
+    const dataPostavy = radek.data || {};
+    const hodnoty = dataPostavy.hodnotySfery || {};
+
+    poleHodnotSfery.forEach(pole => {
+        const hodnota = hodnoty[pole.dataset.hodnotaSfery];
+        pole.value = hodnota ?? 0;
+    });
+
+    aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
+}
+
+// Uložení změny hodnoty Sféry.
+poleHodnotSfery.forEach(pole => {
+    pole.addEventListener("change", async () => {
+        const checkboxKouzla = document.querySelector(
+            `.vyber-kouzla input[data-kouzlo="${pole.dataset.hodnotaSfery}"]`
+        );
+
+        if (!checkboxSkoly.checked || !checkboxKouzla?.checked) {
+            await nacistHodnotySfery();
+            return;
+        }
+
+        const hodnota = Math.max(0, Math.floor(Number(pole.value) || 0));
+        pole.value = hodnota;
+        pole.disabled = true;
+
+        const { data: radek, error } = await supabaseClient
+            .from("postavy")
+            .select("data")
+            .eq("id", idPostavy)
+            .single();
+
+        if (error) {
+            console.error(error);
+            alert("Nepodařilo se načíst postavu.");
+            await nacistHodnotySfery();
+            return;
+        }
+
+        const dataPostavy = radek.data || {};
+
+        if (dataPostavy.magickaSkola !== mojeSkola) {
+            alert("Postava nemá vybranou školu Život.");
+            await nacistHodnotySfery();
+            return;
+        }
+
+        const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+        if (!naucenaKouzla.includes(pole.dataset.hodnotaSfery)) {
+            alert("Nejdřív se musíš naučit toto kouzlo.");
+            await nacistHodnotySfery();
+            return;
+        }
+
+        dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
+        dataPostavy.hodnotySfery[pole.dataset.hodnotaSfery] = hodnota;
+
+        const { error: chybaUlozeni } = await supabaseClient
+            .from("postavy")
+            .update({ data: dataPostavy })
+            .eq("id", idPostavy);
+
+        if (chybaUlozeni) {
+            console.error(chybaUlozeni);
+            alert("Hodnotu Sféry se nepodařilo uložit.");
+        }
+
+        await nacistHodnotySfery();
+    });
+});
+
+// Počáteční načtení dat.
+async function inicializovatZivot() {
+    await nacistVyberSkoly();
+    await nacistNaucenaKouzla();
+    await nacistHodnotySfery();
+}
+
+inicializovatZivot();
 </script>
+</body>
+</html>
+
 </body>
 </html>
