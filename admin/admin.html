@@ -23,7 +23,7 @@
         }
 
         .page {
-            width: min(900px, 94vw);
+            width: min(1000px, 94vw);
             margin: 40px auto;
             padding: 40px;
             background: rgba(20, 17, 14, 0.92);
@@ -68,16 +68,24 @@
             line-height: 1.5;
         }
 
-        button {
-            padding: 10px 20px;
-            font-family: Georgia, serif;
-            font-size: 17px;
-            color: #eee4d2;
-            background: #33291e;
-            border: 1px solid #8a704d;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
+       button {
+    padding: 17px 34px;
+    font-family: inherit;
+    font-size: 17px;
+    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #403222 0%,
+        #241b13 100%
+    );
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 230, 180, 0.08);
+    transition: background 0.2s, border-color 0.2s;
+}
 
         button:hover {
             background: #473827;
@@ -146,13 +154,13 @@
             </button>
         </div>
 
-        <div class="sekce">
-            <h2>Pravidla hry</h2>
-            <p>Správa herních pravidel a dalších hodnot.</p>
-            <button onclick="alert('Správa pravidel zatím není hotová.')">
-                Otevřít
-            </button>
-        </div>
+ <div class="sekce">
+    <h2>Magie</h2>
+    <p>Správa parametrů kouzel jednotlivých magických škol.</p>
+    <button onclick="location.href='admin-magie.html'">
+        Otevřít
+    </button>
+</div>
 
     </div>
 

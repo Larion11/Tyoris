@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Správa magie</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0; min-height: 100vh;
+    background-image: url("pozadi-admin.jpg");
+    background-position: center; background-size: cover; background-attachment: fixed;
+    color: #eee4d2; font-family: Georgia, serif;
+}
+.page {
+    width: min(1250px, 96vw); margin: 30px auto; padding: 28px;
+    background: rgba(20, 17, 14, 0.94); border: 2px solid #6f5a3e;
+    box-shadow: 0 0 25px #000;
+}
+h1 { text-align: center; color: #d8c29d; }
+h2 { color: #d8c29d; margin-top: 28px; }
+button {
+    padding: 9px 15px; margin: 4px; background: #33291e; color: #eee4d2;
+    border: 1px solid #8a704d; border-radius: 4px; cursor: pointer; font-family: Georgia, serif;
+}
+button:hover { background: #473827; border-color: #b39468; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+input, select, textarea {
+    width: 100%; padding: 8px; background: #211b15; color: #eee4d2;
+    border: 1px solid #6f5a3e; border-radius: 4px; font-family: Georgia, serif;
+}
+label { display: block; margin: 12px 0 5px; color: #d8c29d; }
+.vyber {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 18px;
+}
+#stavPrihlaseni { text-align: center; color: #d8c29d; }
+#zprava { margin: 15px 0; padding: 10px; white-space: pre-wrap; }
+#zprava:empty { display: none; }
+.chyba { color: #ffaaaa; }
+.uspech { color: #c4e4a8; }
+.table-wrap { overflow-x: auto; margin-top: 15px; }
+table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+th, td { padding: 8px; border: 1px solid #6f5a3e; text-align: left; vertical-align: top; }
+th { background: #33291e; color: #d8c29d; }
+tr:nth-child(even) { background: rgba(70, 55, 39, .25); }
+td input { min-width: 95px; }
+td .text-input { min-width: 160px; }
+td .number-input { min-width: 85px; }
+.parametr { min-width: 180px; }
+.poznamka { line-height: 1.5; color: #cbbda6; }
+.dole { text-align: center; margin-top: 25px; }
+@media (max-width: 650px) {
+    .page { padding: 15px; margin: 15px auto; }
+    .vyber { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+    <h1>Správa magie</h1>
+    <p id="stavPrihlaseni">Ověřuji přihlášení...</p>
+    <div id="zprava" role="status"></div>
+
+    <div id="obsah" hidden>
+        <div class="vyber">
+            <div>
+                <label for="skola">Magická škola</label>
+               <select id="skola">
+    <option value="Matera">Moc Matera</option>
+    <option value="Život">Moc Život</option>
+    <option value="Prázdnota">Moc Prázdnota</option>
+</select>
+            </div>
+            <div>
+                <label for="kouzlo">Kouzlo</label>
+                <select id="kouzlo"></select>
+            </div>
+            <div>
+                <label for="uroven">Úroveň</label>
+                <select id="uroven">
+                    <option value="1">1. úroveň</option>
+                    <option value="2">2. úroveň</option>
+                    <option value="3">3. úroveň</option>
+                </select>
+            </div>
+        </div>
+
+        <h2 id="nadpisParametru">Parametry kouzla</h2>
+        <p class="poznamka">
+            Uprav hodnoty a stiskni „Uložit“ u příslušného řádku.
+            Prázdná pole pro jednotku a navyšování se ukládají jako prázdná hodnota.
+            Pevné texty efektů v HTML tato stránka nemění.
+        </p>
+        <button type="button" id="obnovit">Načíst znovu</button>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametr</th>
+                        <th>Základní hodnota</th>
+                        <th>Jednotka</th>
+                        <th>Základní text</th>
+                        <th>Změna hodnoty</th>
+                        <th>Jednotka změny</th>
+                        <th>Změna Náboje</th>
+                        <th>Pravidlo navyšování</th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody id="seznam">
+                    <tr><td colspan="9">Načítám parametry...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="dole">
+            <button type="button" id="zpet">Zpět do administrace</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const el = id => document.getElementById(id);
+const spellNames = {
+    matera_detekce: "Detekce",
+    matera_telo_z_kamene: "Tělo z kamene",
+    matera_telekineze: "Telekineze",
+    matera_zmena_stavu: "Změna stavu",
+    matera_kamenna_sprska: "Kamenná sprška",
+    matera_formovani: "Formování",
+    zivot_hojivy_dotyk: "Hojivý dotyk",
+    zivot_uprava_tela: "Úprava těla",
+    zivot_zpusob_zraneni: "Způsob zranění",
+    zivot_psychicke_proniknuti: "Psychické proniknutí",
+    zivot_vnimani_zivota: "Vnímání života",
+    zivot_privolani_spanku: "Přivolání spánku",
+    "zapalení_uhaseni": "Zapálení / Uhašení",
+    zmena_pocasi: "Změna počasí",
+    svetlo_tma: "Světlo / Tma",
+    chlad_teplo: "Chlad / Teplo",
+    ohnivy_ledovy_projektil: "Ohnivý / Ledový projektil",
+    zvuk_ticho: "Zvuk / Ticho"
+};
+
+function zobrazZpravu(text, chyba = false) {
+    el("zprava").textContent = text;
+    el("zprava").className = chyba ? "chyba" : "uspech";
+}
+function zobrazChybu(error) {
+    console.error(error);
+    zobrazZpravu("Operace se nepodařila: " + (error?.message || "Neznámá chyba."), true);
+}
+function vytvorInput(value, field, type = "text", className = "") {
+    const input = document.createElement("input");
+    input.type = type;
+    input.dataset.field = field;
+    input.className = className;
+    if (type === "number") input.step = "any";
+    input.value = value ?? "";
+    return input;
+}
+function vytvorBunku(row, field, type = "text", className = "") {
+    const td = document.createElement("td");
+    td.appendChild(vytvorInput(row[field], field, type, className));
+    return td;
+}
+
+async function overitAdmina() {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (error) {
+        el("stavPrihlaseni").textContent = "Nepodařilo se ověřit přihlášení.";
+        zobrazChybu(error);
+        return;
+    }
+    if (!session) {
+        el("stavPrihlaseni").textContent = "Nejsi přihlášen. Přihlas se do hry a stránku znovu otevři.";
+        return;
+    }
+    const { data: admin, error: adminError } = await supabaseClient
+        .from("admini").select("user_id").eq("user_id", session.user.id).maybeSingle();
+    if (adminError) {
+        el("stavPrihlaseni").textContent = "Nepodařilo se ověřit administrátorská práva.";
+        zobrazChybu(adminError);
+        return;
+    }
+    if (!admin) {
+        el("stavPrihlaseni").textContent = "Tento účet nemá administrátorská práva.";
+        return;
+    }
+    el("stavPrihlaseni").textContent = "Přihlášený administrátor";
+    el("obsah").hidden = false;
+    await naplnitKouzla();
+}
+
+async function naplnitKouzla() {
+    const skola = el("skola").value;
+    const { data, error } = await supabaseClient
+        .from("magicke_parametry")
+        .select("kouzlo")
+        .eq("skola", skola)
+        .order("kouzlo");
+    if (error) return zobrazChybu(error);
+
+    const keys = [...new Set((data || []).map(row => row.kouzlo))];
+    const select = el("kouzlo");
+    select.replaceChildren();
+    for (const key of keys) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = spellNames[key] || key;
+        select.appendChild(option);
+    }
+    await nacistParametry();
+}
+
+async function nacistParametry() {
+    const skola = el("skola").value;
+    const kouzlo = el("kouzlo").value;
+    const uroven = Number(el("uroven").value);
+    const seznam = el("seznam");
+    seznam.replaceChildren();
+    const loading = document.createElement("tr");
+    const loadingCell = document.createElement("td");
+    loadingCell.colSpan = 9;
+    loadingCell.textContent = "Načítám parametry...";
+    loading.appendChild(loadingCell);
+    seznam.appendChild(loading);
+
+    if (!kouzlo) {
+        loadingCell.textContent = "Pro tuto školu nejsou nalezeny žádné parametry.";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("magicke_parametry")
+        .select("*")
+        .eq("skola", skola)
+        .eq("kouzlo", kouzlo)
+        .eq("uroven", uroven)
+        .order("id");
+    if (error) {
+        loadingCell.textContent = "Parametry se nepodařilo načíst.";
+        zobrazChybu(error);
+        return;
+    }
+    seznam.replaceChildren();
+    el("nadpisParametru").textContent =
+        (spellNames[kouzlo] || kouzlo) + " – " + uroven + ". úroveň";
+
+    if (!data || data.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 9;
+        td.textContent = "Pro tuto úroveň nejsou uložené žádné parametry.";
+        tr.appendChild(td);
+        seznam.appendChild(tr);
+        return;
+    }
+
+    for (const row of data) {
+        const tr = document.createElement("tr");
+        const nameCell = document.createElement("td");
+        const name = vytvorInput(row.parametr, "parametr", "text", "text-input");
+        nameCell.appendChild(name);
+        tr.appendChild(nameCell);
+        tr.appendChild(vytvorBunku(row, "hodnota", "number", "number-input"));
+        tr.appendChild(vytvorBunku(row, "jednotka", "text", "text-input"));
+        tr.appendChild(vytvorBunku(row, "zaklad_text", "text", "text-input"));
+        tr.appendChild(vytvorBunku(row, "zmena_hodnoty", "number", "number-input"));
+        tr.appendChild(vytvorBunku(row, "zmena_jednotka", "text", "text-input"));
+        tr.appendChild(vytvorBunku(row, "zmena_naboje", "number", "number-input"));
+        tr.appendChild(vytvorBunku(row, "pravidlo_navysovani", "text", "text-input"));
+
+        const actionCell = document.createElement("td");
+        const save = document.createElement("button");
+        save.type = "button";
+        save.textContent = "Uložit";
+        save.addEventListener("click", () => ulozitParametr(row.id, tr, save));
+        actionCell.appendChild(save);
+        tr.appendChild(actionCell);
+        seznam.appendChild(tr);
+    }
+}
+
+async function ulozitParametr(id, tr, button) {
+    const inputs = [...tr.querySelectorAll("input")];
+    const get = field => inputs.find(input => input.dataset.field === field);
+    const parametr = get("parametr").value.trim();
+    const hodnotaRaw = get("hodnota").value.trim();
+    if (!parametr || hodnotaRaw === "" || !Number.isFinite(Number(hodnotaRaw))) {
+        zobrazZpravu("Název parametru a číselná základní hodnota jsou povinné.", true);
+        return;
+    }
+
+    const payload = {
+        parametr,
+        hodnota: Number(hodnotaRaw),
+        jednotka: get("jednotka").value.trim() || null,
+        zaklad_text: get("zaklad_text").value.trim() || null,
+        zmena_hodnoty: get("zmena_hodnoty").value.trim() === "" ? null : Number(get("zmena_hodnoty").value),
+        zmena_jednotka: get("zmena_jednotka").value.trim() || null,
+        zmena_naboje: get("zmena_naboje").value.trim() === "" ? null : Number(get("zmena_naboje").value),
+        pravidlo_navysovani: get("pravidlo_navysovani").value.trim() || null
+    };
+
+    if ((payload.zmena_hodnoty !== null && !Number.isFinite(payload.zmena_hodnoty)) ||
+        (payload.zmena_naboje !== null && !Number.isFinite(payload.zmena_naboje))) {
+        zobrazZpravu("Číselné údaje navyšování nejsou platné.", true);
+        return;
+    }
+
+    button.disabled = true;
+    try {
+        const { error } = await supabaseClient
+            .from("magicke_parametry")
+            .update(payload)
+            .eq("id", id);
+        if (error) throw error;
+        zobrazZpravu("Parametr „" + parametr + "“ byl uložen.");
+    } catch (error) {
+        zobrazChybu(error);
+    } finally {
+        button.disabled = false;
+    }
+}
+
+el("skola").addEventListener("change", naplnitKouzla);
+el("kouzlo").addEventListener("change", nacistParametry);
+el("uroven").addEventListener("change", nacistParametry);
+el("obnovit").addEventListener("click", nacistParametry);
+el("zpet").addEventListener("click", () => location.href = "admin.html");
+
+overitAdmina();
+</script>
+</body>
+</html>
