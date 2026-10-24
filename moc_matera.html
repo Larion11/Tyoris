@@ -97,11 +97,12 @@ h1 {
         transform: none;
     }
 }
+
 .nadpis-kouzla {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    gap: 12px;
     margin: 42px 0 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #6f5a3e;
@@ -111,11 +112,64 @@ h1 {
     margin: 0;
     padding: 0;
     border: none;
-    flex: 1;
+    min-width: 0;
+}
+
+.hodnota-sfery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    color: #d6c19e;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.hodnota-sfery input[type="number"] {
+    width: 55px;
+    box-sizing: border-box;
+    padding: 6px 2px;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    color: #eee4d2;
+    background: #17130f;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.hodnota-sfery input[type="number"]::-webkit-inner-spin-button,
+.hodnota-sfery input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tlacitko-sfery {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    line-height: 1;
+    color: #eee4d2;
+    background: linear-gradient(180deg, #403222 0%, #241b13 100%);
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tlacitko-sfery:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .vyber-kouzla {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
@@ -123,6 +177,8 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
+    justify-self: end;
+    width: max-content;
 }
 
 .vyber-kouzla input {
@@ -158,6 +214,19 @@ h1 {
     opacity: 1;
     cursor: default;
 }
+
+.uroven.umim {
+    border-color: #b39468;
+    background: rgba(91, 70, 42, .55);
+    box-shadow: 0 0 8px rgba(214, 168, 79, .18);
+}
+
+.uroven.neumim {
+    opacity: .55;
+    border-color: #57442f;
+    background: rgba(20, 16, 12, .55);
+}
+
 h2 {
     margin: 42px 0 20px;
     padding-bottom: 10px;
@@ -231,6 +300,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Detekce</h2>
+
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_detekce">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_detekce"
+            data-hodnota-sfery="matera_detekce"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_detekce">
         Naučeno
@@ -269,6 +351,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Tělo z kamene</h2>
+
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_telo_z_kamene">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_telo_z_kamene"
+            data-hodnota-sfery="matera_telo_z_kamene"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_telo_z_kamene">
         Naučeno
@@ -313,6 +408,19 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Telekineze</h2>
+
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_telekineze">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_telekineze"
+            data-hodnota-sfery="matera_telekineze"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_telekineze">
         Naučeno
@@ -354,6 +462,18 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Změna stavu</h2>
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_zmena_stavu">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_zmena_stavu"
+            data-hodnota-sfery="matera_zmena_stavu"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_zmena_stavu">
         Naučeno
@@ -395,6 +515,18 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Kamenná sprška</h2>
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_kamenna_sprska">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_kamenna_sprska"
+            data-hodnota-sfery="matera_kamenna_sprska"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_kamenna_sprska">
         Naučeno
@@ -436,6 +568,18 @@ h3 {
 <section class="kouzlo">
 <div class="nadpis-kouzla">
     <h2>Formování</h2>
+    <div class="hodnota-sfery">
+        <label for="sfera_matera_formovani">Hodnota Sféry</label>
+        <input
+            type="number"
+            id="sfera_matera_formovani"
+            data-hodnota-sfery="matera_formovani"
+            value="0"
+            min="0"
+            step="1"
+        >
+    </div>
+
     <label class="vyber-kouzla">
         <input type="checkbox" data-kouzlo="matera_formovani">
         Naučeno
@@ -476,6 +620,7 @@ h3 {
 </section>
 </main>
 
+
 <script>
 const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
@@ -486,14 +631,21 @@ const supabaseClient = window.supabase.createClient(
 );
 
 const idPostavy = new URLSearchParams(window.location.search).get("id");
-const checkbox = document.getElementById("vybratMaterii");
+const checkboxSkoly = document.getElementById("vybratMaterii");
 const mojeSkola = "matera";
 
-async function nacistVyberSkoly() {
+const checkboxyKouzel = document.querySelectorAll(
+    '.vyber-kouzla input[data-kouzlo^="matera_"]'
+);
+
+const poleHodnotSfery = document.querySelectorAll(
+    '[data-hodnota-sfery^="matera_"]'
+);
+
+// Načtení aktuálních dat postavy
+async function nacistDataPostavy() {
     if (!idPostavy) {
-        checkbox.disabled = true;
-        alert("Chybí ID postavy. Školu nelze vybrat.");
-        return;
+        throw new Error("Chybí ID postavy.");
     }
 
     const { data: radek, error } = await supabaseClient
@@ -502,163 +654,279 @@ async function nacistVyberSkoly() {
         .eq("id", idPostavy)
         .single();
 
-    if (error) {
-        checkbox.disabled = true;
-        console.error(error);
-        alert("Výběr školy se nepodařilo načíst.");
-        return;
-    }
+    if (error) throw error;
 
-    const vybranaSkola = radek.data?.magickaSkola ?? null;
-
-    checkbox.checked = vybranaSkola === mojeSkola;
-    checkbox.disabled = vybranaSkola !== null;
+    return radek.data || {};
 }
 
-checkbox.addEventListener("change", async function () {
-    if (!checkbox.checked || !idPostavy) return;
-
-    checkbox.disabled = true;
-
-    const { data: radek, error: chybaNacteni } = await supabaseClient
+// Uložení dat postavy
+async function ulozitDataPostavy(dataPostavy) {
+    const { error } = await supabaseClient
         .from("postavy")
-        .select("data")
-        .eq("id", idPostavy)
-        .single();
-
-    if (chybaNacteni) {
-        checkbox.checked = false;
-        checkbox.disabled = false;
-        console.error(chybaNacteni);
-        alert("Nepodařilo se ověřit výběr školy.");
-        return;
-    }
-
-    const postavaData = radek.data || {};
-    const vybranaSkola = postavaData.magickaSkola ?? null;
-
-    if (vybranaSkola !== null) {
-        checkbox.checked = vybranaSkola === mojeSkola;
-
-        if (vybranaSkola !== mojeSkola) {
-            alert("Tato postava už má vybranou jinou magickou školu.");
-        }
-
-        return;
-    }
-
-    postavaData.magickaSkola = mojeSkola;
-
-    const { error: chybaUlozeni } = await supabaseClient
-        .from("postavy")
-        .update({ data: postavaData })
+        .update({ data: dataPostavy })
         .eq("id", idPostavy);
 
-    if (chybaUlozeni) {
-        checkbox.checked = false;
-        checkbox.disabled = false;
-        console.error(chybaUlozeni);
-        alert("Výběr školy se nepodařilo uložit.");
-        return;
-    }
+    if (error) throw error;
+}
 
-    checkbox.checked = true;
-    checkbox.disabled = true;
+// Výběr magické školy
+async function nacistVyberSkoly() {
+    try {
+        const dataPostavy = await nacistDataPostavy();
+        const vybranaSkola = dataPostavy.magickaSkola ?? null;
+
+        checkboxSkoly.checked = vybranaSkola === mojeSkola;
+        checkboxSkoly.disabled = vybranaSkola !== null;
+    } catch (error) {
+        checkboxSkoly.disabled = true;
+        console.error("Nepodařilo se načíst magickou školu:", error);
+        alert("Výběr školy se nepodařilo načíst.");
+    }
+}
+
+checkboxSkoly.addEventListener("change", async function () {
+    if (!checkboxSkoly.checked) return;
+
+    checkboxSkoly.disabled = true;
+
+    try {
+        const dataPostavy = await nacistDataPostavy();
+
+        if (dataPostavy.magickaSkola != null) {
+            checkboxSkoly.checked = dataPostavy.magickaSkola === mojeSkola;
+
+            if (!checkboxSkoly.checked) {
+                alert("Tato postava už má vybranou jinou magickou školu.");
+            }
+
+            return;
+        }
+
+        dataPostavy.magickaSkola = mojeSkola;
+        await ulozitDataPostavy(dataPostavy);
+
+        checkboxSkoly.checked = true;
+        await inicializovatMateru();
+    } catch (error) {
+        checkboxSkoly.checked = false;
+        checkboxSkoly.disabled = false;
+        console.error(error);
+        alert("Výběr školy se nepodařilo uložit.");
+    }
 });
 
-nacistVyberSkoly();
-</script>
-<script>
-const klientKouzlaMatera = supabaseClient;
+// Přidání tlačítek minus a plus k hodnotám Sféry
+poleHodnotSfery.forEach(pole => {
+    const tlacitkoMinus = document.createElement("button");
+    tlacitkoMinus.type = "button";
+    tlacitkoMinus.className = "tlacitko-sfery";
+    tlacitkoMinus.textContent = "−";
+    tlacitkoMinus.setAttribute("aria-label", "Snížit hodnotu Sféry");
 
-const idPostavyMatera =
-    new URLSearchParams(window.location.search).get("id");
+    const tlacitkoPlus = document.createElement("button");
+    tlacitkoPlus.type = "button";
+    tlacitkoPlus.className = "tlacitko-sfery";
+    tlacitkoPlus.textContent = "+";
+    tlacitkoPlus.setAttribute("aria-label", "Zvýšit hodnotu Sféry");
 
-const checkboxyMatera = document.querySelectorAll(
-    '.vyber-kouzla input[data-kouzlo^="matera_"]'
-);
+    pole.after(tlacitkoPlus);
+    pole.before(tlacitkoMinus);
 
-async function nacistKouzlaMatera() {
-    checkboxyMatera.forEach(cb => cb.disabled = true);
+    tlacitkoMinus.addEventListener("click", () => {
+        if (pole.disabled) return;
 
-    if (!idPostavyMatera) return;
+        pole.value = Math.max(0, (parseInt(pole.value, 10) || 0) - 1);
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
 
-    const { data: radek, error } = await klientKouzlaMatera
-        .from("postavy")
-        .select("data")
-        .eq("id", idPostavyMatera)
-        .single();
+    tlacitkoPlus.addEventListener("click", () => {
+        if (pole.disabled) return;
 
-    if (error) {
-        console.error("Nepodařilo se načíst kouzla Matera:", error);
-        alert("Nepodařilo se načíst naučená kouzla.");
-        return;
-    }
+        pole.value = (parseInt(pole.value, 10) || 0) + 1;
+        pole.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+});
 
-    const dataPostavy = radek.data || {};
-    const maSpravnouSkolu = dataPostavy.magickaSkola === "matera";
+// Povolení a zákaz ovládání hodnot Sféry
+function aktualizovatOvladaniSfer() {
+    const maSpravnouSkolu =
+        checkboxSkoly.checked && !checkboxSkoly.disabled
+            ? true
+            : checkboxSkoly.checked;
+
+    poleHodnotSfery.forEach(pole => {
+        const klic = pole.dataset.hodnotaSfery;
+        const kouzloNauceno = Array.from(checkboxyKouzel).some(
+            cb => cb.dataset.kouzlo === klic && cb.checked
+        );
+
+        const povoleno = maSpravnouSkolu && kouzloNauceno;
+        pole.disabled = !povoleno;
+
+        const kontejner = pole.closest(".hodnota-sfery");
+        if (kontejner) {
+            kontejner.querySelectorAll(".tlacitko-sfery").forEach(tlacitko => {
+                tlacitko.disabled = !povoleno;
+            });
+        }
+    });
+}
+
+// Zvýraznění dostupných úrovní kouzel
+function zvyraznitUrovneSfer() {
+    document.querySelectorAll(".kouzlo").forEach(kouzlo => {
+        const pole = kouzlo.querySelector("[data-hodnota-sfery]");
+        const checkboxKouzla = kouzlo.querySelector("[data-kouzlo]");
+
+        if (!pole || !checkboxKouzla) return;
+
+        const nauceno = checkboxKouzla.checked;
+        const hodnota = parseInt(pole.value, 10) || 0;
+
+        kouzlo.querySelectorAll(".uroven").forEach((uroven, index) => {
+            if (nauceno && hodnota >= index * 5) {
+                uroven.classList.add("umim");
+                uroven.classList.remove("neumim");
+            } else {
+                uroven.classList.remove("umim");
+                uroven.classList.add("neumim");
+            }
+        });
+    });
+}
+
+// Načtení naučených kouzel
+async function nacistNaucenaKouzla() {
+    const dataPostavy = await nacistDataPostavy();
     const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+    const maSpravnouSkolu = dataPostavy.magickaSkola === mojeSkola;
 
-    checkboxyMatera.forEach(cb => {
+    checkboxyKouzel.forEach(cb => {
         cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
         cb.disabled = !maSpravnouSkolu;
     });
+
+    aktualizovatOvladaniSfer();
+    zvyraznitUrovneSfer();
 }
 
-checkboxyMatera.forEach(cb => {
+// Učení kouzel – naučené kouzlo nelze odnaučit
+checkboxyKouzel.forEach(cb => {
     cb.addEventListener("change", async () => {
-        cb.disabled = true;
-
-        const { data: radek, error: chybaNacteni } =
-            await klientKouzlaMatera
-                .from("postavy")
-                .select("data")
-                .eq("id", idPostavyMatera)
-                .single();
-
-        if (chybaNacteni) {
-            alert("Nepodařilo se načíst postavu.");
-            console.error(chybaNacteni);
-            await nacistKouzlaMatera();
+        if (!cb.checked) {
+            cb.checked = true;
             return;
         }
 
-        const dataPostavy = radek.data || {};
+        checkboxyKouzel.forEach(policko => {
+            policko.disabled = true;
+        });
 
-        if (dataPostavy.magickaSkola !== "matera") {
-            alert("Postava nemá vybranou školu Matera.");
-            await nacistKouzlaMatera();
-            return;
-        }
+        try {
+            const dataPostavy = await nacistDataPostavy();
 
-        const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+            if (dataPostavy.magickaSkola !== mojeSkola) {
+                alert("Postava nemá vybranou školu Matera.");
+                return;
+            }
 
-        if (cb.checked) {
+            const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
             if (!naucenaKouzla.includes(cb.dataset.kouzlo)) {
                 naucenaKouzla.push(cb.dataset.kouzlo);
             }
-        } else {
-            const index = naucenaKouzla.indexOf(cb.dataset.kouzlo);
-            if (index !== -1) naucenaKouzla.splice(index, 1);
-        }
 
-        dataPostavy.naucenaKouzla = naucenaKouzla;
+            dataPostavy.naucenaKouzla = naucenaKouzla;
+            await ulozitDataPostavy(dataPostavy);
 
-        const { error: chybaUlozeni } = await klientKouzlaMatera
-            .from("postavy")
-            .update({ data: dataPostavy })
-            .eq("id", idPostavyMatera);
-
-        if (chybaUlozeni) {
+        } catch (error) {
+            console.error("Nepodařilo se uložit naučené kouzlo:", error);
             alert("Kouzlo se nepodařilo uložit.");
-            console.error(chybaUlozeni);
-        }
 
-        await nacistKouzlaMatera();
+        } finally {
+            try {
+                await nacistNaucenaKouzla();
+                await nacistHodnotySfery();
+            } catch (chyba) {
+                console.error("Nepodařilo se obnovit stav kouzel:", chyba);
+            }
+        }
     });
 });
 
-nacistKouzlaMatera();
+// Načtení uložených hodnot Sféry
+async function nacistHodnotySfery() {
+    const dataPostavy = await nacistDataPostavy();
+    const hodnotySfery = dataPostavy.hodnotySfery || {};
+
+    poleHodnotSfery.forEach(pole => {
+        pole.value = Math.max(
+            0,
+            parseInt(hodnotySfery[pole.dataset.hodnotaSfery], 10) || 0
+        );
+    });
+
+    aktualizovatOvladaniSfer();
+    zvyraznitUrovneSfer();
+}
+
+// Uložení změněné hodnoty Sféry
+poleHodnotSfery.forEach(pole => {
+    pole.addEventListener("change", async () => {
+        try {
+            const dataPostavy = await nacistDataPostavy();
+            const klic = pole.dataset.hodnotaSfery;
+
+            if (dataPostavy.magickaSkola !== mojeSkola) {
+                alert("Postava nemá vybranou školu Matera.");
+                await nacistHodnotySfery();
+                return;
+            }
+
+            const naucenaKouzla = dataPostavy.naucenaKouzla || [];
+
+            if (!naucenaKouzla.includes(klic)) {
+                await nacistHodnotySfery();
+                return;
+            }
+
+            const hodnota = Math.max(0, parseInt(pole.value, 10) || 0);
+            pole.value = hodnota;
+
+            dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
+            dataPostavy.hodnotySfery[klic] = hodnota;
+
+            await ulozitDataPostavy(dataPostavy);
+
+            aktualizovatOvladaniSfer();
+            zvyraznitUrovneSfer();
+        } catch (error) {
+            console.error("Nepodařilo se uložit hodnotu Sféry:", error);
+            alert("Hodnotu Sféry se nepodařilo uložit.");
+
+            try {
+                await nacistHodnotySfery();
+            } catch (chyba) {
+                console.error(chyba);
+            }
+        }
+    });
+});
+
+// Spuštění Mater y
+async function inicializovatMateru() {
+    try {
+        await nacistVyberSkoly();
+        await nacistNaucenaKouzla();
+        await nacistHodnotySfery();
+    } catch (error) {
+        console.error("Inicializace školy Matera selhala:", error);
+        alert("Nepodařilo se načíst kouzla nebo jejich hodnoty.");
+    }
+}
+
+inicializovatMateru();
 </script>
+
 </body>
 </html>
