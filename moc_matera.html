@@ -1021,7 +1021,46 @@ async function nacistParametryMagie() {
     console.log("Parametry Matera načteny:", data);
 }
 
+async function nacistPopisyMagie() {
+    const { data, error } = await supabaseClient
+        .from("magicke_popisy")
+        .select("skola, kouzlo, uroven, popis")
+        .eq("skola", "Matera");
+
+    if (error) {
+        console.error("Chyba při načítání popisů magie:", error);
+        return;
+    }
+
+    document.querySelectorAll(".kouzlo").forEach(kouzloEl => {
+        const inputSfery = kouzloEl.querySelector("[data-hodnota-sfery]");
+        if (!inputSfery) return;
+
+        const klicKouzla = inputSfery.dataset.hodnotaSfery;
+
+        kouzloEl.querySelectorAll(".uroven").forEach((urovenEl, index) => {
+            const cisloUrovne = index + 1;
+            const polePopisu = urovenEl.querySelector(".popis");
+            if (!polePopisu) return;
+
+            const radek = data.find(p =>
+                p.kouzlo === klicKouzla &&
+                Number(p.uroven) === cisloUrovne
+            );
+
+            // Pokud záznam existuje, použije text z databáze.
+            // Pokud neexistuje, ponechá původní text HTML.
+            if (radek) {
+                polePopisu.textContent = radek.popis || "";
+            }
+        });
+    });
+
+    console.log("Popisy Matera načteny:", data);
+}
+
 nacistParametryMagie();
+nacistPopisyMagie();
 inicializovatMateru();
 </script>
 

@@ -1130,7 +1130,44 @@ async function nacistParametryMagie() {
     console.log("Parametry Prázdnoty načteny:", data);
 }
 
+async function nacistPopisyMagie() {
+    const { data, error } = await supabaseClient
+        .from("magicke_popisy")
+        .select("skola, kouzlo, uroven, popis")
+        .eq("skola", "Prázdnota");
+
+    if (error) {
+        console.error("Chyba při načítání popisů magie:", error);
+        return;
+    }
+
+    document.querySelectorAll(".kouzlo").forEach(kouzloEl => {
+        const inputSfery = kouzloEl.querySelector("[data-hodnota-sfery]");
+        if (!inputSfery) return;
+
+        const klicKouzla = inputSfery.dataset.hodnotaSfery;
+
+        kouzloEl.querySelectorAll(".uroven").forEach((urovenEl, index) => {
+            const cisloUrovne = index + 1;
+            const polePopisu = urovenEl.querySelector(".popis");
+            if (!polePopisu) return;
+
+            const radek = data.find(p =>
+                p.kouzlo === klicKouzla &&
+                Number(p.uroven) === cisloUrovne
+            );
+
+            if (radek) {
+                polePopisu.textContent = radek.popis || "";
+            }
+        });
+    });
+
+    console.log("Popisy Prázdnoty načteny:", data);
+}
+
 nacistParametryMagie();
+nacistPopisyMagie();
 
 </script>
 
