@@ -91,6 +91,14 @@ td .number-input { min-width: 85px; }
             Prázdná pole pro jednotku a navyšování se ukládají jako prázdná hodnota.
             Pevné texty efektů v HTML tato stránka nemění.
         </p>
+                <h2>Popis kouzla</h2>
+        <p class="poznamka">
+            Zde můžeš upravit popis vybraného kouzla pro konkrétní úroveň.
+        </p>
+        <label for="popisKouzla">Text popisu</label>
+        <textarea id="popisKouzla" rows="7"
+            placeholder="Zadej popis kouzla..."></textarea>
+        <button type="button" id="ulozitPopis">Uložit popis</button>
         <button type="button" id="obnovit">Načíst znovu</button>
         <div class="table-wrap">
             <table>
@@ -214,7 +222,8 @@ async function naplnitKouzla() {
         option.textContent = spellNames[key] || key;
         select.appendChild(option);
     }
-    await nacistParametry();
+        await nacistParametry();
+    await nacistPopis();
 }
 
 async function nacistParametry() {
@@ -285,7 +294,72 @@ async function nacistParametry() {
         seznam.appendChild(tr);
     }
 }
+let idAktualnihoPopisu = null;
 
+async function nacistPopis() {
+    const skola = el("skola").value;
+    const kouzlo = el("kouzlo").value;
+    const uroven = Number(el("uroven").value);
+    const pole = el("popisKouzla");
+
+    idAktualnihoPopisu = null;
+    pole.value = "";
+
+    if (!kouzlo) return;
+
+    const { data, error } = await supabaseClient
+        .from("magicke_popisy")
+        .select("*")
+        .eq("skola", skola)
+        .eq("kouzlo", kouzlo)
+        .eq("uroven", uroven)
+        .maybeSingle();
+
+    if (error) {
+        zobrazChybu(error);
+        return;
+    }
+
+    if (data) {
+        idAktualnihoPopisu = data.id;
+        pole.value = data.popis || "";
+    }
+}
+
+async function ulozitPopis() {
+    const skola = el("skola").value;
+    const kouzlo = el("kouzlo").value;
+    const uroven = Number(el("uroven").value);
+    const popis = el("popisKouzla").value;
+
+    if (!kouzlo) {
+        zobrazZpravu("Nejdřív vyber kouzlo.", true);
+        return;
+    }
+
+    const tlacitko = el("ulozitPopis");
+    tlacitko.disabled = true;
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("magicke_popisy")
+            .upsert(
+                { skola, kouzlo, uroven, popis },
+                { onConflict: "skola,kouzlo,uroven" }
+            )
+            .select("id")
+            .single();
+
+        if (error) throw error;
+
+        idAktualnihoPopisu = data.id;
+        zobrazZpravu("Popis kouzla byl uložen.");
+    } catch (error) {
+        zobrazChybu(error);
+    } finally {
+        tlacitko.disabled = false;
+    }
+}
 async function ulozitParametr(id, tr, button) {
     const inputs = [...tr.querySelectorAll("input")];
     const get = field => inputs.find(input => input.dataset.field === field);
@@ -329,9 +403,23 @@ async function ulozitParametr(id, tr, button) {
 }
 
 el("skola").addEventListener("change", naplnitKouzla);
-el("kouzlo").addEventListener("change", nacistParametry);
-el("uroven").addEventListener("change", nacistParametry);
-el("obnovit").addEventListener("click", nacistParametry);
+
+el("kouzlo").addEventListener("change", async () => {
+    await nacistParametry();
+    await nacistPopis();
+});
+
+el("uroven").addEventListener("change", async () => {
+    await nacistParametry();
+    await nacistPopis();
+});
+
+el("obnovit").addEventListener("click", async () => {
+    await nacistParametry();
+    await nacistPopis();
+});
+
+el("ulozitPopis").addEventListener("click", ulozitPopis);
 el("zpet").addEventListener("click", () => location.href = "admin.html");
 
 overitAdmina();
