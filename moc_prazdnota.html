@@ -1092,12 +1092,20 @@ async function nacistParametryMagie() {
 
                 if (!radek) return;
 
-                const textHodnoty =
-                    radek.zaklad_text && radek.zaklad_text.trim() !== ""
-                        ? radek.zaklad_text
-                        : `${radek.hodnota ?? ""}${radek.jednotka ? " " + radek.jednotka : ""}`;
+               const maCiselouHodnotu =
+    radek.hodnota !== null &&
+    radek.hodnota !== undefined &&
+    radek.hodnota !== "";
 
-                let zobrazeni = textHodnoty;
+const textHodnoty = maCiselouHodnotu
+    ? `${radek.hodnota}${radek.jednotka ? " " + radek.jednotka : ""}`
+    : (radek.zaklad_text || "");
+
+let zobrazeni = textHodnoty;
+
+if (maCiselouHodnotu && radek.zaklad_text?.trim()) {
+    zobrazeni += "; " + radek.zaklad_text;
+}
 
                 if (
                     radek.pravidlo_navysovani &&
