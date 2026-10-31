@@ -248,7 +248,14 @@ textarea {
 /* =========================
    ATRIBUTY + ŽIVOTY + ODOLNOSTI
    ========================= */
+.atribut-bez-efektu {
+    width: 28px;
+    text-align: center;
+}
 
+.atribut-lomitko {
+    color: #b9a78d;
+}
 .statistiky {
     display: block;
 }
@@ -1004,6 +1011,8 @@ Vybrat portrét
 <label for="sila">Síla</label>
 
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="silaBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="sila" value="0" readonly>
 
     <div class="atribut-tlacitka">
@@ -1016,6 +1025,8 @@ Vybrat portrét
 <div>
 <label for="odolnost">Odolnost</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="odolnostBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="odolnost" value="0" readonly>
 
     <div class="atribut-tlacitka">
@@ -1028,6 +1039,8 @@ Vybrat portrét
 <div>
 <label for="hbitost">Hbitost</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="hbitostBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="hbitost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1040,6 +1053,8 @@ Vybrat portrét
 <div>
 <label for="zrcnost">Zručnost</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="zrcnostBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="zrcnost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1052,6 +1067,8 @@ Vybrat portrét
 <div>
 <label for="moudrost">Moudrost</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="moudrostBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="moudrost" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1064,6 +1081,8 @@ Vybrat portrét
 <div>
 <label for="charisma">Charisma</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="charismaBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="charisma" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1076,6 +1095,8 @@ Vybrat portrét
 <div>
 <label for="intuice">Intuice</label>
 <div class="atribut-hodnota">
+    <span class="atribut-bez-efektu" id="intuiceBezEfektu">0</span>
+    <span class="atribut-lomitko">/</span>
     <input type="number" id="intuice" value="0" readonly>
 
 <div class="atribut-tlacitka">
@@ -1584,9 +1605,20 @@ function aktualizovatZobrazeneAtributy() {
 
         const zaklad = Number(postava[id]) || 0;
 
-        input.value = zaklad
-            + bonusProVlastnost(id, nazvyAtributu[id])
-            + bonusEfektuProVlastnost(id);
+        const bezEfektu =
+            zaklad + bonusProVlastnost(id, nazvyAtributu[id]);
+
+        const sEfekty =
+            bezEfektu + bonusEfektuProVlastnost(id);
+
+        const puvodniHodnota =
+            document.getElementById(id + "BezEfektu");
+
+        if (puvodniHodnota) {
+            puvodniHodnota.textContent = bezEfektu;
+        }
+
+        input.value = sEfekty;
     });
 }
 
