@@ -1690,14 +1690,22 @@ async function prepocitatDosahAHorizont() {
             0
         );
 
-        const bonusDosahu = bonusEfektuProVlastnost("Dosah");
-        const bonusHorizontu = bonusEfektuProVlastnost("Horizont");
+const bonusDosahu = bonusEfektuProVlastnost("Dosah");
+const bonusHorizontu = bonusEfektuProVlastnost("Horizont");
 
-        const dosah = (2 * moudrost) + bodyKouzel + bonusDosahu;
+const zakladDosahu = (2 * moudrost) + bodyKouzel;
 
-        const horizont = Math.floor(
-            dosah + intuice + (bodyKouzel / 2)
-        ) + bonusHorizontu;
+const dosah = Math.floor(
+    zakladDosahu * (1 + bonusDosahu / 100)
+);
+
+const zakladHorizontu = Math.floor(
+    dosah + intuice + (bodyKouzel / 2)
+);
+
+const horizont = Math.floor(
+    zakladHorizontu * (1 + bonusHorizontu / 100)
+);
 
         document.getElementById("dosah").textContent = dosah;
         document.getElementById("horizont").textContent = horizont;
