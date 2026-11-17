@@ -397,7 +397,19 @@ function pridatRadekUcinku(data = {}) {
 
 
     const hodnota = vytvorPole("Změna", "number", data.hodnota ?? 0);
-    hodnota.step = "1";
+hodnota.step = "1";
+
+const popisekZmeny = hodnota.parentElement.querySelector("label");
+
+function aktualizovatPopisekZmeny() {
+    popisekZmeny.textContent =
+        ["Dosah", "Horizont"].includes(typ.value)
+            ? "Změna (%)"
+            : "Změna";
+}
+
+typ.addEventListener("change", aktualizovatPopisekZmeny);
+aktualizovatPopisekZmeny();
 
 
     const akce = document.createElement("div");
@@ -519,7 +531,9 @@ async function nacistEfekty() {
             for (const u of ucinkyEfektu) {
                 const polozka = document.createElement("li");
 
-                let text = `${u.typ} ${u.hodnota > 0 ? "+" : ""}${u.hodnota}`;
+                const procenta = ["Dosah", "Horizont"].includes(u.typ);
+
+let text = `${u.typ} ${u.hodnota > 0 ? "+" : ""}${u.hodnota}${procenta ? " %" : ""}`;
 
                 if (u.faze) {
                     text = `${u.faze}: ${text}`;
