@@ -386,13 +386,14 @@ function pridatRadekUcinku(data = {}) {
     ]);
 
     const typ = vytvorPole("Vlastnost / schopnost", "text", data.typ ?? "", [
-        { value: "", text: "-- Vyber --" },
-        ...[
-            "Síla", "Odolnost", "Hbitost", "Zručnost", "Moudrost",
-            "Charisma", "Intuice", "Životy", "Atletika", "Akrobacie",
-            "Břemena", "Výdrž", "Všímavost", "Přetvářka", "Odolnost nemoce"
-        ].map(x => ({ value: x, text: x }))
-    ]);
+    { value: "", text: "-- Vyber --" },
+    ...[
+        "Síla", "Odolnost", "Hbitost", "Zručnost", "Moudrost",
+        "Charisma", "Intuice", "Životy", "Atletika", "Akrobacie",
+        "Břemena", "Výdrž", "Všímavost", "Přetvářka", "Odolnost nemoce",
+        "Dosah", "Horizont"
+    ].map(x => ({ value: x, text: x }))
+]);
 
 
     const hodnota = vytvorPole("Změna", "number", data.hodnota ?? 0);
