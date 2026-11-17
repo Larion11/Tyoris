@@ -150,7 +150,46 @@ h1 {
     -webkit-appearance: none;
     margin: 0;
 }
+.postup-sfery {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+}
 
+.postup-sfery input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.postup-sfery input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.postup-sfery input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
+.postup-sfery input:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
 .tlacitko-sfery {
     width: 32px;
     height: 32px;
@@ -764,6 +803,7 @@ async function nacistVyberSkoly() {
     // Pokud už má postava vybranou jakoukoli školu,
     // výběr je trvalý a checkbox se uzamkne.
     checkbox.disabled = vybranaSkola !== null;
+    aktualizovatOvládaniSfer();
 }
 
 checkbox.addEventListener("change", async function () {
@@ -816,6 +856,7 @@ checkbox.addEventListener("change", async function () {
 
     checkbox.checked = true;
     checkbox.disabled = true;
+    aktualizovatOvládaniSfer();
 });
 
 nacistVyberSkoly();
@@ -858,6 +899,8 @@ async function nacistNaucenaKouzla() {
         cb.checked = naucenaKouzla.includes(cb.dataset.kouzlo);
         cb.disabled = !maSpravnouSkolu || cb.checked;
     });
+        aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
 }
 
 seznamCheckboxu.forEach(cb => {
@@ -925,6 +968,8 @@ nacistNaucenaKouzla().then(() => {
 const poleHodnotSfery = document.querySelectorAll("[data-hodnota-sfery]");
 const idPostavySfery = new URLSearchParams(window.location.search).get("id");
 const klientSfery = supabaseClient;
+const checkboxSkoly = document.getElementById("vybratPrazdnotu");
+const postupSferyPolicka = new Map();
 
 // Vytvoření tlačítek − a + u všech hodnot Sféry.
 poleHodnotSfery.forEach(pole => {
@@ -960,6 +1005,130 @@ poleHodnotSfery.forEach(pole => {
         pole.dispatchEvent(new Event("change", { bubbles: true }));
     });
 });
+// Vytvoření pěti políček postupu pro každé kouzlo.
+poleHodnotSfery.forEach(pole => {
+    const obal = document.createElement("div");
+    obal.className = "postup-sfery";
+
+    const policka = [];
+
+    for (let i = 0; i < 5; i++) {
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.disabled = true;
+
+        cb.addEventListener("change", () => {
+            ulozitPostupSfery(pole.dataset.hodnotaSfery, policka);
+        });
+
+        obal.appendChild(cb);
+        policka.push(cb);
+    }
+
+    pole.parentElement.appendChild(obal);
+    postupSferyPolicka.set(pole.dataset.hodnotaSfery, policka);
+});
+
+
+// Uložení postupu Sféry.
+async function ulozitPostupSfery(klic, policka) {
+    policka.forEach(cb => cb.disabled = true);
+
+    if (!idPostavySfery) return;
+
+    const { data: radek, error } = await klientSfery
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavySfery)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert("Postup Sféry se nepodařilo načíst.");
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const dataPostavy = radek.data || {};
+
+    if (
+        dataPostavy.magickaSkola !== "prazdnota" ||
+        !(dataPostavy.naucenaKouzla || []).includes(klic)
+    ) {
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const postupSfery = dataPostavy.postupSfery || {};
+    const postup = policka.map(cb => cb.checked);
+
+    let hodnota = Number(dataPostavy.hodnotySfery?.[klic]) || 0;
+
+    if (postup.every(Boolean)) {
+        hodnota += 1;
+        postup.fill(false);
+
+        dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
+        dataPostavy.hodnotySfery[klic] = hodnota;
+    }
+
+    postupSfery[klic] = postup;
+    dataPostavy.postupSfery = postupSfery;
+
+    const { error: chybaUlozeni } = await klientSfery
+        .from("postavy")
+        .update({ data: dataPostavy })
+        .eq("id", idPostavySfery);
+
+    if (chybaUlozeni) {
+        console.error(chybaUlozeni);
+        alert("Postup Sféry se nepodařilo uložit.");
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const pole = document.querySelector(
+        `[data-hodnota-sfery="${klic}"]`
+    );
+
+    if (pole) pole.value = hodnota;
+
+    policka.forEach((cb, index) => {
+        cb.checked = postup[index];
+    });
+
+    aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
+}
+
+
+// Povolení ovládání pouze u naučených kouzel.
+function aktualizovatOvládaniSfer() {
+    const maSpravnouSkolu = checkboxSkoly.checked;
+
+    poleHodnotSfery.forEach(pole => {
+        const klic = pole.dataset.hodnotaSfery;
+
+        const checkboxKouzla = document.querySelector(
+            `.vyber-kouzla input[data-kouzlo="${klic}"]`
+        );
+
+        const nauceno = checkboxKouzla?.checked === true;
+        const povoleno = maSpravnouSkolu && nauceno;
+
+        pole.disabled = !povoleno;
+
+        pole.parentElement
+            .querySelectorAll(".tlacitko-sfery")
+            .forEach(tlacitko => {
+                tlacitko.disabled = !povoleno;
+            });
+
+        postupSferyPolicka.get(klic)?.forEach(cb => {
+            cb.disabled = !povoleno;
+        });
+    });
+}
 function zvyraznitUrovneSfer() {
     document.querySelectorAll(".kouzlo").forEach(kouzlo => {
         const pole = kouzlo.querySelector("[data-hodnota-sfery]");
@@ -1002,13 +1171,27 @@ async function nacistHodnotySfery() {
         return;
     }
 
-    const hodnoty = radek.data?.hodnotySfery || {};
+      const dataPostavy = radek.data || {};
+    const hodnoty = dataPostavy.hodnotySfery || {};
+    const postupSfery = dataPostavy.postupSfery || {};
 
     poleHodnotSfery.forEach(pole => {
-        pole.value = hodnoty[pole.dataset.hodnotaSfery] ?? 0;
-        pole.disabled = radek.data?.magickaSkola !== "prazdnota";
+        const klic = pole.dataset.hodnotaSfery;
+
+        pole.value = hodnoty[klic] ?? 0;
+
+        const policka = postupSferyPolicka.get(klic);
+        const ulozenyPostup = postupSfery[klic] || [];
+
+        if (policka) {
+            policka.forEach((cb, index) => {
+                cb.checked = ulozenyPostup[index] === true;
+            });
+        }
     });
- zvyraznitUrovneSfer();
+
+    aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
 }
 
 poleHodnotSfery.forEach(pole => {

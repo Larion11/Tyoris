@@ -126,6 +126,46 @@ h1 {
     font-size: 16px;
     white-space: nowrap;
 }
+.postup-sfery {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 6px;
+}
+
+.postup-sfery input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.postup-sfery input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.postup-sfery input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+}
+
+.postup-sfery input:disabled {
+    opacity: 1;
+    cursor: default;
+}
 
 .hodnota-sfery input[type="number"] {
     width: 55px;
@@ -734,6 +774,9 @@ checkboxSkoly.addEventListener("change", async function () {
 });
 
 // Přidání tlačítek minus a plus k hodnotám Sféry
+// Přidání tlačítek a pěti políček k hodnotám Sféry
+const postupSferyPolicka = new Map();
+
 poleHodnotSfery.forEach(pole => {
     const tlacitkoMinus = document.createElement("button");
     tlacitkoMinus.type = "button";
@@ -763,8 +806,90 @@ poleHodnotSfery.forEach(pole => {
         pole.value = (parseInt(pole.value, 10) || 0) + 1;
         pole.dispatchEvent(new Event("change", { bubbles: true }));
     });
-});
 
+    // Pět políček postupu
+    const kontejnerPostupu = document.createElement("div");
+    kontejnerPostupu.className = "postup-sfery";
+
+    const policka = [];
+
+    for (let i = 0; i < 5; i++) {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.setAttribute("aria-label", `Postup Sféry ${i + 1} z 5`);
+
+        kontejnerPostupu.appendChild(checkbox);
+        policka.push(checkbox);
+    }
+
+    postupSferyPolicka.set(pole.dataset.hodnotaSfery, policka);
+
+    policka.forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+            ulozitPostupSfery(pole.dataset.hodnotaSfery, policka);
+        });
+    });
+
+    tlacitkoPlus.after(kontejnerPostupu);
+});
+async function ulozitPostupSfery(klic, policka) {
+    policka.forEach(checkbox => checkbox.disabled = true);
+
+    try {
+        const dataPostavy = await nacistDataPostavy();
+
+        if (
+            dataPostavy.magickaSkola !== mojeSkola ||
+            !(dataPostavy.naucenaKouzla || []).includes(klic)
+        ) {
+            await nacistHodnotySfery();
+            return;
+        }
+
+        const postup = policka.map(checkbox => checkbox.checked);
+
+        dataPostavy.postupSfery = dataPostavy.postupSfery || {};
+        dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
+
+        let hodnota = Math.max(
+            0,
+            parseInt(dataPostavy.hodnotySfery[klic], 10) || 0
+        );
+
+        if (postup.every(Boolean)) {
+            hodnota += 1;
+            postup.fill(false);
+        }
+
+        dataPostavy.postupSfery[klic] = postup;
+        dataPostavy.hodnotySfery[klic] = hodnota;
+
+        await ulozitDataPostavy(dataPostavy);
+
+        const pole = document.querySelector(
+            `[data-hodnota-sfery="${klic}"]`
+        );
+
+        if (pole) pole.value = hodnota;
+
+        policka.forEach((checkbox, index) => {
+            checkbox.checked = postup[index];
+        });
+
+        aktualizovatOvladaniSfer();
+        zvyraznitUrovneSfer();
+
+    } catch (error) {
+        console.error("Nepodařilo se uložit postup Sféry:", error);
+        alert("Postup Sféry se nepodařilo uložit.");
+
+        try {
+            await nacistHodnotySfery();
+        } catch (chyba) {
+            console.error(chyba);
+        }
+    }
+}
 // Povolení a zákaz ovládání hodnot Sféry
 function aktualizovatOvladaniSfer() {
     const maSpravnouSkolu =
@@ -786,7 +911,11 @@ function aktualizovatOvladaniSfer() {
             kontejner.querySelectorAll(".tlacitko-sfery").forEach(tlacitko => {
                 tlacitko.disabled = !povoleno;
             });
+             kontejner.querySelectorAll(".postup-sfery input").forEach(checkbox => {
+    checkbox.disabled = !povoleno;
+});
         }
+       
     });
 }
 
@@ -873,15 +1002,28 @@ checkboxyKouzel.forEach(cb => {
 });
 
 // Načtení uložených hodnot Sféry
+// Načtení uložených hodnot Sféry
 async function nacistHodnotySfery() {
     const dataPostavy = await nacistDataPostavy();
     const hodnotySfery = dataPostavy.hodnotySfery || {};
+    const postupSfery = dataPostavy.postupSfery || {};
 
     poleHodnotSfery.forEach(pole => {
+        const klic = pole.dataset.hodnotaSfery;
+
         pole.value = Math.max(
             0,
-            parseInt(hodnotySfery[pole.dataset.hodnotaSfery], 10) || 0
+            parseInt(hodnotySfery[klic], 10) || 0
         );
+
+        const policka = postupSferyPolicka.get(klic) || [];
+        const ulozenyPostup = postupSfery[klic];
+
+        policka.forEach((checkbox, index) => {
+            checkbox.checked =
+                Array.isArray(ulozenyPostup) &&
+                ulozenyPostup[index] === true;
+        });
     });
 
     aktualizovatOvladaniSfer();

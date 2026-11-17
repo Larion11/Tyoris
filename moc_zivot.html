@@ -168,6 +168,47 @@ h1 {
     cursor: default;
 }
 
+.postup-sfery {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+}
+
+.postup-sfery input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.postup-sfery input:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.postup-sfery input:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
+.postup-sfery input:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .vyber-kouzla {
     display: inline-flex;
     align-items: center;
@@ -681,10 +722,108 @@ poleHodnotSfery.forEach(pole => {
 
         pole.value = (Number(pole.value) || 0) + 1;
         pole.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+    });});
+    
+// Vytvoření pěti políček postupu pro každé kouzlo.
+const postupSferyPolicka = new Map();
+
+poleHodnotSfery.forEach(pole => {
+    const obal = document.createElement("div");
+    obal.className = "postup-sfery";
+
+    const policka = [];
+
+    for (let i = 0; i < 5; i++) {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.disabled = true;
+
+        checkbox.addEventListener("change", () => {
+            ulozitPostupSfery(pole.dataset.hodnotaSfery, policka);
+        });
+
+        obal.appendChild(checkbox);
+        policka.push(checkbox);
+    }
+
+    pole.parentElement.appendChild(obal);
+    postupSferyPolicka.set(pole.dataset.hodnotaSfery, policka);
 });
 
+// Uložení postupu Sféry.
+async function ulozitPostupSfery(klic, policka) {
+    policka.forEach(cb => cb.disabled = true);
+
+    if (!idPostavy) return;
+
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("data")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert("Postup Sféry se nepodařilo načíst.");
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const dataPostavy = radek.data || {};
+
+    if (dataPostavy.magickaSkola !== mojeSkola ||
+        !(dataPostavy.naucenaKouzla || []).includes(klic)) {
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const postupSfery = dataPostavy.postupSfery || {};
+
+    const postup = policka.map(cb => cb.checked);
+
+    let hodnota = Number(dataPostavy.hodnotySfery?.[klic]) || 0;
+
+    if (postup.every(Boolean)) {
+        hodnota += 1;
+        postup.fill(false);
+
+        dataPostavy.hodnotySfery = dataPostavy.hodnotySfery || {};
+        dataPostavy.hodnotySfery[klic] = hodnota;
+    }
+
+    postupSfery[klic] = postup;
+    dataPostavy.postupSfery = postupSfery;
+
+    const { error: chybaUlozeni } = await supabaseClient
+        .from("postavy")
+        .update({ data: dataPostavy })
+        .eq("id", idPostavy);
+
+    if (chybaUlozeni) {
+        console.error(chybaUlozeni);
+        alert("Postup Sféry se nepodařilo uložit.");
+        await nacistHodnotySfery();
+        return;
+    }
+
+    const pole = document.querySelector(
+        `[data-hodnota-sfery="${klic}"]`
+    );
+
+    if (pole) pole.value = hodnota;
+
+    policka.forEach((cb, index) => {
+        cb.checked = postup[index];
+    });
+
+    aktualizovatOvládaniSfer();
+    zvyraznitUrovneSfer();
+}
+
+
+
 // Ovládání polí a tlačítek podle naučení kouzla a vybrané školy.
+
 function aktualizovatOvládaniSfer() {
     const maSpravnouSkolu = checkboxSkoly.checked;
 
@@ -705,8 +844,13 @@ function aktualizovatOvládaniSfer() {
             .forEach(tlacitko => {
                 tlacitko.disabled = !povoleno;
             });
+
+        postupSferyPolicka.get(klic)?.forEach(cb => {
+            cb.disabled = !povoleno;
+        });
     });
 }
+
 
 // Zvýraznění zvládnutých úrovní.
 function zvyraznitUrovneSfer() {
@@ -779,7 +923,6 @@ checkboxSkoly.addEventListener("change", async () => {
 
     const dataPostavy = radek.data || {};
     const vybranaSkola = dataPostavy.magickaSkola ?? null;
-
     if (vybranaSkola !== null) {
         checkboxSkoly.checked = vybranaSkola === mojeSkola;
 
@@ -918,12 +1061,21 @@ async function nacistHodnotySfery() {
         return;
     }
 
-    const dataPostavy = radek.data || {};
-    const hodnoty = dataPostavy.hodnotySfery || {};
+   const dataPostavy = radek.data || {};
+const hodnoty = dataPostavy.hodnotySfery || {};
+const postupSfery = dataPostavy.postupSfery || {};
 
     poleHodnotSfery.forEach(pole => {
         const hodnota = hodnoty[pole.dataset.hodnotaSfery];
         pole.value = hodnota ?? 0;
+        const policka = postupSferyPolicka.get(pole.dataset.hodnotaSfery);
+const ulozenyPostup = postupSfery[pole.dataset.hodnotaSfery] || [];
+
+if (policka) {
+    policka.forEach((cb, index) => {
+        cb.checked = ulozenyPostup[index] === true;
+    });
+}
     });
 
     aktualizovatOvládaniSfer();
@@ -1112,5 +1264,3 @@ inicializovatZivot();
 </body>
 </html>
 
-</body>
-</html>
