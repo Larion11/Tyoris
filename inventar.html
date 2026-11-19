@@ -37,7 +37,25 @@
             margin-top: 0;
             color: #d8c29d;
         }
+.odkaz-cenik {
+    display: block;
+    width: fit-content;
+    margin: -15px auto 25px;
+    padding: 10px 24px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    color: #eee4d2;
+    background: linear-gradient(180deg, #403222 0%, #241b13 100%);
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
 
+.odkaz-cenik:hover {
+    background: #473827;
+    border-color: #b39468;
+}
         .info-hlavicka {
             text-align: center;
             font-size: 22px;
@@ -292,7 +310,9 @@ const supabaseClient = window.supabase.createClient(
 <div class="page">
 
     <h1>Inventář</h1>
-
+<a href="cenik.html" target="_blank" class="odkaz-cenik">
+    Ceník království
+</a>
     <div class="info-hlavicka" id="info"></div>
 
     <div class="horni-cast">
