@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administrace ceníku</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    padding: 25px;
+    background:
+        linear-gradient(rgba(12, 10, 8, .82), rgba(12, 10, 8, .9)),
+        url("../pozadi-inventar.jpg") center / cover fixed;
+    color: #e8dfcf;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+button, input, textarea, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    color: #e8dfcf;
+    background: linear-gradient(#403222, #241b13);
+    border: 1px solid #8a704d;
+    border-radius: 5px;
+    padding: 9px 15px;
+}
+
+button:hover {
+    background: linear-gradient(#59452e, #302317);
+}
+
+button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+h1 {
+    text-align: center;
+    color: #d2b88c;
+    margin: 0 0 25px;
+    font-size: 30px;
+}
+
+h2 {
+    color: #d2b88c;
+    margin-top: 0;
+    font-size: 21px;
+}
+
+h3 {
+    color: #c8a979;
+    margin-top: 0;
+}
+
+.horni-panel {
+    max-width: 1500px;
+    margin: auto;
+}
+
+.horni-tlacitka {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.stav {
+    color: #a99b84;
+    font-size: 14px;
+}
+
+.stav.neulozeno {
+    color: #e6b36b;
+}
+
+.stav.ulozeno {
+    color: #9ac58d;
+}
+
+.hlaska {
+    display: none;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #806b4b;
+    background: rgba(35, 27, 19, .9);
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+.hlaska.chyba {
+    border-color: #a34e43;
+    color: #edaaa0;
+}
+
+.hlaska.uspech {
+    border-color: #648354;
+    color: #b5d6a5;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 245px minmax(0, 1fr);
+    gap: 20px;
+    max-width: 1500px;
+    margin: auto;
+    align-items: start;
+}
+
+.panel {
+    background: rgba(24, 19, 14, .94);
+    border: 1px solid #6f5a3e;
+    border-radius: 7px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.35);
+    min-width: 0;
+}
+
+.kategorie {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.kategorie button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    background: rgba(50, 39, 27, .7);
+}
+
+.kategorie button.aktivni {
+    background: linear-gradient(#735b3d, #493622);
+    border-color: #c1a16e;
+    color: #fff0d4;
+}
+
+.obsah-panelu {
+    min-width: 0;
+}
+
+.nadpis-kategorie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.nadpis-kategorie h2 {
+    margin: 0;
+}
+
+.podkategorie {
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.podkategorie select {
+    width: 100%;
+}
+
+select,
+input,
+textarea {
+    color: #e8dfcf;
+    background: #211a13;
+    border: 1px solid #796344;
+    border-radius: 4px;
+    padding: 9px;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+    outline: 1px solid #c5a575;
+    border-color: #c5a575;
+}
+
+.pocet {
+    color: #a99b84;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.seznam {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 22px;
+}
+
+.polozka {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border: 1px solid #51412e;
+    background: rgba(48, 37, 25, .65);
+    border-radius: 4px;
+}
+
+.polozka.aktivni {
+    border-color: #c1a16e;
+    background: rgba(94, 69, 40, .5);
+}
+
+.polozka-nazev {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    flex: 1;
+}
+
+.polozka-nazev strong {
+    display: block;
+    color: #e6d2ae;
+}
+
+.polozka-nazev small {
+    display: block;
+    color: #a99b84;
+    margin-top: 4px;
+}
+
+.polozka button {
+    padding: 6px 10px;
+    flex-shrink: 0;
+}
+
+.editor {
+    border-top: 1px solid #6f5a3e;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.editor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.pole {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.pole label {
+    color: #cbb58f;
+    font-size: 14px;
+}
+
+.pole input,
+.pole textarea {
+    width: 100%;
+}
+
+.pole textarea {
+    min-height: 75px;
+    resize: vertical;
+}
+
+.pole.celou-sirku {
+    grid-column: 1 / -1;
+}
+
+.editor-tlacitka {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.dalsi-pole {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px dashed #806b4b;
+    border-radius: 5px;
+}
+
+.dalsi-pole-vstup {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+}
+
+.poznamky {
+    border-top: 1px solid #6f5a3e;
+    margin-top: 25px;
+    padding-top: 20px;
+}
+
+.poznamky .pole {
+    margin-bottom: 15px;
+}
+
+.poznamky textarea {
+    min-height: 85px;
+}
+
+.prazdne {
+    color: #a99b84;
+    font-style: italic;
+    padding: 15px 0;
+}
+
+#editor {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    body {
+        padding: 12px;
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .kategorie {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .editor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pole.celou-sirku {
+        grid-column: auto;
+    }
+
+    .dalsi-pole-vstup {
+        grid-template-columns: 1fr;
+    }
+
+    .polozka {
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="horni-panel">
+
+    <div class="horni-tlacitka">
+        <button onclick="location.href='admin.html'">
+            ← Zpět do administrace
+        </button>
+
+        <span id="stav" class="stav">Načítám...</span>
+
+        <button id="ulozitTlacitko" onclick="ulozitCenik()" disabled>
+            Uložit změny
+        </button>
+    </div>
+
+    <h1>Správa ceníku</h1>
+
+    <div id="hlaska" class="hlaska"></div>
+
+</div>
+
+<div class="layout">
+
+    <aside class="panel">
+        <h2>Kategorie</h2>
+        <div id="kategorie" class="kategorie"></div>
+    </aside>
+
+    <main class="panel obsah-panelu">
+
+        <div class="nadpis-kategorie">
+            <h2 id="nadpisKategorie">Vyber kategorii</h2>
+            <button id="pridatTlacitko" onclick="novaPolozka()" disabled>
+                + Přidat položku
+            </button>
+        </div>
+
+        <div id="podkategoriePanel" class="podkategorie" style="display:none;">
+            <label for="podkategorieSelect">Podkategorie</label>
+            <select id="podkategorieSelect" onchange="zmenitPodkategorii()"></select>
+        </div>
+
+        <div id="pocet" class="pocet"></div>
+
+        <div id="seznam" class="seznam">
+            <div class="prazdne">Načítám ceník...</div>
+        </div>
+
+        <div id="editor" class="editor">
+
+            <h3 id="editorNadpis">Úprava položky</h3>
+
+            <div id="editorPole" class="editor-grid"></div>
+
+            <div class="dalsi-pole">
+                <h3>Přidat vlastní pole</h3>
+                <div class="dalsi-pole-vstup">
+                    <input id="novyKlic" placeholder="Název pole">
+                    <input id="novaHodnota" placeholder="Hodnota">
+                    <button onclick="pridatVlastniPole()">Přidat pole</button>
+                </div>
+            </div>
+
+            <div class="editor-tlacitka">
+                <button onclick="ulozitPolozku()">Potvrdit položku</button>
+                <button onclick="zrusitEditor()">Zrušit</button>
+            </div>
+
+        </div>
+
+        <div id="poznamky" class="poznamky" style="display:none;">
+            <h3>Samostatné poznámky</h3>
+            <div id="poznamkyPole"></div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+let cenikData = null;
+let puvodniData = null;
+
+let vybranaKategorie = null;
+let vybranaPodkategorie = null;
+let upravovanaIndex = null;
+let pracovniPolozka = null;
+let jeNovaPolozka = false;
+let vlastniPole = [];
+
+const kategorieDef = [
+    { key: "jidlo_suroviny", label: "Jídlo / suroviny" },
+    { key: "sluzby", label: "Služby" },
+    { key: "zvirata", label: "Zvířata" },
+    { key: "zbrane", label: "Zbraně" },
+    { key: "zbroje", label: "Zbroje", groups: true },
+    { key: "predmety_vybaveni", label: "Předměty / vybavení" },
+    {
+        key: "preprava",
+        label: "Přeprava",
+        groups: true,
+        groupLabels: {
+            vystroj_pro_kone: "Výstroj pro koně",
+            dopravni_prostredky: "Dopravní prostředky"
+        }
+    },
+    { key: "materialy", label: "Materiály" },
+    { key: "drahokamy", label: "Drahokamy" },
+    { key: "sperky", label: "Šperky" },
+    { key: "kvalita_zpracovani", label: "Kvalita zpracování" },
+    {
+        key: "alchymie_suroviny",
+        label: "Alchymistické suroviny",
+        groups: true
+    },
+    { key: "alchymie_vyrobky", label: "Alchymistické výrobky" },
+    { key: "mzdy", label: "Mzdy" }
+];
+
+const poznamkyDef = [
+    {
+        key: "poznamka_zbrane",
+        label: "Poznámka ke zbraním"
+    },
+    {
+        key: "poznamka_k_polozce_rypak",
+        label: "Poznámka k položce Rypák"
+    },
+    {
+        key: "poznamka_zbroje",
+        label: "Poznámka ke zbrojím"
+    }
+];
+
+function kopie(obj) {
+    if (typeof structuredClone === "function") {
+        return structuredClone(obj);
+    }
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function zobrazHlasku(text, typ = "") {
+    const el = document.getElementById("hlaska");
+    el.textContent = text;
+    el.className = "hlaska " + typ;
+    el.style.display = "block";
+}
+
+function skryHlasku() {
+    const el = document.getElementById("hlaska");
+    el.style.display = "none";
+}
+
+function oznacZmeny() {
+    const zmeneno = JSON.stringify(cenikData) !== JSON.stringify(puvodniData);
+
+    const stav = document.getElementById("stav");
+    const tlacitko = document.getElementById("ulozitTlacitko");
+
+    if (zmeneno) {
+        stav.textContent = "● Neuložené změny";
+        stav.className = "stav neulozeno";
+        tlacitko.disabled = false;
+    } else {
+        stav.textContent = "Vše uloženo";
+        stav.className = "stav ulozeno";
+        tlacitko.disabled = false;
+    }
+}
+
+function ziskejAktualniPole() {
+    if (!vybranaKategorie) return null;
+
+    const definice = kategorieDef.find(
+        k => k.key === vybranaKategorie
+    );
+
+    if (!definice) return null;
+
+    if (definice.groups) {
+        return cenikData[vybranaKategorie]?.[vybranaPodkategorie];
+    }
+
+    return cenikData[vybranaKategorie];
+}
+
+function nastavAktualniPole(hodnota) {
+    const definice = kategorieDef.find(
+        k => k.key === vybranaKategorie
+    );
+
+    if (definice.groups) {
+        cenikData[vybranaKategorie][vybranaPodkategorie] = hodnota;
+    } else {
+        cenikData[vybranaKategorie] = hodnota;
+    }
+}
+
+async function inicializace() {
+
+    const { data: sessionData, error: sessionError } =
+        await supabaseClient.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+        zobrazHlasku("Nejsi přihlášený. Přihlas se nejprve do hry.", "chyba");
+        document.getElementById("stav").textContent = "Nepřihlášen";
+        return;
+    }
+
+    const session = sessionData.session;
+
+    const { data: admin, error: adminChyba } =
+        await supabaseClient
+            .from("admini")
+            .select("user_id")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+
+    if (adminChyba || !admin) {
+        zobrazHlasku(
+            "Nemáš oprávnění ke správě ceníku.",
+            "chyba"
+        );
+        document.getElementById("stav").textContent = "Bez oprávnění";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("cenik")
+        .select("obsah")
+        .eq("id", 1)
+        .single();
+
+    if (error) {
+        zobrazHlasku(
+            "Nepodařilo se načíst ceník:\n" + error.message,
+            "chyba"
+        );
+        document.getElementById("stav").textContent = "Chyba načítání";
+        return;
+    }
+
+    cenikData = kopie(data.obsah || {});
+    puvodniData = kopie(cenikData);
+
+    vykresliKategorie();
+
+    document.getElementById("stav").textContent = "Ceník načten";
+    document.getElementById("stav").className = "stav ulozeno";
+
+    document.getElementById("pridatTlacitko").disabled = false;
+    document.getElementById("ulozitTlacitko").disabled = false;
+
+    if (kategorieDef.length > 0) {
+        vyberKategorii(kategorieDef[0].key);
+    }
+}
+
+function vykresliKategorie() {
+
+    const kontejner = document.getElementById("kategorie");
+    kontejner.replaceChildren();
+
+    kategorieDef.forEach(kat => {
+
+        const tlacitko = document.createElement("button");
+        tlacitko.textContent = kat.label;
+
+        if (kat.key === vybranaKategorie) {
+            tlacitko.classList.add("aktivni");
+        }
+
+        tlacitko.onclick = () => vyberKategorii(kat.key);
+
+        kontejner.appendChild(tlacitko);
+    });
+}
+
+function vyberKategorii(key) {
+
+    zrusitEditor();
+
+    vybranaKategorie = key;
+    vybranaPodkategorie = null;
+
+    const definice = kategorieDef.find(k => k.key === key);
+
+    document.getElementById("nadpisKategorie").textContent =
+        definice.label;
+
+    vykresliKategorie();
+
+    if (definice.groups) {
+
+        const skupiny = cenikData[key] || {};
+        const select = document.getElementById("podkategorieSelect");
+
+        select.replaceChildren();
+
+        Object.keys(skupiny).forEach((skupina, index) => {
+
+            const option = document.createElement("option");
+            option.value = skupina;
+
+            option.textContent =
+                definice.groupLabels?.[skupina] || skupina;
+
+            select.appendChild(option);
+
+            if (index === 0) {
+                vybranaPodkategorie = skupina;
+            }
+        });
+
+        document.getElementById("podkategoriePanel").style.display =
+            "block";
+
+        if (vybranaPodkategorie) {
+            select.value = vybranaPodkategorie;
+        }
+
+    } else {
+
+        document.getElementById("podkategoriePanel").style.display =
+            "none";
+    }
+
+    vykresliSeznam();
+    vykresliPoznamky();
+}
+
+function zmenitPodkategorii() {
+
+    vybranaPodkategorie =
+        document.getElementById("podkategorieSelect").value;
+
+    zrusitEditor();
+    vykresliSeznam();
+}
+
+function nazevPolozky(polozka) {
+
+    if (!polozka || typeof polozka !== "object") {
+        return String(polozka ?? "");
+    }
+
+    return (
+        polozka.nazev ??
+        polozka.jmeno ??
+        polozka.nazev_polozky ??
+        polozka.typ ??
+        "(Bez názvu)"
+    );
+}
+
+function vykresliSeznam() {
+
+    const seznam = document.getElementById("seznam");
+    seznam.replaceChildren();
+
+    const data = ziskejAktualniPole();
+
+    if (!Array.isArray(data)) {
+        document.getElementById("pocet").textContent = "";
+        const prazdne = document.createElement("div");
+        prazdne.className = "prazdne";
+        prazdne.textContent = "Tato kategorie neobsahuje seznam položek.";
+        seznam.appendChild(prazdne);
+        return;
+    }
+
+    document.getElementById("pocet").textContent =
+        "Počet položek: " + data.length;
+
+    if (data.length === 0) {
+        const prazdne = document.createElement("div");
+        prazdne.className = "prazdne";
+        prazdne.textContent = "Zatím zde nejsou žádné položky.";
+        seznam.appendChild(prazdne);
+        return;
+    }
+
+    data.forEach((polozka, index) => {
+
+        const radek = document.createElement("div");
+        radek.className = "polozka";
+
+        const obsah = document.createElement("div");
+        obsah.className = "polozka-nazev";
+        obsah.onclick = () => upravitPolozku(index);
+
+        const nazev = document.createElement("strong");
+        nazev.textContent = nazevPolozky(polozka);
+
+        const detail = document.createElement("small");
+
+        const dalsiUdaje = Object.entries(polozka || {})
+            .filter(([key]) => key !== "nazev")
+            .slice(0, 3)
+            .map(([key, value]) => key + ": " + value)
+            .join(" | ");
+
+        detail.textContent = dalsiUdaje;
+
+        obsah.append(nazev, detail);
+
+      const tlacitka = document.createElement("div");
+tlacitka.style.display = "flex";
+tlacitka.style.gap = "6px";
+
+const upravit = document.createElement("button");
+upravit.textContent = "Upravit";
+upravit.onclick = () => upravitPolozku(index);
+
+const smazat = document.createElement("button");
+smazat.textContent = "Smazat";
+smazat.onclick = () => smazatPolozku(index);
+
+tlacitka.append(upravit, smazat);
+radek.append(obsah, tlacitka);
+        seznam.appendChild(radek);
+    });
+}
+
+function novaPolozka() {
+
+    const data = ziskejAktualniPole();
+
+    if (!Array.isArray(data)) {
+        zobrazHlasku("Tuto kategorii nelze upravovat jako seznam položek.", "chyba");
+        return;
+    }
+
+    const klice = new Set();
+
+    data.forEach(polozka => {
+        if (polozka && typeof polozka === "object") {
+            Object.keys(polozka).forEach(k => klice.add(k));
+        }
+    });
+
+    pracovniPolozka = {};
+
+    klice.forEach(klic => {
+        pracovniPolozka[klic] = "";
+    });
+
+    if (klice.size === 0) {
+        pracovniPolozka.nazev = "";
+        pracovniPolozka.cena = "";
+    }
+
+    upravovanaIndex = null;
+    jeNovaPolozka = true;
+    vlastniPole = [];
+
+    vykresliEditor();
+
+    document.getElementById("editorNadpis").textContent =
+        "Nová položka";
+
+    document.getElementById("editor").style.display = "block";
+    document.getElementById("editor").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+function upravitPolozku(index) {
+
+    const data = ziskejAktualniPole();
+
+    if (!Array.isArray(data) || !data[index]) return;
+
+    pracovniPolozka = kopie(data[index]);
+    upravovanaIndex = index;
+    jeNovaPolozka = false;
+    vlastniPole = [];
+
+    vykresliEditor();
+
+    document.getElementById("editorNadpis").textContent =
+        "Úprava položky: " + nazevPolozky(pracovniPolozka);
+
+    document.getElementById("editor").style.display = "block";
+    document.getElementById("editor").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+function vykresliEditor() {
+
+    const kontejner = document.getElementById("editorPole");
+    kontejner.replaceChildren();
+
+    Object.entries(pracovniPolozka).forEach(([klic, hodnota]) => {
+        vytvorPole(kontejner, klic, hodnota);
+    });
+}
+
+function vytvorPole(kontejner, klic, hodnota) {
+
+    const obal = document.createElement("div");
+    obal.className = "pole";
+
+    const label = document.createElement("label");
+    label.textContent = klic;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = hodnota == null ? "" : String(hodnota);
+    input.dataset.klic = klic;
+
+    input.oninput = () => {
+        pracovniPolozka[klic] = input.value;
+    };
+
+    obal.append(label, input);
+    kontejner.appendChild(obal);
+}
+
+function pridatVlastniPole() {
+
+    const klicInput = document.getElementById("novyKlic");
+    const hodnotaInput = document.getElementById("novaHodnota");
+
+    const klic = klicInput.value.trim();
+    const hodnota = hodnotaInput.value;
+
+    if (!klic) {
+        zobrazHlasku("Zadej název nového pole.", "chyba");
+        return;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(pracovniPolozka, klic)) {
+        zobrazHlasku("Toto pole už existuje.", "chyba");
+        return;
+    }
+
+    pracovniPolozka[klic] = hodnota;
+
+    klicInput.value = "";
+    hodnotaInput.value = "";
+
+    vykresliEditor();
+    skryHlasku();
+}
+
+function ulozitPolozku() {
+
+    const data = ziskejAktualniPole();
+
+    if (!Array.isArray(data)) return;
+
+    const vstupy = document.querySelectorAll(
+        "#editorPole input[data-klic]"
+    );
+
+    vstupy.forEach(input => {
+        pracovniPolozka[input.dataset.klic] = input.value;
+    });
+
+    if (jeNovaPolozka) {
+        data.push(kopie(pracovniPolozka));
+    } else {
+        data[upravovanaIndex] = kopie(pracovniPolozka);
+    }
+
+    zrusitEditor();
+    vykresliSeznam();
+    oznacZmeny();
+    skryHlasku();
+}
+
+function zrusitEditor() {
+
+    document.getElementById("editor").style.display = "none";
+    document.getElementById("editorPole").replaceChildren();
+
+    pracovniPolozka = null;
+    upravovanaIndex = null;
+    jeNovaPolozka = false;
+    vlastniPole = [];
+}
+
+function smazatPolozku(index) {
+
+    const data = ziskejAktualniPole();
+
+    if (!Array.isArray(data)) return;
+
+    const polozka = data[index];
+
+    if (!confirm(
+        "Opravdu chceš smazat položku „" +
+        nazevPolozky(polozka) +
+        "“?"
+    )) return;
+
+    data.splice(index, 1);
+
+    zrusitEditor();
+    vykresliSeznam();
+    oznacZmeny();
+}
+
+function vykresliPoznamky() {
+
+    const kontejner = document.getElementById("poznamkyPole");
+    kontejner.replaceChildren();
+
+    const poznamky = poznamkyDef.filter(p => {
+
+        if (p.key === "poznamka_zbrane") {
+            return vybranaKategorie === "zbrane";
+        }
+
+        if (p.key === "poznamka_k_polozce_rypak") {
+            return vybranaKategorie === "zbrane";
+        }
+
+        if (p.key === "poznamka_zbroje") {
+            return vybranaKategorie === "zbroje";
+        }
+
+        return false;
+    });
+
+    document.getElementById("poznamky").style.display =
+        poznamky.length ? "block" : "none";
+
+    poznamky.forEach(poznamka => {
+
+        const obal = document.createElement("div");
+        obal.className = "pole";
+
+        const label = document.createElement("label");
+        label.textContent = poznamka.label;
+
+        const textarea = document.createElement("textarea");
+        textarea.value = cenikData[poznamka.key] || "";
+
+        textarea.oninput = () => {
+            cenikData[poznamka.key] = textarea.value;
+            oznacZmeny();
+        };
+
+        obal.append(label, textarea);
+        kontejner.appendChild(obal);
+    });
+}
+
+async function ulozitCenik() {
+
+    if (!cenikData) return;
+
+    const tlacitko = document.getElementById("ulozitTlacitko");
+
+    if (JSON.stringify(cenikData) === JSON.stringify(puvodniData)) {
+        zobrazHlasku("Nejsou žádné změny k uložení.", "uspech");
+        return;
+    }
+
+    tlacitko.disabled = true;
+    tlacitko.textContent = "Ukládám...";
+
+    const { error } = await supabaseClient
+        .from("cenik")
+        .update({
+            obsah: cenikData,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", 1);
+
+    tlacitko.textContent = "Uložit změny";
+    tlacitko.disabled = false;
+
+    if (error) {
+        zobrazHlasku(
+            "Uložení se nezdařilo:\n" + error.message,
+            "chyba"
+        );
+        return;
+    }
+
+    puvodniData = kopie(cenikData);
+
+    oznacZmeny();
+
+    zobrazHlasku(
+        "Ceník byl úspěšně uložen do databáze.",
+        "uspech"
+    );
+}
+
+inicializace();
+</script>
+
+</body>
+</html>
