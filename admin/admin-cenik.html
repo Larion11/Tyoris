@@ -278,6 +278,13 @@ textarea:focus {
     resize: vertical;
 }
 
+.pole input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: #c1a16e;
+    cursor: pointer;
+    margin: 4px 0;
+}
 .pole.celou-sirku {
     grid-column: 1 / -1;
 }
@@ -614,8 +621,49 @@ async function inicializace() {
         return;
     }
 
-    cenikData = kopie(data.obsah || {});
-    puvodniData = kopie(cenikData);
+   puvodniData = kopie(data.obsah || {});
+cenikData = kopie(puvodniData);
+
+doplnitPoleKbel(cenikData);
+
+function doplnitPoleKbel(objekt) {
+
+    if (!objekt || typeof objekt !== "object") return;
+
+    if (Array.isArray(objekt)) {
+
+        objekt.forEach(polozka => {
+
+            if (!polozka || typeof polozka !== "object") return;
+
+            if (!Array.isArray(polozka)) {
+
+                if (!Object.prototype.hasOwnProperty.call(polozka, "kbel") ||
+                    polozka.kbel === "") {
+                    polozka.kbel = null;
+                }
+
+                if (!Object.prototype.hasOwnProperty.call(polozka, "kapacita_kbel") ||
+                    polozka.kapacita_kbel === "") {
+                    polozka.kapacita_kbel = null;
+                }
+                if (!Object.prototype.hasOwnProperty.call(polozka, "zavesitelne")) {
+    polozka.zavesitelne = false;
+}
+            }
+
+            doplnitPoleKbel(polozka);
+        });
+
+        return;
+    }
+
+    Object.values(objekt).forEach(hodnota => {
+        if (hodnota && typeof hodnota === "object") {
+            doplnitPoleKbel(hodnota);
+        }
+    });
+}
 
     vykresliKategorie();
 
@@ -768,13 +816,24 @@ function vykresliSeznam() {
 
         const detail = document.createElement("small");
 
-        const dalsiUdaje = Object.entries(polozka || {})
-            .filter(([key]) => key !== "nazev")
-            .slice(0, 3)
-            .map(([key, value]) => key + ": " + value)
-            .join(" | ");
+     const dalsiUdaje = Object.entries(polozka || {})
+    .filter(([key]) =>
+        key !== "nazev" &&
+        key !== "kbel" &&
+        key !== "kapacita_kbel"
+    )
+    .slice(0, 2)
+    .map(([key, value]) => key + ": " + value);
 
-        detail.textContent = dalsiUdaje;
+if (polozka.kbel != null) {
+    dalsiUdaje.push("Vlastní velikost: " + polozka.kbel + " kbel");
+}
+
+if (polozka.kapacita_kbel != null) {
+    dalsiUdaje.push("Kapacita: " + polozka.kapacita_kbel + " kbel");
+}
+
+detail.textContent = dalsiUdaje.join(" | ");
 
         obsah.append(nazev, detail);
 
@@ -863,15 +922,27 @@ function upravitPolozku(index) {
     });
 }
 
+
 function vykresliEditor() {
 
     const kontejner = document.getElementById("editorPole");
     kontejner.replaceChildren();
 
+    // Tato dvě pole budou dostupná u každé položky ceníku.
+    if (!Object.prototype.hasOwnProperty.call(pracovniPolozka, "kbel")) {
+        pracovniPolozka.kbel = "";
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(pracovniPolozka, "kapacita_kbel")) {
+        pracovniPolozka.kapacita_kbel = "";
+    }
+
     Object.entries(pracovniPolozka).forEach(([klic, hodnota]) => {
         vytvorPole(kontejner, klic, hodnota);
     });
 }
+
+
 
 function vytvorPole(kontejner, klic, hodnota) {
 
@@ -879,10 +950,41 @@ function vytvorPole(kontejner, klic, hodnota) {
     obal.className = "pole";
 
     const label = document.createElement("label");
-    label.textContent = klic;
 
-    const input = document.createElement("input");
+ const nazvy = {
+    kbel: "Vlastní velikost (kbel)",
+    kapacita_kbel: "Kapacita (kbel)",
+    pocet_poutek: "Počet vnějších poutek"
+};
+
+    label.textContent = nazvy[klic] || klic;
+
+   const input = document.createElement("input");
+
+if (klic === "zavesitelne") {
+    input.type = "checkbox";
+    input.checked = hodnota === true;
+    input.onchange = () => {
+        pracovniPolozka[klic] = input.checked;
+    };
+
+    label.textContent = "Lze zavěsit zvenku";
+    obal.append(label, input);
+    kontejner.appendChild(obal);
+    return;
+}
+
+if (klic === "kbel" || klic === "kapacita_kbel") {
+    input.type = "number";
+    input.min = "0";
+    input.step = "any";
+} else if (klic === "pocet_poutek") {
+    input.type = "number";
+    input.min = "0";
+    input.step = "1";
+} else {
     input.type = "text";
+}
     input.value = hodnota == null ? "" : String(hodnota);
     input.dataset.klic = klic;
 
@@ -893,6 +995,7 @@ function vytvorPole(kontejner, klic, hodnota) {
     obal.append(label, input);
     kontejner.appendChild(obal);
 }
+
 
 function pridatVlastniPole() {
 
@@ -931,9 +1034,39 @@ function ulozitPolozku() {
         "#editorPole input[data-klic]"
     );
 
-    vstupy.forEach(input => {
-        pracovniPolozka[input.dataset.klic] = input.value;
-    });
+   
+for (const input of vstupy) {
+
+    const klic = input.dataset.klic;
+    const hodnota = input.value.trim();
+
+    if (klic === "kbel" || klic === "kapacita_kbel" || klic === "pocet_poutek") {
+
+        if (hodnota !== "" &&
+            (!Number.isFinite(Number(hodnota)) || Number(hodnota) < 0)) {
+
+            zobrazHlasku("Hodnota musí být nezáporné číslo.", "chyba");
+            input.focus();
+            return;
+        }
+
+        if (klic === "pocet_poutek" &&
+            hodnota !== "" &&
+            !Number.isInteger(Number(hodnota))) {
+
+            zobrazHlasku("Počet poutek musí být celé číslo.", "chyba");
+            input.focus();
+            return;
+        }
+
+        pracovniPolozka[klic] =
+            hodnota === "" ? null : Number(hodnota);
+
+    } else {
+        pracovniPolozka[klic] = input.value;
+    }
+}
+
 
     if (jeNovaPolozka) {
         data.push(kopie(pracovniPolozka));
