@@ -418,6 +418,37 @@
 .vlastni-okno-tlacitka button {
     min-width: 100px;
 }    
+
+.voda-obsazenost {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.voda-ukazatel {
+    flex: 1;
+    height: 12px;
+    background: rgba(0, 15, 30, 0.8);
+    border: 1px solid #477b91;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.voda-ukazatel-vypln {
+    height: 100%;
+    background: linear-gradient(90deg, #287b9c, #8bdcf2);
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(91, 190, 225, 0.5);
+    transition: width 0.2s;
+}
+
+.voda-cislo {
+    white-space: nowrap;
+    font-size: 15px;
+    color: #a9dff0;
+}
+
     </style>
     
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -729,13 +760,22 @@ const supabaseClient = window.supabase.createClient(
   </div>  
 <div class="vybaveni-suroviny">
 
-    <table class="tabulka-vyroba">
-        <thead>
-            <tr>
-                <th colspan="2">Pomůcky</th>
-            </tr>
-        </thead>
-        <tbody>
+   <table class="tabulka-vyroba">
+    <thead>
+        <tr>
+            <th colspan="2">Další suroviny</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Vak na vodu</td>
+            <td>
+                <select id="aktivniVakAlchymie" style="max-width: 100%;">
+                    <option value="">Žádný vak nevybrán</option>
+                </select>
+                <div id="ukazatelVodyAlchymie"></div>
+            </td>
+        </tr>
             <tr>
                 <td>Sada na vaření</td>
                 <td><input type="checkbox" id="sadaVareni"></td>
@@ -763,14 +803,7 @@ const supabaseClient = window.supabase.createClient(
                     <button type="button" onclick="zmenitMnozstvi('sul', 1)">+</button>
                 </td>
             </tr>
-            <tr>
-                <td>Voda</td>
-                <td>
-                    <button type="button" onclick="zmenitMnozstvi('voda', -1)">−</button>
-                    <span id="voda">0</span>
-                    <button type="button" onclick="zmenitMnozstvi('voda', 1)">+</button>
-                </td>
-            </tr>
+           
             <tr>
                 <td>Lůj</td>
                 <td>
@@ -941,7 +974,8 @@ async function nacistPostavu() {
     document.getElementById("info").textContent =
         postava.jmeno || "Bez jména";
 
-    nacistAlchemii();
+       nacistAlchemii();
+    zobrazitVyberVakuProAlchymii();
 }
 
 nacistPostavu();
@@ -999,7 +1033,7 @@ async function ulozitAlchymii() {
         palivyJazyk: parseInt(document.getElementById("palivyJazyk").textContent) || 0,
 
         sul: parseInt(document.getElementById("sul").textContent) || 0,
-        voda: parseInt(document.getElementById("voda").textContent) || 0,
+        
         luj: parseInt(document.getElementById("luj").textContent) || 0,
         alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
         sira: parseInt(document.getElementById("sira").textContent) || 0,
@@ -1401,7 +1435,7 @@ const surovinyID = {
     "Pálivý jazyk / jazýček": "palivyJazyk",
 
     "sůl": "sul",
-    "voda": "voda",
+   
     "Lůj": "luj",
     "alkohol": "alkohol",
     "síra": "sira",
@@ -1416,6 +1450,189 @@ const pomuckyID = {
 };
 
 
+
+function najitVakyProAlchymii() {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+    const vaky = [];
+
+    zavazadla.forEach(zavazadlo => {
+
+        // Z nedostupného zavazadla nelze použít žádný vak.
+        if (zavazadlo.nedostupne) return;
+
+        // Vak na opasku.
+        if (
+            /^Vak na vodu (3|6) l$/i.test(zavazadlo.predmet || "") &&
+            !zavazadlo.nedostupne
+        ) {
+            vaky.push(zavazadlo);
+        }
+
+        // Vaky uvnitř zavazadla.
+        (zavazadlo.obsah || []).forEach(predmet => {
+            if (
+                /^Vak na vodu (3|6) l$/i.test(predmet?.predmet || "") &&
+                !predmet.nedostupne
+            ) {
+                vaky.push(predmet);
+            }
+        });
+
+        // Vaky na vnějších poutkách.
+        (zavazadlo.vnejsi_poutka || []).forEach(predmet => {
+            if (
+                predmet &&
+                /^Vak na vodu (3|6) l$/i.test(predmet.predmet || "") &&
+                !predmet.nedostupne
+            ) {
+                vaky.push(predmet);
+            }
+        });
+    });
+
+    return vaky;
+}
+
+function popisVakuProAlchymii(vak) {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+
+    for (const zavazadlo of zavazadla) {
+        if (zavazadlo.id === vak.id) {
+            return zavazadlo.umisteni === "opasek"
+                ? "na opasku"
+                : "na zádech";
+        }
+
+        if ((zavazadlo.obsah || []).some(p => p.id === vak.id)) {
+            return `v zavazadle: ${zavazadlo.predmet}`;
+        }
+
+        const indexPoutka = (zavazadlo.vnejsi_poutka || [])
+            .findIndex(p => p?.id === vak.id);
+
+        if (indexPoutka !== -1) {
+            return `na poutku ${zavazadlo.predmet} č. ${indexPoutka + 1}`;
+        }
+    }
+
+    return "umístění neznámé";
+}
+
+function kapacitaVaku(nazev) {
+    const shoda = String(nazev || "").match(
+        /^Vak na vodu (3|6) l$/i
+    );
+
+    return shoda ? Number(shoda[1]) : 0;
+}
+
+function mnozstviVodyVeVaku(vak) {
+    if (!vak) return 0;
+
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = Number(vak.voda_litru) || 0;
+
+    return Math.max(0, Math.min(kapacita, voda));
+}
+
+function htmlUkazatelVody(vak) {
+    if (!vak || !kapacitaVaku(vak.predmet)) return "";
+
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = mnozstviVodyVeVaku(vak);
+    const procenta = kapacita > 0
+        ? (voda / kapacita) * 100
+        : 0;
+
+    return `
+        <div class="voda-obsazenost">
+            <div class="voda-ukazatel">
+                <div class="voda-ukazatel-vypln"
+                    style="width: ${procenta}%">
+                </div>
+            </div>
+            <span class="voda-cislo">
+                ${voda} / ${kapacita} l
+            </span>
+        </div>
+    `;
+}
+
+function zobrazitUkazatelVodyAlchymie() {
+    const kontejner = document.getElementById("ukazatelVodyAlchymie");
+    const select = document.getElementById("aktivniVakAlchymie");
+
+    if (!kontejner || !select) return;
+
+    const vak = najitVakyProAlchymii().find(
+        v => String(v.id) === String(select.value)
+    );
+
+    kontejner.innerHTML = vak
+        ? htmlUkazatelVody(vak)
+        : "";
+}
+
+function zobrazitVyberVakuProAlchymii() {
+    const select = document.getElementById("aktivniVakAlchymie");
+    if (!select || !postava) return;
+
+    const ulozenyVyber = postava.inventar?.aktivniVakAlchymie;
+    const predchoziVyber = select.value || String(ulozenyVyber || "");
+    const vaky = najitVakyProAlchymii();
+
+    select.innerHTML = '<option value="">Žádný vak nevybrán</option>';
+
+    vaky.forEach(vak => {
+        const option = document.createElement("option");
+
+        option.value = vak.id;
+        option.textContent =
+            `${vak.predmet} – ${popisVakuProAlchymii(vak)} ` +
+            `(${Number(vak.voda_litru) || 0} l)`;
+
+        select.appendChild(option);
+    });
+
+    if (vaky.some(vak => String(vak.id) === String(predchoziVyber))) {
+        select.value = String(predchoziVyber);
+    }
+    
+    zobrazitUkazatelVodyAlchymie();
+}
+
+document.getElementById("aktivniVakAlchymie")
+    ?.addEventListener("change", async function () {
+        if (!postava) return;
+
+        if (!postava.inventar) {
+            postava.inventar = {};
+        }
+
+        postava.inventar.aktivniVakAlchymie = this.value;
+        
+        zobrazitUkazatelVodyAlchymie();
+
+        const { error } = await supabaseClient
+            .from("postavy")
+            .update({ data: postava })
+            .eq("id", idPostavy);
+
+        if (error) {
+            console.error("Chyba při ukládání vybraného vaku:", error);
+        }
+    });
+
+function odebratVoduZAktivnihoVaku(mnozstvi, vak) {
+    if (mnozstvi <= 0 || !vak) return;
+
+    const aktualniVoda = Number(vak.voda_litru) || 0;
+
+    vak.voda_litru = Math.max(
+        0,
+        Math.round((aktualniVoda - mnozstvi) * 10) / 10
+    );
+}
 function zpracovatRecept(recept) {
 
     const polozky = recept.vyroba
@@ -1426,6 +1643,7 @@ function zpracovatRecept(recept) {
 
     const suroviny = [];
     const pomucky = [];
+    let mnozstviVody = 0;
 
     polozky.forEach(function(polozka) {
 
@@ -1439,7 +1657,11 @@ function zpracovatRecept(recept) {
             nazev = nasobek[2].trim();
         }
 
-        if (surovinyID[nazev]) {
+        if (nazev.toLowerCase() === "voda") {
+
+    mnozstviVody += mnozstvi * 0.5;
+
+} else if (surovinyID[nazev]) {
 
             suroviny.push({
                 id: surovinyID[nazev],
@@ -1455,10 +1677,11 @@ function zpracovatRecept(recept) {
         }
     });
 
-    return {
-        suroviny: suroviny,
-        pomucky: pomucky
-    };
+ return {
+    suroviny: suroviny,
+    pomucky: pomucky,
+    mnozstviVody: mnozstviVody
+};
 }
 function zobrazitPotvrzeni(text, potvrdit, zrusit) {
 
@@ -1513,6 +1736,33 @@ async function vyrobit(recept) {
 }
 
     const receptData = zpracovatRecept(recept);
+
+let aktivniVakAlchymie = null;
+
+if (receptData.mnozstviVody > 0) {
+    const idVaku = document.getElementById("aktivniVakAlchymie")?.value;
+
+    aktivniVakAlchymie = najitVakyProAlchymii()
+        .find(vak => String(vak.id) === String(idVaku));
+
+    if (!aktivniVakAlchymie) {
+        zobrazitHlasku(
+            "Nejdřív v alchymii vyber vak, ze kterého chceš čerpat vodu."
+        );
+        return;
+    }
+
+    const aktualniVoda = Number(aktivniVakAlchymie.voda_litru) || 0;
+
+    if (aktualniVoda < receptData.mnozstviVody) {
+        zobrazitHlasku(
+            "Ve vybraném vaku není dost vody.\n\n" +
+            "Potřebuješ: " + receptData.mnozstviVody + " l\n" +
+            "Ve vaku je: " + aktualniVoda + " l"
+        );
+        return;
+    }
+}
 
     // Kontrola surovin
     for (const surovina of receptData.suroviny) {
@@ -1592,6 +1842,13 @@ async function vyrobit(recept) {
                     mnozstvi;
             });
 
+// Spotřeba vody
+odebratVoduZAktivnihoVaku(
+    receptData.mnozstviVody,
+    aktivniVakAlchymie
+);
+zobrazitVyberVakuProAlchymii();
+
             // Přidání vyrobeného předmětu
             if (!postava.alchymie.recepty) {
                 postava.alchymie.recepty = {};
@@ -1647,6 +1904,12 @@ if (error) {
                 postava.alchymie[surovina.id] =
                     mnozstvi;
             });
+// Spotřeba vody
+odebratVoduZAktivnihoVaku(
+    receptData.mnozstviVody,
+    aktivniVakAlchymie
+);
+zobrazitVyberVakuProAlchymii();
 
             const { error } = await supabaseClient
     .from("postavy")
@@ -1833,7 +2096,7 @@ async function ulozitAlchymiiBezHlasky() {
         palivyJazyk: parseInt(document.getElementById("palivyJazyk").textContent) || 0,
 
         sul: parseInt(document.getElementById("sul").textContent) || 0,
-        voda: parseInt(document.getElementById("voda").textContent) || 0,
+        
         luj: parseInt(document.getElementById("luj").textContent) || 0,
         alkohol: parseInt(document.getElementById("alkohol").textContent) || 0,
         sira: parseInt(document.getElementById("sira").textContent) || 0,
