@@ -141,6 +141,23 @@
     transition: background 0.2s, border-color 0.2s;
 }
 
+.tlacitko-inventare {
+    height: 32px;
+    min-height: 32px;
+    min-width: 34px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    margin: 0;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
         button:hover {
             background: #473827;
             border-color: #b39468;
@@ -245,14 +262,17 @@
             justify-content: center;
         }
 
-        .vlastni-okno {
-            width: min(450px, 90vw);
-            padding: 25px;
-            background: rgba(25, 21, 17, 0.98);
-            border: 1px solid #8a704d;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-            text-align: center;
-        }
+     .vlastni-okno {
+    width: min(450px, 90vw);
+    max-height: 85vh;
+    padding: 25px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: rgba(25, 21, 17, 0.98);
+    border: 1px solid #8a704d;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+    text-align: center;
+}
 
         .vlastni-okno h3 {
             margin-top: 0;
@@ -267,15 +287,126 @@
             white-space: pre-line;
         }
 
-        .vlastni-okno-tlacitka {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
+     .vlastni-okno-tlacitka {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.vlastni-okno-tlacitka button {
+    width: 80%;
+    max-width: 280px;
+    text-align: center;
+}
 
         .vlastni-okno-tlacitka button {
             min-width: 100px;
         }
+        
+   .zavazadlo-hlavicka {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.zavazadlo-nazev {
+    margin: 0 0 12px;
+    color: #d8c29d;
+    font-size: 23px;
+    font-weight: bold;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+.zavazadlo-obsazenost {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.zavazadlo-ukazatel {
+    flex: 1;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #6f5a3e;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.zavazadlo-ukazatel-vypln {
+    height: 100%;
+    background: linear-gradient(90deg, #80613b, #d8c29d);
+    border-radius: 10px;
+    transition: width 0.2s;
+}
+
+.zavazadlo-cislo {
+    white-space: nowrap;
+    font-size: 15px;
+    color: #eee4d2;
+}     
+
+/* Ukazatel naplnění vaku vodou */
+
+.voda-obsazenost {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.voda-ukazatel {
+    flex: 1;
+    height: 12px;
+    background: rgba(0, 15, 30, 0.8);
+    border: 1px solid #477b91;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.voda-ukazatel-vypln {
+    height: 100%;
+    background: linear-gradient(90deg, #287b9c, #8bdcf2);
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(91, 190, 225, 0.5);
+    transition: width 0.2s;
+}
+
+.voda-cislo {
+    white-space: nowrap;
+    font-size: 15px;
+    color: #a9dff0;
+}
+
+.checkbox-nedostupne {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 2px solid #b39468;
+    border-radius: 3px;
+    background-color: #211a13;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkbox-nedostupne:checked {
+    background-color: #d6a84f;
+    border-color: #f0c878;
+    box-shadow: 0 0 5px rgba(214, 168, 79, 0.6);
+}
+
+.checkbox-nedostupne:checked::after {
+    content: "✓";
+    display: block;
+    color: #211a13;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+}
+
     </style>
     
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -367,57 +498,71 @@ const supabaseClient = window.supabase.createClient(
                     <button type="button" onclick="zmenitMnozstvi('jidlo', 1)">+</button>
                 </div>
             </div>
+            
+           <div class="radek">
+    <span>Voda celkem</span>
+    <span class="cislo" id="voda">0 l</span>
+</div>
+
+<div class="radek">
+    <span>Napít se (0,5 l)</span>
+    <button
+        type="button"
+        onclick="napitSe()"
+        style="padding: 6px 14px; font-size: 15px;"
+    >
+        Napít se
+    </button>
+</div>
+
+<div class="radek">
+    <span>Čerpat z vaku</span>
+    <select id="aktivniVakNaVodu" onchange="zmenitAktivniVakNaVodu(this.value)">
+        <option value="">Žádný vak nevybrán</option>
+    </select>
+</div>
         </div>
 
     </div>
 
 
-    <div class="sekce inventar-sekce">
+    <div class="horni-cast">
 
-        <h2>Inventář</h2>
+    <div class="sekce">
+        <h2>Záda</h2>
 
-        <table class="inventar-tabulka">
+        <div id="zavazadlaZada"></div>
 
-            <thead>
-                <tr>
-                    <th>Předmět</th>
-                    <th>Počet</th>
-                    <th>Poznámka</th>
-                    <th></th>
-                </tr>
-            </thead>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="button" onclick="nabidnoutZavazadlo('zada')">
+                Přidat zavazadlo
+            </button>
+        </div>
+    </div>
 
-            <tbody id="seznamInventare">
+    <div class="sekce">
+        <h2>Opasek</h2>
 
-                <tr>
-                    <td>
-                        <input type="text" oninput="zkontrolovatPosledniRadek()">
-                    </td>
+        <div id="zavazadlaOpasek"></div>
 
-                    <td>
-                        <input type="number" min="0" value="1">
-                    </td>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="button" onclick="nabidnoutZavazadlo('opasek')">
+                Přidat zavazadlo
+            </button>
+        </div>
+    </div>
 
-                    <td>
-                        <textarea oninput="zvetsitPoznamku(this)"></textarea>
-                    </td>
-
-                    <td class="mazani">
-                        <button type="button" onclick="smazatRadek(this)">×</button>
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
-       <div class="ulozeni">
-    <button type="button" onclick="ulozitInventar()">Uložit</button>
-    <button type="button" onclick="window.close()">Zavřít</button>
-    <div id="ulozeno" class="ulozeno"></div>
 </div>
 
+<div id="predmetyMimoZavazadla"></div>
+
+    <div class="ulozeni">
+        <button type="button" onclick="ulozitInventar()">Uložit</button>
+        <button type="button" onclick="window.close()">Zavřít</button>
+        <div id="ulozeno" class="ulozeno"></div>
     </div>
+
+</div>
 
 </div>
 
@@ -428,6 +573,25 @@ const parametry = new URLSearchParams(window.location.search);
 const idPostavy = parametry.get("id");
 
 let postava = null;
+let cenikData = {};
+
+async function nacistCenik() {
+
+    const { data, error } = await supabaseClient
+        .from("cenik")
+        .select("obsah")
+        .eq("id", 1)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání ceníku:", error);
+        return;
+    }
+
+    cenikData = data.obsah || {};
+}
+
+
 
 async function nacistPostavu() {
 
@@ -456,12 +620,327 @@ async function nacistPostavu() {
     document.getElementById("info").textContent =
         postava.jmeno || "Bez jména";
 
+    await nacistCenik();
+
     nacistInventar();
 }
 
+
+function najitPredmetVCeniku(nazev) {
+
+    function prohledat(objekt) {
+
+        if (!objekt || typeof objekt !== "object") {
+            return null;
+        }
+
+        if (Array.isArray(objekt)) {
+
+            for (const polozka of objekt) {
+
+                if (polozka && polozka.nazev === nazev) {
+                    return polozka;
+                }
+
+                const vysledek = prohledat(polozka);
+
+                if (vysledek) {
+                    return vysledek;
+                }
+            }
+
+        } else {
+
+            for (const hodnota of Object.values(objekt)) {
+
+                const vysledek = prohledat(hodnota);
+
+                if (vysledek) {
+                    return vysledek;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    return prohledat(cenikData);
+}
+
+
+function jeVakNaVodu(nazev) {
+    return /^Vak na vodu (3|6) l$/i.test(
+        String(nazev || "").trim()
+    );
+}
+
+function kapacitaVaku(nazev) {
+    const shoda = String(nazev || "").match(
+        /^Vak na vodu (3|6) l$/i
+    );
+
+    return shoda ? Number(shoda[1]) : 0;
+}
+
+function mnozstviVodyVeVaku(vak) {
+    if (!vak || !jeVakNaVodu(vak.predmet)) {
+        return 0;
+    }
+
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = Number(vak.voda_litru) || 0;
+
+    return Math.max(0, Math.min(kapacita, voda));
+}
+
+function htmlUkazatelVody(vak) {
+    if (!jeVakNaVodu(vak?.predmet)) return "";
+
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = mnozstviVodyVeVaku(vak);
+    const procenta = kapacita > 0
+        ? (voda / kapacita) * 100
+        : 0;
+
+    return `
+        <div class="voda-obsazenost">
+            <div class="voda-ukazatel">
+                <div class="voda-ukazatel-vypln"
+                    style="width: ${procenta}%">
+                </div>
+            </div>
+            <span class="voda-cislo">
+                ${voda} / ${kapacita} l
+            </span>
+        </div>
+    `;
+}
+
+function celkemVody() {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+
+    return zavazadla.reduce((celkem, zavazadlo) => {
+        celkem += mnozstviVodyVeVaku(zavazadlo);
+
+        (zavazadlo.obsah || []).forEach(predmet => {
+            celkem += mnozstviVodyVeVaku(predmet);
+        });
+
+        (zavazadlo.vnejsi_poutka || []).forEach(predmet => {
+            celkem += mnozstviVodyVeVaku(predmet);
+        });
+
+        return celkem;
+    }, 0);
+}
+
+function najitVakyNaVodu() {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+    const vaky = [];
+
+    zavazadla.forEach(zavazadlo => {
+
+        // Z nedostupného zavazadla nelze použít žádný vak.
+        if (zavazadlo.nedostupne) return;
+
+        // Vak přímo na opasku.
+        if (
+            jeVakNaVodu(zavazadlo.predmet) &&
+            !zavazadlo.nedostupne
+        ) {
+            vaky.push(zavazadlo);
+        }
+
+        // Vaky uvnitř zavazadla.
+        (zavazadlo.obsah || []).forEach(predmet => {
+            if (
+                jeVakNaVodu(predmet.predmet) &&
+                !predmet.nedostupne
+            ) {
+                vaky.push(predmet);
+            }
+        });
+
+        // Vaky na vnějších poutkách.
+        (zavazadlo.vnejsi_poutka || []).forEach(predmet => {
+            if (
+                predmet &&
+                jeVakNaVodu(predmet.predmet) &&
+                !predmet.nedostupne
+            ) {
+                vaky.push(predmet);
+            }
+        });
+    });
+
+    return vaky;
+}
+
+function popisUmisteniVaku(vak) {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+
+    for (const zavazadlo of zavazadla) {
+        if (zavazadlo.id === vak.id) {
+            return "na opasku";
+        }
+
+        if ((zavazadlo.obsah || []).some(p => p.id === vak.id)) {
+            return `v zavazadle: ${zavazadlo.predmet}`;
+        }
+
+        const indexPoutka = (zavazadlo.vnejsi_poutka || [])
+            .findIndex(p => p?.id === vak.id);
+
+        if (indexPoutka !== -1) {
+            return `na vnějším poutku ${zavazadlo.predmet} č. ${indexPoutka + 1}`;
+        }
+    }
+
+    return "umístění neznámé";
+}
+
+function zobrazitVyberAktivnihoVaku() {
+    const select = document.getElementById("aktivniVakNaVodu");
+    if (!select) return;
+
+    const vaky = najitVakyNaVodu();
+    const inventar = postava.inventar;
+
+    select.innerHTML = "";
+
+    const prazdnaVolba = document.createElement("option");
+    prazdnaVolba.value = "";
+    prazdnaVolba.textContent = "Žádný vak nevybrán";
+    select.appendChild(prazdnaVolba);
+
+    vaky.forEach(vak => {
+        const moznost = document.createElement("option");
+        moznost.value = vak.id;
+       moznost.textContent =
+    `${vak.predmet} – ${popisUmisteniVaku(vak)} (${mnozstviVodyVeVaku(vak)} l)`;
+        select.appendChild(moznost);
+    });
+
+    const existuje = vaky.some(
+        vak => vak.id === inventar.aktivniVakNaVodu
+    );
+
+    if (!existuje) {
+        inventar.aktivniVakNaVodu = null;
+    }
+
+    select.value = inventar.aktivniVakNaVodu || "";
+}
+
+async function zmenitAktivniVakNaVodu(idVaku) {
+    postava.inventar.aktivniVakNaVodu = idVaku || null;
+    await ulozitInventar();
+}
+
+async function naplnitVakNaVodu(idVaku) {
+    const vak = najitVakyNaVodu().find(
+        polozka => polozka.id === idVaku
+    );
+
+    if (!vak) return;
+
+    vak.voda_litru = kapacitaVaku(vak.predmet);
+
+    zobrazitZavazadla();
+    await ulozitInventar();
+}
+
+async function napitSe() {
+    const idVaku = postava.inventar.aktivniVakNaVodu;
+
+    const vak = najitVakyNaVodu().find(
+        polozka => polozka.id === idVaku
+    );
+
+    if (!vak) {
+        zobrazitHlasku(
+            "Nejdřív vyber vak, ze kterého chceš čerpat vodu.",
+            "Není vybraný vak"
+        );
+        return;
+    }
+
+    const aktualniVoda = Number(vak.voda_litru) || 0;
+
+    if (aktualniVoda < 0.5) {
+        zobrazitHlasku(
+            "Ve vybraném vaku není dost vody na jednu dávku.",
+            "Nedostatek vody"
+        );
+        return;
+    }
+
+    vak.voda_litru = Math.max(
+        0,
+        Math.round((aktualniVoda - 0.5) * 10) / 10
+    );
+
+    zobrazitZavazadla();
+    await ulozitInventar();
+}
+
+function jeZavazadlo(nazev) {
+
+    const zavazadla = cenikData.zavazadla || [];
+
+    return zavazadla.some(
+        zavazadlo => zavazadlo.nazev === nazev
+    );
+}
+
+function zmenitDostupnostZavazadla(idZavazadla, nedostupne) {
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    zavazadlo.nedostupne = nedostupne;
+
+    zobrazitZavazadla();
+}
+
+function vytvoritZavazadlo(nazev) {
+
+    const udaje = najitPredmetVCeniku(nazev);
+
+    if (!udaje) {
+        console.error("Zavazadlo nebylo nalezeno v ceníku:", nazev);
+        return null;
+    }
+
+return {
+    id: crypto.randomUUID(),
+    predmet: nazev,
+    ...(jeVakNaVodu(nazev) ? { voda_litru: 0 } : {}),
+    kapacita_kbel: Number(udaje.kapacita_kbel) || 0,
+    pocet_poutek: Number(udaje.pocet_poutek) || 0,
+    vnejsi_poutka: [],
+    obsah: [],
+    umisteni: null,
+    nedostupne: false
+};
+}
+
+
+function pripravitNovyInventar() {
+
+    if (!postava.inventar) {
+        postava.inventar = {};
+    }
+
+    postava.inventar.zavazadla = [];
+    postava.inventar.predmety = [];
+}
+
+
+
 nacistPostavu();
-
-
 
 
 
@@ -652,164 +1131,1327 @@ async function ulozitInventar() {
         return;
     }
 
-    const radky = document.querySelectorAll("#seznamInventare tr");
-    const predmety = [];
+    if (!postava.inventar) {
+        postava.inventar = {};
+    }
 
-    radky.forEach(function(radek) {
+    const celkemPenez = celkemPenezVMedacich();
 
-        const predmet = radek.querySelector("input[type='text']").value.trim();
-        const pocet = radek.querySelector("input[type='number']").value;
-        const poznamka = radek.querySelector("textarea").value;
+    postava.inventar.penize = celkemPenez;
+    postava.inventar.zlato = Math.floor(celkemPenez / 100);
+    postava.inventar.stribro = Math.floor((celkemPenez % 100) / 10);
+    postava.inventar.med = celkemPenez % 10;
 
-        if (predmet !== "") {
+    postava.inventar.jidlo =
+        parseInt(document.getElementById("jidlo").textContent) || 0;
 
-            predmety.push({
-                predmet: predmet,
-                pocet: parseInt(pocet) || 0,
-                poznamka: poznamka
-            });
+    if (!Array.isArray(postava.inventar.zavazadla)) {
+        postava.inventar.zavazadla = [];
+    }
 
-        }
-
-    });
-
-
-  const celkemPenez = celkemPenezVMedacich();
-
-const zlato = Math.floor(celkemPenez / 100);
-const stribro = Math.floor((celkemPenez % 100) / 10);
-const med = celkemPenez % 10;
-
-postava.inventar = {
-
-    // Peníze se ukládají jako jeden společný počet měďáků
-    penize: celkemPenez,
-
-    // Tohle necháváme i kvůli kompatibilitě se staršími postavami
-    zlato: zlato,
-    stribro: stribro,
-    med: med,
-
-    jidlo:
-        parseInt(document.getElementById("jidlo").textContent) || 0,
-
-    predmety: predmety
-};
-
-
-const { error } = await supabaseClient
-    .from("postavy")
-    .update({
-        data: postava
-    })
-    .eq("id", idPostavy);
-
-if (error) {
-    console.error("Chyba při ukládání inventáře:", error);
-
-    document.getElementById("ulozeno").textContent =
-        "Uložení se nepodařilo.";
-
-    return;
+    if (!Array.isArray(postava.inventar.predmety)) {
+        postava.inventar.predmety = [];
+    }
+if (!Array.isArray(postava.inventar.odlozeneVeci)) {
+    postava.inventar.odlozeneVeci = [];
 }
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({
+            data: postava
+        })
+        .eq("id", idPostavy);
 
-document.getElementById("ulozeno").textContent = "Uloženo.";
+    if (error) {
+        console.error("Chyba při ukládání inventáře:", error);
 
-setTimeout(function() {
-    document.getElementById("ulozeno").textContent = "";
-}, 2000);
+        document.getElementById("ulozeno").textContent =
+            "Uložení se nepodařilo.";
+
+        return;
+    }
+
+    document.getElementById("ulozeno").textContent = "Uloženo.";
+
+    setTimeout(function() {
+        document.getElementById("ulozeno").textContent = "";
+    }, 2000);
 }
 
 function nacistInventar() {
 
-    if (!postava || !postava.inventar) {
+    if (!postava) {
         return;
     }
 
-    const inventar = postava.inventar;
+    if (!postava.inventar) {
+        postava.inventar = {};
+    }
 
+    const inventar = postava.inventar;
+    
+if (inventar.aktivniVakNaVodu === undefined) {
+    inventar.aktivniVakNaVodu = null;
+}
     let celkemPenez;
 
-if (inventar.penize !== undefined) {
-    // Nové postavy – peníze uložené jako měďáky
-    celkemPenez = Number(inventar.penize) || 0;
-} else {
-    // Starší postavy – převedeme původní rozdělení měn
-    celkemPenez =
-        (Number(inventar.zlato) || 0) * 100 +
-        (Number(inventar.stribro) || 0) * 10 +
-        (Number(inventar.med) || 0);
-}
+    if (inventar.penize !== undefined) {
+        celkemPenez = Number(inventar.penize) || 0;
+    } else {
+        celkemPenez =
+            (Number(inventar.zlato) || 0) * 100 +
+            (Number(inventar.stribro) || 0) * 10 +
+            (Number(inventar.med) || 0);
+    }
 
-zobrazitPenize(celkemPenez);
-    document.getElementById("jidlo").textContent = inventar.jidlo || 0;
+    zobrazitPenize(celkemPenez);
 
-    const tbody = document.getElementById("seznamInventare");
+    document.getElementById("jidlo").textContent =
+        inventar.jidlo || 0;
 
-    tbody.innerHTML = "";
+    if (!Array.isArray(inventar.zavazadla)) {
+        inventar.zavazadla = [];
+    }
 
-    const predmety = inventar.predmety || [];
+inventar.zavazadla.forEach(zavazadlo => {
 
-    predmety.forEach(function(predmet) {
+    // Vak uložený přímo na opasku
+    if (
+        jeVakNaVodu(zavazadlo.predmet) &&
+        zavazadlo.voda_litru === undefined
+    ) {
+        zavazadlo.voda_litru = 0;
+    }
 
-        const radek = document.createElement("tr");
-
-        radek.innerHTML = `
-            <td>
-                <input type="text"
-                       value="${predmet.predmet.replace(/"/g, '&quot;')}"
-                       oninput="zkontrolovatPosledniRadek()">
-            </td>
-
-            <td>
-                <input type="number"
-                       min="0"
-                       value="${predmet.pocet}">
-            </td>
-
-            <td>
-                <textarea oninput="zvetsitPoznamku(this)"></textarea>
-            </td>
-
-            <td class="mazani">
-                <button type="button" onclick="smazatRadek(this)">×</button>
-            </td>
-        `;
-
-        radek.querySelector("textarea").value = predmet.poznamka || "";
-
-        tbody.appendChild(radek);
-
+    // Vaky uvnitř zavazadla
+    (zavazadlo.obsah || []).forEach(predmet => {
+        if (
+            jeVakNaVodu(predmet.predmet) &&
+            predmet.voda_litru === undefined
+        ) {
+            predmet.voda_litru = 0;
+        }
     });
 
-    // vždy necháme jeden prázdný řádek pro nový předmět
-    const novyRadek = document.createElement("tr");
+    // Vaky zavěšené na vnějších poutkách
+    (zavazadlo.vnejsi_poutka || []).forEach(predmet => {
+        if (
+            predmet &&
+            jeVakNaVodu(predmet.predmet) &&
+            predmet.voda_litru === undefined
+        ) {
+            predmet.voda_litru = 0;
+        }
+    });
 
-    novyRadek.innerHTML = `
-        <td>
-            <input type="text" oninput="zkontrolovatPosledniRadek()">
-        </td>
+});
 
-        <td>
-            <input type="number" min="0" value="1">
-        </td>
+      if (!Array.isArray(inventar.predmety)) {
+    inventar.predmety = [];
+}
 
-        <td>
-            <textarea oninput="zvetsitPoznamku(this)"></textarea>
-        </td>
+if (!Array.isArray(inventar.odlozeneVeci)) {
+    inventar.odlozeneVeci = [];
+}
+document.getElementById("voda").textContent =
+    `${celkemVody().toLocaleString("cs-CZ")} l`;
+zobrazitZavazadla();
+}
 
-        <td class="mazani">
-            <button type="button" onclick="smazatRadek(this)">×</button>
-        </td>
+function zobrazitZavazadla() {
+
+document.getElementById("voda").textContent =
+    `${celkemVody().toLocaleString("cs-CZ")} l`;
+
+zobrazitVyberAktivnihoVaku();
+
+    const zavazadla = postava.inventar.zavazadla;
+
+    const zada = document.getElementById("zavazadlaZada");
+    const opasek = document.getElementById("zavazadlaOpasek");
+
+    zada.innerHTML = "";
+    opasek.innerHTML = "";
+
+    const skupiny = [
+        { umisteni: "zada", kontejner: zada },
+        { umisteni: "opasek", kontejner: opasek }
+    ];
+
+    skupiny.forEach(skupina => {
+
+        const vybaveni = zavazadla.filter(
+            z => z.umisteni === skupina.umisteni
+        );
+
+        if (vybaveni.length === 0) {
+            skupina.kontejner.textContent = "Zatím prázdné.";
+            skupina.kontejner.style.opacity = "0.7";
+            return;
+        }
+
+        skupina.kontejner.style.opacity = "1";
+
+        vybaveni.forEach(zavazadlo => {
+
+            const karta = document.createElement("div");
+
+karta.className = "sekce";
+karta.style.marginBottom = "10px";
+
+if (zavazadlo.nedostupne) {
+    karta.style.background = "rgba(12, 10, 9, 0.9)";
+    karta.style.borderColor = "#59483a";
+    karta.style.opacity = "0.65";
+}
+
+if (typeof zavazadlo.nedostupne !== "boolean") {
+    zavazadlo.nedostupne = false;
+}
+
+           const obsah = Array.isArray(zavazadlo.obsah)
+    ? zavazadlo.obsah
+    : [];
+    
+if (!Array.isArray(zavazadlo.vnejsi_poutka)) {
+    zavazadlo.vnejsi_poutka = [];
+}
+
+const udajeZavazadla = najitPredmetVCeniku(zavazadlo.predmet);
+
+const pocetPoutek = Number(
+    udajeZavazadla?.pocet_poutek ?? zavazadlo.pocet_poutek
+) || 0;
+
+zavazadlo.pocet_poutek = pocetPoutek;
+
+const poutkaHTML = pocetPoutek > 0
+    ? `
+        <div style="
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(190, 165, 125, 0.55);
+">
+    <strong style="color: #d8c29d;">Vnější poutka:</strong>
+            ${zavazadlo.vnejsi_poutka.filter(Boolean).length} / ${pocetPoutek}
+
+            ${Array.from({ length: pocetPoutek }, (_, i) => {
+                const predmet = zavazadlo.vnejsi_poutka[i];
+
+                return `
+                    <div style="margin-top: 6px;">
+               ${i + 1}. ${predmet
+    ? `
+    <div style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+">
+    <span style="flex: 1;">
+        <strong>${predmet.predmet}</strong>
+        ${htmlUkazatelVody(predmet)}
+    </span>
+</span>
+
+<span style="display: flex; gap: 5px; flex-shrink: 0;">
+    <button
+    type="button"
+    class="tlacitko-inventare"
+    onclick="upravitPoznamkuVaku('${predmet.id}')"
+        
+        title="Upravit poznámku"
+    >✎</button>
+
+    ${jeVakNaVodu(predmet.predmet) ? `
+        <button
+            type="button"
+            class="tlacitko-inventare"
+            onclick="naplnitVakNaVodu('${predmet.id}')"
+        >Naplnit</button>
+    ` : ""}
+
+    <button
+    type="button"
+    class="tlacitko-inventare"
+    onclick="odebratVakZPoutka('${zavazadlo.id}', ${i})"
+        title="Odstranit předmět"
+        >×</button>
+</span>
+</div>
+
+   
+
+    ${predmet.poznamka ? `
+        <div style="
+            margin-top: 3px;
+            margin-left: 8px;
+            font-size: 13px;
+            color: #c5b18f;
+            font-style: italic;
+            white-space: pre-wrap;
+        ">${escapovatHTML(predmet.poznamka)}</div>
+    ` : ""}
+`
+    : "Volné poutko"}
+
+                      ${!predmet ? `
+<button
+    type="button"
+    onclick="nabidnoutVakNaPoutko('${zavazadlo.id}', ${i})"
+    style="padding: 4px 12px; font-size: 14px; margin-left: 8px;"
+>
+    Zavěsit předmět
+</button>
+` : ""}
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `
+    : "";
+const obsazeno = obsah.reduce(
+    (soucet, polozka) => {
+        const velikost = jeVakNaVodu(polozka.predmet)
+            ? mnozstviVodyVeVaku(polozka)
+            : (Number(polozka.kbel) || 0) * (Number(polozka.pocet) || 1);
+
+        return soucet + velikost;
+    },
+    0
+);
+
+const kapacita = Number(zavazadlo.kapacita_kbel) || 0;
+const procenta = kapacita > 0
+    ? Math.min(100, (obsazeno / kapacita) * 100)
+    : 0;
+
+karta.innerHTML = `
+    <div class="zavazadlo-hlavicka">
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        ">
+            <div style="flex: 1;"></div>
+
+            <h3 class="zavazadlo-nazev" style="flex: 1; margin: 0;">
+                ${zavazadlo.predmet}
+            </h3>
+
+            <label style="
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 8px;
+                font-size: 15px;
+                color: #c5b18f;
+                white-space: nowrap;
+                cursor: pointer;
+            ">
+                <input
+                    type="checkbox"
+                    class="checkbox-nedostupne"
+                    ${zavazadlo.nedostupne ? "checked" : ""}
+                    onchange="zmenitDostupnostZavazadla('${zavazadlo.id}', this.checked)"
+                >
+                Nedostupné
+            </label>
+        </div>
+
+        ${jeVakNaVodu(zavazadlo.predmet) ? `
+            ${!zavazadlo.nedostupne ? `
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    margin-top: 8px;
+                ">
+                    <div style="flex: 1; min-width: 0;">
+                        ${htmlUkazatelVody(zavazadlo)}
+                    </div>
+                   <button
+                   type="button"
+                   class="tlacitko-inventare"
+                   onclick="upravitPoznamkuVaku('${zavazadlo.id}')"
+                   >✎</button>
+                   
+                   <button
+                  type="button"
+                  class="tlacitko-inventare"
+                 onclick="naplnitVakNaVodu('${zavazadlo.id}')"
+                 >Naplnit</button>
+                   
+                        <button
+                        type="button"
+                        class="tlacitko-inventare"
+                        onclick="odebratSamostatnyVak('${zavazadlo.id}')"
+                        title="Odstranit vak"
+                    >×</button>
+                </div>
+            ` : ""}
+
+            ${zavazadlo.poznamka ? `
+                <div style="
+                    margin-top: 3px;
+                    font-size: 13px;
+                    text-align: left;
+                    color: #c5b18f;
+                    font-style: italic;
+                    white-space: pre-wrap;
+                ">${escapovatHTML(zavazadlo.poznamka)}</div>
+            ` : ""}
+        ` : `
+            <div class="zavazadlo-obsazenost">
+                <div class="zavazadlo-ukazatel">
+                    <div
+                        class="zavazadlo-ukazatel-vypln"
+                        style="width: ${procenta}%"
+                    ></div>
+                </div>
+                <span class="zavazadlo-cislo">
+                    ${obsazeno.toLocaleString("cs-CZ")} /
+                    ${kapacita.toLocaleString("cs-CZ")} kbel
+                </span>
+            </div>
+        `}
+    </div>
+
+        ${!jeVakNaVodu(zavazadlo.predmet) ? `
+    <div class="obsah-zavazadla" id="obsah-${zavazadlo.id}">
+
+    ${
+        obsah.length === 0
+            ? "Zatím prázdné."
+            : obsah.map((polozka, index) => `
+    <div style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 8px;
+    ">
+        <span style="flex: 1;">
+            <strong>${polozka.predmet}</strong>
+${!jeVakNaVodu(polozka.predmet)
+    ? `– ${polozka.pocet} ks`
+    : ""}
+
+${htmlUkazatelVody(polozka)}
+
+            ${polozka.poznamka ? `
+                <div style="
+                    margin-top: 3px;
+                    margin-left: 8px;
+                    font-size: 13px;
+                    color: #c5b18f;
+                    font-style: italic;
+                    white-space: pre-wrap;
+                ">${escapovatHTML(polozka.poznamka)}</div>
+            ` : ""}
+        </span>
+
+                <span style="display: flex; gap: 5px; flex-shrink: 0;">
+            <button
+          type="button"
+          class="tlacitko-inventare"
+          onclick="upravitPoznamkuVaku('${polozka.id}')"
+          title="Upravit poznámku"
+          >✎</button>
+
+            ${jeVakNaVodu(polozka.predmet) ? `
+                <button
+                    type="button"
+                    class="tlacitko-inventare"
+                    onclick="naplnitVakNaVodu('${polozka.id}')"
+                >Naplnit</button>
+            ` : ""}
+
+            ${!jeVakNaVodu(polozka.predmet) ? `
+                <button
+    type="button"
+    class="tlacitko-inventare"
+    onclick="pridatKusPredmetu('${zavazadlo.id}', ${index})"
+    >+</button>
+
+                <button
+    type="button"
+    class="tlacitko-inventare"
+    onclick="odebratKusPredmetu('${zavazadlo.id}', ${index})"
+    >−</button>
+            ` : ""}
+
+            <button
+    type="button"
+    class="tlacitko-inventare"
+    onclick="odebratPredmet('${zavazadlo.id}', ${index})"
+    >×</button>
+        </span>
+    </div>
+`).join("")
+       }
+    </div>
+    ` : ""}
+
+   ${!zavazadlo.predmet.startsWith("Vak na vodu") ? `
+    <div style="text-align: center; margin-top: 12px;">
+        <button type="button" onclick="nabidnoutPredmetDoZavazadla('${zavazadlo.id}')">
+            Přidat předmět
+        </button>
+    </div>
+` : ""}
+
+${poutkaHTML}
+
+`;
+
+            skupina.kontejner.appendChild(karta);
+        });
+    });
+}
+
+function nabidnoutZavazadlo(umisteni) {
+
+  const moznosti = (cenikData.zavazadla || [])
+    .filter(zavazadlo => zavazadlo.umisteni === umisteni)
+    
+    .map(zavazadlo => zavazadlo.nazev)
+    .sort((a, b) => a.localeCompare(b, "cs"));
+    
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    const zavazadla = postava.inventar.zavazadla;
+
+    const pocet = zavazadla.filter(
+        z => z.umisteni === umisteni
+    ).length;
+
+    const maximum = umisteni === "zada" ? 1 : 4;
+
+    if (pocet >= maximum) {
+        zobrazitHlasku(
+            umisteni === "zada"
+                ? "Na zádech už máš jedno zavazadlo."
+                : "Na opasku můžeš mít maximálně čtyři zavazadla.",
+            "Plné místo"
+        );
+        return;
+    }
+
+    document.getElementById("vlastniOknoNadpis").textContent =
+        umisteni === "zada" ? "Zavazadla na záda" : "Zavazadla na opasek";
+
+    document.getElementById("vlastniOknoText").textContent =
+        "Vyber zavazadlo:";
+
+    tlacitka.innerHTML = "";
+
+    moznosti.forEach(nazev => {
+
+        const tlacitko = document.createElement("button");
+
+        tlacitko.type = "button";
+        tlacitko.textContent = nazev;
+
+        tlacitko.onclick = function() {
+            pridatZavazadlo(nazev, umisteni);
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zavrit = document.createElement("button");
+    zavrit.type = "button";
+    zavrit.textContent = "Zrušit";
+    zavrit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zavrit);
+
+    pozadi.style.display = "flex";
+} 
+ function pridatZavazadlo(nazev, umisteni) {
+
+    const zavazadla = postava.inventar.zavazadla;
+
+    const maximum = umisteni === "zada" ? 1 : 4;
+
+    const pocet = zavazadla.filter(
+        z => z.umisteni === umisteni
+    ).length;
+
+    if (pocet >= maximum) {
+        zobrazitHlasku(
+            umisteni === "zada"
+                ? "Na zádech už máš jedno zavazadlo."
+                : "Na opasku můžeš mít maximálně čtyři zavazadla.",
+            "Plné místo"
+        );
+        return;
+    }
+
+    const noveZavazadlo = vytvoritZavazadlo(nazev);
+
+    if (!noveZavazadlo) {
+        zobrazitHlasku(
+            "Toto zavazadlo nebylo nalezeno v ceníku.",
+            "Chyba"
+        );
+        return;
+    }
+
+    noveZavazadlo.umisteni = umisteni;
+
+    zavazadla.push(noveZavazadlo);
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+
+    zobrazitZavazadla();
+}
+
+function najitVsechnyPredmetyVCeniku() {
+
+    const vysledky = [];
+
+    function prohledat(objekt) {
+
+        if (!objekt || typeof objekt !== "object") return;
+
+        if (Array.isArray(objekt)) {
+            objekt.forEach(polozka => {
+                if (
+                    polozka &&
+                    typeof polozka === "object" &&
+                    polozka.nazev
+                ) {
+                    vysledky.push(polozka);
+                }
+
+                prohledat(polozka);
+            });
+        } else {
+            Object.values(objekt).forEach(prohledat);
+        }
+    }
+
+    prohledat(cenikData);
+
+    return vysledky;
+}
+
+function nabidnoutPredmetDoZavazadla(idZavazadla) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    const kategorie = [
+        { klic: "zavazadla", nazev: "Vaky na vodu" },
+        { klic: "jidlo_suroviny", nazev: "Jídlo / suroviny" },
+        { klic: "zbrane", nazev: "Zbraně" },
+        { klic: "zbroje", nazev: "Zbroje" },
+        { klic: "predmety_vybaveni", nazev: "Předměty / vybavení" },
+        { klic: "materialy", nazev: "Materiály" },
+        { klic: "drahokamy", nazev: "Drahokamy" },
+        { klic: "hudebni_nastroje", nazev: "Hudební nástroje" },
+        { klic: "sperky", nazev: "Šperky" },
+        { klic: "alchymie_suroviny", nazev: "Alchymistické suroviny" },
+        { klic: "alchymie_vyrobky", nazev: "Alchymistické výrobky" }
+    ];
+
+    zobrazitKategoriePredmetu(idZavazadla, zavazadlo, kategorie);
+}
+
+
+function zobrazitKategoriePredmetu(idZavazadla, zavazadlo, kategorie) {
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    document.getElementById("vlastniOknoNadpis").textContent =
+        "Přidat předmět";
+
+    document.getElementById("vlastniOknoText").textContent =
+        `Vyber kategorii pro zavazadlo: ${zavazadlo.predmet}`;
+
+    tlacitka.innerHTML = "";
+
+    kategorie.forEach(kat => {
+
+        const tlacitko = document.createElement("button");
+
+        tlacitko.type = "button";
+        tlacitko.textContent = kat.nazev;
+
+        tlacitko.onclick = function() {
+            zobrazitPredmetyKategorie(idZavazadla, kat);
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zavrit = document.createElement("button");
+    zavrit.type = "button";
+    zavrit.textContent = "Zrušit";
+
+    zavrit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zavrit);
+
+    pozadi.style.display = "flex";
+}
+
+
+function zobrazitPredmetyKategorie(idZavazadla, kategorie) {
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+let seznam = cenikData[kategorie.klic];
+const moznosti = [];
+const jeKategorieVaku = kategorie.klic === "zavazadla";
+
+    function projit(objekt) {
+
+        if (!objekt) return;
+
+        if (Array.isArray(objekt)) {
+
+            objekt.forEach(predmet => {
+
+               if (
+    predmet &&
+    predmet.nazev &&
+    (
+        jeKategorieVaku
+            ? jeVakNaVodu(predmet.nazev)
+            : predmet.kbel !== null &&
+              predmet.kbel !== undefined &&
+              Number(predmet.kbel) > 0 &&
+              !jeZavazadlo(predmet.nazev)
+    )
+) {
+    moznosti.push(predmet);
+}
+
+            });
+
+        } else if (typeof objekt === "object") {
+
+            Object.values(objekt).forEach(projit);
+
+        }
+    }
+
+    projit(seznam);
+
+    document.getElementById("vlastniOknoNadpis").textContent =
+        kategorie.nazev;
+
+    document.getElementById("vlastniOknoText").textContent =
+        moznosti.length
+            ? "Vyber předmět:"
+            : "V této kategorii nejsou žádné předměty s vyplněnou hodnotou kbel.";
+
+    tlacitka.innerHTML = "";
+
+    moznosti.forEach(predmet => {
+
+        const tlacitko = document.createElement("button");
+
+        tlacitko.type = "button";
+        tlacitko.textContent =
+            `${predmet.nazev} (${predmet.kbel} kbel)`;
+
+        tlacitko.onclick = function() {
+            pridatPredmetDoZavazadla(idZavazadla, predmet);
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zpet = document.createElement("button");
+    zpet.type = "button";
+    zpet.textContent = "← Zpět na kategorie";
+
+    zpet.onclick = function() {
+        const kategorieVse = [
+            { klic: "zavazadla", nazev: "Vaky na vodu" },
+            { klic: "jidlo_suroviny", nazev: "Jídlo / suroviny" },
+            { klic: "zbrane", nazev: "Zbraně" },
+            { klic: "zbroje", nazev: "Zbroje" },
+            { klic: "predmety_vybaveni", nazev: "Předměty / vybavení" },
+            { klic: "materialy", nazev: "Materiály" },
+            { klic: "drahokamy", nazev: "Drahokamy" },
+            { klic: "hudebni_nastroje", nazev: "Hudební nástroje" },
+            { klic: "sperky", nazev: "Šperky" },
+            { klic: "alchymie_suroviny", nazev: "Alchymistické suroviny" },
+            { klic: "alchymie_vyrobky", nazev: "Alchymistické výrobky" }
+        ];
+
+        zobrazitKategoriePredmetu(
+            idZavazadla,
+            zavazadlo,
+            kategorieVse
+        );
+    };
+
+    tlacitka.appendChild(zpet);
+
+    const zavrit = document.createElement("button");
+    zavrit.type = "button";
+    zavrit.textContent = "Zrušit";
+
+    zavrit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zavrit);
+
+    pozadi.style.display = "flex";
+}
+
+
+function pridatPredmetDoZavazadla(idZavazadla, predmet) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+    
+
+if (zavazadlo.nedostupne) {
+    zobrazitHlasku(
+        "Toto zavazadlo je nedostupné a nelze do něj přidávat předměty.",
+        "Nedostupné zavazadlo"
+    );
+    return;
+}
+    const velikost = Number(predmet.kbel) || 0;
+    const kapacita = Number(zavazadlo.kapacita_kbel) || 0;
+
+    const obsah = Array.isArray(zavazadlo.obsah)
+        ? zavazadlo.obsah
+        : [];
+
+const obsazeno = obsah.reduce(
+    (soucet, polozka) => {
+        const velikost = jeVakNaVodu(polozka.predmet)
+            ? mnozstviVodyVeVaku(polozka)
+            : (Number(polozka.kbel) || 0) * (Number(polozka.pocet) || 1);
+
+        return soucet + velikost;
+    },
+    0
+);
+
+    if (obsazeno + velikost > kapacita + 0.000000001) {
+        zobrazitHlasku(
+            "Do tohoto zavazadla se předmět už nevejde.",
+            "Nedostatek místa"
+        );
+        return;
+    }
+
+    zavazadlo.obsah = obsah;
+
+ zavazadlo.obsah.push({
+    id: crypto.randomUUID(),
+    predmet: predmet.nazev,
+    kbel: velikost,
+    pocet: 1,
+    ...(predmet.nazev.startsWith("Vak na vodu")
+        ? { voda_litru: 0 }
+        : {})
+});
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+
+    zobrazitZavazadla();
+}
+
+function pridatKusPredmetu(idZavazadla, index) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+    
+    if (zavazadlo.nedostupne) {
+    zobrazitHlasku(
+        "Toto zavazadlo je nedostupné a nelze měnit jeho obsah.",
+        "Nedostupné zavazadlo"
+    );
+    return;
+}
+
+    const polozka = zavazadlo.obsah[index];
+
+    if (!polozka) return;
+    
+    if (jeVakNaVodu(polozka.predmet)) {
+    zobrazitHlasku(
+        "Vaky na vodu se přidávají samostatně, aby měl každý vlastní množství vody.",
+        "Samostatný vak"
+    );
+    return;
+}
+
+    const obsazeno = zavazadlo.obsah.reduce(
+        (soucet, p) =>
+            soucet +
+            (Number(p.kbel) || 0) *
+            (Number(p.pocet) || 1),
+        0
+    );
+
+    const velikost = Number(polozka.kbel) || 0;
+    const kapacita = Number(zavazadlo.kapacita_kbel) || 0;
+
+    if (obsazeno + velikost > kapacita + 0.000000001) {
+        zobrazitHlasku(
+            "Do tohoto zavazadla se další kus už nevejde.",
+            "Nedostatek místa"
+        );
+        return;
+    }
+
+    polozka.pocet = (Number(polozka.pocet) || 1) + 1;
+
+    zobrazitZavazadla();
+}
+function odebratKusPredmetu(idZavazadla, index) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+    
+    if (zavazadlo.nedostupne) {
+    zobrazitHlasku(
+        "Toto zavazadlo je nedostupné a nelze měnit jeho obsah.",
+        "Nedostupné zavazadlo"
+    );
+    return;
+}
+
+    const polozka = zavazadlo.obsah[index];
+
+    if (!polozka) return;
+
+    const pocet = Number(polozka.pocet) || 1;
+
+    if (pocet > 1) {
+        polozka.pocet = pocet - 1;
+    } else {
+        zavazadlo.obsah.splice(index, 1);
+    }
+
+    zobrazitZavazadla();
+}
+
+function odebratPredmet(idZavazadla, index) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+    
+    if (zavazadlo.nedostupne) {
+    zobrazitHlasku(
+        "Toto zavazadlo je nedostupné a nelze měnit jeho obsah.",
+        "Nedostupné zavazadlo"
+    );
+    return;
+}
+
+    zavazadlo.obsah.splice(index, 1);
+
+    zobrazitZavazadla();
+}
+
+function upravitPoznamkuPredmetu(idZavazadla, index) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    if (zavazadlo.nedostupne) {
+        zobrazitHlasku(
+            "Toto zavazadlo je nedostupné a nelze upravovat jeho předměty.",
+            "Nedostupné zavazadlo"
+        );
+        return;
+    }
+
+    const polozka = zavazadlo.obsah[index];
+
+    if (!polozka) return;
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpis = document.getElementById("vlastniOknoNadpis");
+    const text = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpis.textContent = "Poznámka k předmětu";
+    text.textContent = polozka.predmet;
+
+    tlacitka.innerHTML = `
+        <textarea
+            id="poznamkaPredmetuInput"
+            placeholder="Napiš poznámku k předmětu..."
+            style="
+                width: 100%;
+                min-height: 100px;
+                box-sizing: border-box;
+                padding: 10px;
+                margin-bottom: 12px;
+                background: rgba(0, 0, 0, 0.5);
+                color: #eee4d2;
+                border: 1px solid #8a704d;
+                border-radius: 5px;
+                font-family: Georgia, serif;
+                font-size: 15px;
+                resize: vertical;
+            "
+        >${escapovatHTML(polozka.poznamka || "")}</textarea>
+
+        <button type="button" id="ulozitPoznamkuPredmetu">
+            Uložit poznámku
+        </button>
+
+        <button type="button" id="zrusitPoznamkuPredmetu">
+            Zrušit
+        </button>
     `;
 
-    tbody.appendChild(novyRadek);
+    document.getElementById("ulozitPoznamkuPredmetu").onclick = function() {
 
-    // správná výška načtených poznámek
-    tbody.querySelectorAll("textarea").forEach(function(textarea) {
-        zvetsitPoznamku(textarea);
-    });
+        polozka.poznamka = document
+            .getElementById("poznamkaPredmetuInput")
+            .value.trim();
+
+        pozadi.style.display = "none";
+        zobrazitZavazadla();
+    };
+
+    document.getElementById("zrusitPoznamkuPredmetu").onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    pozadi.style.display = "flex";
 }
+
+function upravitPoznamkuVaku(idVaku) {
+
+    const zavazadla = postava.inventar.zavazadla || [];
+
+    let vak = null;
+    let rodic = null;
+
+    for (const zavazadlo of zavazadla) {
+
+        if (zavazadlo.id === idVaku) {
+            vak = zavazadlo;
+            rodic = zavazadlo;
+            break;
+        }
+
+        const uvnitr = (zavazadlo.obsah || []).find(
+            predmet => predmet.id === idVaku
+        );
+
+        const naPoutku = (zavazadlo.vnejsi_poutka || []).find(
+            predmet => predmet?.id === idVaku
+        );
+
+        if (uvnitr || naPoutku) {
+            vak = uvnitr || naPoutku;
+            rodic = zavazadlo;
+            break;
+        }
+    }
+
+    if (!vak) return;
+
+    if (rodic.nedostupne) {
+        zobrazitHlasku(
+            "Toto zavazadlo je nedostupné a nelze upravovat jeho předměty.",
+            "Nedostupné zavazadlo"
+        );
+        return;
+    }
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpis = document.getElementById("vlastniOknoNadpis");
+    const text = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpis.textContent = "Poznámka k vaku";
+    text.textContent = vak.predmet;
+
+    tlacitka.innerHTML = `
+        <textarea
+            id="poznamkaVakuInput"
+            placeholder="Napiš poznámku k vaku..."
+            style="
+                width: 100%;
+                min-height: 100px;
+                box-sizing: border-box;
+                padding: 10px;
+                margin-bottom: 12px;
+                background: rgba(0, 0, 0, 0.5);
+                color: #eee4d2;
+                border: 1px solid #8a704d;
+                border-radius: 5px;
+                font-family: Georgia, serif;
+                font-size: 15px;
+                resize: vertical;
+            "
+        >${escapovatHTML(vak.poznamka || "")}</textarea>
+
+        <button type="button" id="ulozitPoznamkuVaku">
+            Uložit poznámku
+        </button>
+
+        <button type="button" id="zrusitPoznamkuVaku">
+            Zrušit
+        </button>
+    `;
+
+    document.getElementById("ulozitPoznamkuVaku").onclick = function() {
+
+        vak.poznamka = document
+            .getElementById("poznamkaVakuInput")
+            .value.trim();
+
+        pozadi.style.display = "none";
+        zobrazitZavazadla();
+    };
+
+    document.getElementById("zrusitPoznamkuVaku").onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    pozadi.style.display = "flex";
+}
+
+function odebratSamostatnyVak(idVaku) {
+
+    const zavazadla = postava.inventar.zavazadla || [];
+
+    const index = zavazadla.findIndex(
+        vak => vak.id === idVaku && jeVakNaVodu(vak.predmet)
+    );
+
+    if (index === -1) return;
+
+    const vak = zavazadla[index];
+
+    if (vak.nedostupne) {
+        zobrazitHlasku(
+            "Tento vak je nedostupný a nelze ho odstranit.",
+            "Nedostupný vak"
+        );
+        return;
+    }
+
+    zavazadla.splice(index, 1);
+
+    if (postava.inventar.aktivniVakNaVodu === idVaku) {
+        postava.inventar.aktivniVakNaVodu = null;
+    }
+
+    zobrazitZavazadla();
+}
+
+function escapovatHTML(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function nabidnoutVakNaPoutko(idZavazadla, indexPoutka) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    if (zavazadlo.nedostupne) {
+        zobrazitHlasku(
+            "Toto zavazadlo je nedostupné a nelze na něj zavěšovat předměty.",
+            "Nedostupné zavazadlo"
+        );
+        return;
+    }
+
+    const predmety = najitVsechnyPredmetyVCeniku()
+        .filter(predmet =>
+            predmet.zavesitelne === true ||
+            predmet.zavesitelne === "true" ||
+            predmet.zavesitelne === 1 ||
+            predmet.zavesitelne === "1"
+        )
+        .sort((a, b) => a.nazev.localeCompare(b.nazev, "cs"));
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    document.getElementById("vlastniOknoNadpis").textContent =
+        "Zavěsit předmět";
+
+    document.getElementById("vlastniOknoText").textContent =
+        predmety.length
+            ? "Vyber předmět, který chceš zavěsit:"
+            : "V ceníku nejsou žádné předměty označené jako zavěsitelné.";
+
+    tlacitka.innerHTML = "";
+
+    predmety.forEach(predmet => {
+
+        const tlacitko = document.createElement("button");
+
+        tlacitko.type = "button";
+        tlacitko.textContent = predmet.nazev;
+
+        tlacitko.onclick = function() {
+            zavesitVakNaPoutko(
+                idZavazadla,
+                indexPoutka,
+                predmet.nazev
+            );
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zavrit = document.createElement("button");
+    zavrit.type = "button";
+    zavrit.textContent = "Zrušit";
+
+    zavrit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zavrit);
+
+    pozadi.style.display = "flex";
+}
+function zavesitVakNaPoutko(idZavazadla, indexPoutka, nazev) {
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+    
+    if (zavazadlo.nedostupne) {
+    zobrazitHlasku(
+        "Toto zavazadlo je nedostupné a nelze na něj zavěšovat předměty.",
+        "Nedostupné zavazadlo"
+    );
+    return;
+}
+
+    const pocetPoutek = Number(zavazadlo.pocet_poutek) || 0;
+
+    if (indexPoutka < 0 || indexPoutka >= pocetPoutek) return;
+
+    if (!Array.isArray(zavazadlo.vnejsi_poutka)) {
+        zavazadlo.vnejsi_poutka = [];
+    }
+
+    if (zavazadlo.vnejsi_poutka[indexPoutka]) {
+        zobrazitHlasku("Toto poutko už je obsazené.", "Obsazené poutko");
+        return;
+    }
+
+    const udaje = najitPredmetVCeniku(nazev);
+
+   if (
+    !udaje ||
+    !(
+        udaje.zavesitelne === true ||
+        udaje.zavesitelne === "true" ||
+        udaje.zavesitelne === 1 ||
+        udaje.zavesitelne === "1"
+    )
+) {
+    zobrazitHlasku(
+        "Tento předmět není určený k zavěšení.",
+        "Nelze zavěsit"
+    );
+    return;
+}
+
+zavazadlo.vnejsi_poutka[indexPoutka] = {
+    id: crypto.randomUUID(),
+    predmet: nazev,
+    ...(jeVakNaVodu(nazev) ? { voda_litru: 0 } : {})
+};
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+
+    zobrazitZavazadla();
+}
+
+function odebratVakZPoutka(idZavazadla, index) {
+
+    const zavazadlo = (postava.inventar.zavazadla || []).find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    if (zavazadlo.nedostupne) {
+        zobrazitHlasku(
+            "Toto zavazadlo je nedostupné a nelze upravovat jeho předměty.",
+            "Nedostupné zavazadlo"
+        );
+        return;
+    }
+
+    const predmet = zavazadlo.vnejsi_poutka?.[index];
+
+    if (!predmet) return;
+
+    zavazadlo.vnejsi_poutka.splice(index, 1);
+
+    if (
+        jeVakNaVodu(predmet.predmet) &&
+        postava.inventar.aktivniVakNaVodu === predmet.id
+    ) {
+        postava.inventar.aktivniVakNaVodu = null;
+    }
+
+    zobrazitZavazadla();
+}
+
 </script>
 
 </body>
