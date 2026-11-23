@@ -219,14 +219,19 @@ obsah.innerHTML = "";
 if (zpravy.length === 0) {
     obsah.innerHTML = "<p>Nemáš žádné zprávy.</p>";
 
+    try {
     if (window.opener && !window.opener.closed) {
         window.opener.zkontrolovatNoveZpravy();
     }
+} catch (chyba) {
+    console.warn("Nelze aktualizovat upozornění na nové zprávy.");
+}
 
     return;
 }
 
 for (const zprava of zpravy) {
+const idOdesilatele = zprava.odesilatel_postava_id;
 if (!zprava.precteno) {
     const { error: chybaPrecteni } = await supabaseClient
         .from("zpravy")
@@ -300,6 +305,20 @@ radek.innerHTML = "";
 
 obsahRadku.appendChild(textZpravy);
 
+const tlacitkoOdpovedet = document.createElement("button");
+
+tlacitkoOdpovedet.type = "button";
+tlacitkoOdpovedet.textContent = "Odpovědět";
+tlacitkoOdpovedet.style.padding = "6px 12px";
+tlacitkoOdpovedet.style.fontSize = "15px";
+tlacitkoOdpovedet.style.flexShrink = "0";
+
+tlacitkoOdpovedet.onclick = function() {
+    novaZprava(idOdesilatele, zprava.predmet);
+};
+
+obsahRadku.appendChild(tlacitkoOdpovedet);
+
 tlacitkoSmazat.style.marginTop = "0";
 tlacitkoSmazat.style.flexShrink = "0";
 
@@ -307,13 +326,17 @@ obsahRadku.appendChild(tlacitkoSmazat);
 radek.appendChild(obsahRadku);
        obsah.appendChild(radek);
 }
-if (window.opener && !window.opener.closed) {
-    window.opener.zkontrolovatNoveZpravy();
+try {
+    if (window.opener && !window.opener.closed) {
+        window.opener.zkontrolovatNoveZpravy();
+    }
+} catch (chyba) {
+    console.warn("Nelze aktualizovat upozornění na nové zprávy.");
 }
 }
 
 
-async function novaZprava() {
+async function novaZprava(idPrijemce = null, puvodniPredmet = "") {
 
     const obsah = document.getElementById("obsahZprav");
 
@@ -401,7 +424,18 @@ async function novaZprava() {
             </div>
 
         </div>
+        
     `;
+    
+        if (idPrijemce) {
+        document.getElementById("prijemceZpravy").value = idPrijemce;
+    }
+
+    if (puvodniPredmet) {
+        document.getElementById("predmetZpravy").value =
+            "Re: " + puvodniPredmet;
+    }
+    
 }
 
 function zobrazitPotvrzeni(text) {
