@@ -378,6 +378,26 @@
     color: #a9dff0;
 }
 
+/* Celkový ukazatel vody */
+
+#voda .voda-obsazenost {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+#voda .voda-ukazatel {
+    width: 100%;
+    height: 22px;
+    box-sizing: border-box;
+}
+
+#voda .voda-cislo {
+    text-align: center;
+    font-size: 17px;
+}
+
 .checkbox-nedostupne {
     appearance: none;
     -webkit-appearance: none;
@@ -444,6 +464,13 @@ const supabaseClient = window.supabase.createClient(
 <a href="cenik.html" target="_blank" class="odkaz-cenik">
     Ceník království
 </a>
+<a
+    href="#"
+    class="odkaz-cenik"
+    onclick="window.open('odlozene.html?id=' + encodeURIComponent(idPostavy), '_blank'); return false;"
+>
+    Odložené věci
+</a>
     <div class="info-hlavicka" id="info"></div>
 
     <div class="horni-cast">
@@ -486,7 +513,6 @@ const supabaseClient = window.supabase.createClient(
     </div>
 </div>
 
-
         <div class="sekce">
             <h2>Jídlo</h2>
 
@@ -499,9 +525,9 @@ const supabaseClient = window.supabase.createClient(
                 </div>
             </div>
             
-           <div class="radek">
+           <div class="radek" style="align-items: stretch;">
     <span>Voda celkem</span>
-    <span class="cislo" id="voda">0 l</span>
+    <div id="voda" style="flex: 1; min-width: 0; margin-left: 20px;">0 l</div>
 </div>
 
 <div class="radek">
@@ -522,9 +548,7 @@ const supabaseClient = window.supabase.createClient(
     </select>
 </div>
         </div>
-
     </div>
-
 
     <div class="horni-cast">
 
@@ -549,19 +573,10 @@ const supabaseClient = window.supabase.createClient(
     <button type="button" onclick="nabidnoutZavazadlo('opasek')">
         Přidat zavazadlo
     </button>
-    <button type="button" onclick="vymenitZavazadlo('opasek')">
-        Vyměnit zavazadlo
-    </button>
+    
 </div>
     </div>
 
-</div>
-
-<div class="sekce">
-    <h2>Odložené věci</h2>
-    <div id="predmetyMimoZavazadla">
-        Zatím žádné odložené věci.
-    </div>
 </div>
 
     <div class="ulozeni">
@@ -571,9 +586,7 @@ const supabaseClient = window.supabase.createClient(
     </div>
 
 </div>
-
 </div>
-
 
 <script>
 
@@ -598,8 +611,6 @@ async function nacistCenik() {
 
     cenikData = data.obsah || {};
 }
-
-
 
 async function nacistPostavu() {
 
@@ -674,7 +685,6 @@ function najitPredmetVCeniku(nazev) {
 
     return prohledat(cenikData);
 }
-
 
 function jeVakNaVodu(nazev) {
     return /^Vak na vodu (3|6) l$/i.test(
@@ -1160,9 +1170,7 @@ async function ulozitInventar() {
     if (!Array.isArray(postava.inventar.predmety)) {
         postava.inventar.predmety = [];
     }
-if (!Array.isArray(postava.inventar.odlozeneVeci)) {
-    postava.inventar.odlozeneVeci = [];
-}
+
     const { error } = await supabaseClient
         .from("postavy")
         .update({
@@ -1258,9 +1266,7 @@ inventar.zavazadla.forEach(zavazadlo => {
     inventar.predmety = [];
 }
 
-if (!Array.isArray(inventar.odlozeneVeci)) {
-    inventar.odlozeneVeci = [];
-}
+
 document.getElementById("voda").textContent =
     `${celkemVody().toLocaleString("cs-CZ")} l`;
 zobrazitZavazadla();
@@ -1268,8 +1274,42 @@ zobrazitZavazadla();
 
 function zobrazitZavazadla() {
 
-document.getElementById("voda").textContent =
-    `${celkemVody().toLocaleString("cs-CZ")} l`;
+const celkovaVoda = celkemVody();
+
+const kapacitaCelkem = postava.inventar.zavazadla.reduce(
+    (celkem, zavazadlo) => {
+        celkem += kapacitaVaku(zavazadlo.predmet);
+
+        (zavazadlo.obsah || []).forEach(predmet => {
+            celkem += kapacitaVaku(predmet.predmet);
+        });
+
+        (zavazadlo.vnejsi_poutka || []).forEach(predmet => {
+            celkem += kapacitaVaku(predmet?.predmet);
+        });
+
+        return celkem;
+    },
+    0
+);
+
+const procentaVody = kapacitaCelkem > 0
+    ? Math.min(100, (celkovaVoda / kapacitaCelkem) * 100)
+    : 0;
+
+document.getElementById("voda").innerHTML = `
+    <div class="voda-obsazenost">
+        <div class="voda-ukazatel">
+            <div class="voda-ukazatel-vypln"
+                style="width: ${procentaVody}%">
+            </div>
+        </div>
+        <span class="voda-cislo">
+            ${celkovaVoda.toLocaleString("cs-CZ")} /
+            ${kapacitaCelkem.toLocaleString("cs-CZ")} l
+        </span>
+    </div>
+`;
 
 zobrazitVyberAktivnihoVaku();
 
@@ -1636,159 +1676,7 @@ ${zavazadlo.umisteni === "zada" || zavazadlo.umisteni === "opasek" ? `
         });
     });
 
-    // Odložené věci
-    const odlozene = Array.isArray(postava.inventar.odlozeneVeci)
-        ? postava.inventar.odlozeneVeci
-        : [];
 
-    const kontejnerOdlozenych = document.getElementById("predmetyMimoZavazadla");
-    kontejnerOdlozenych.innerHTML = "";
-
-    if (odlozene.length === 0) {
-        kontejnerOdlozenych.textContent = "Zatím žádné odložené věci.";
-    } else {
-        odlozene.forEach((zavazadlo, indexZavazadla) => {
-            const karta = document.createElement("div");
-            karta.style.marginTop = "12px";
-            karta.style.padding = "12px";
-            karta.style.border = "1px solid rgba(190, 165, 125, 0.4)";
-            karta.style.borderRadius = "8px";
-
-            const obsah = Array.isArray(zavazadlo.obsah)
-                ? zavazadlo.obsah
-                : [];
-
-const poutka = Array.isArray(zavazadlo.vnejsi_poutka)
-    ? zavazadlo.vnejsi_poutka
-    : [];
-
-                       karta.innerHTML = `
-                <div style="
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-">
-    <h3 style="margin: 0;">
-        ${escapovatHTML(zavazadlo.predmet || "Odložené zavazadlo")}
-    </h3>
-
-    ${obsah.length === 0 && !poutka.some(Boolean) ? `
-        <button
-            type="button"
-            class="tlacitko-inventare"
-            onclick="nabidnoutPresunCelehoOdlozenehoZavazadla(${indexZavazadla})"
-            title="Vložit prázdné zavazadlo do jiného zavazadla"
-        >➜</button>
-    ` : ""}
-
-    <button
-        type="button"
-        class="tlacitko-inventare"
-        onclick="smazatOdlozeneZavazadlo(${indexZavazadla})"
-        title="Odstranit celé zavazadlo"
-    >×</button>
-</div>
-
-                <div>
-                    <strong>Obsah:</strong>
-                    ${obsah.length === 0
-                        ? "<div style='margin-top: 6px;'>Zavazadlo je prázdné.</div>"
-                        : obsah.map((polozka, indexPredmetu) => `
-                            <div style="
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 6px;
-">
-    <span style="flex: 1;">
-        ${escapovatHTML(polozka.predmet || "Neznámý předmět")}
-                                ${!jeVakNaVodu(polozka.predmet)
-                                    ? ` – ${Number(polozka.pocet) || 1} ks`
-                                    : ""}
-                               ${htmlUkazatelVody(polozka)}
-                            ${polozka.poznamka ? `
-                                <div style="
-                                    margin: 4px 0 0 18px;
-                                    color: #cbbda7;
-                                    font-style: italic;
-                                    white-space: pre-wrap;
-                                ">${escapovatHTML(polozka.poznamka)}</div>
-                                                        ` : ""}
-    </span>
-
-    <button
-    type="button"
-    class="tlacitko-inventare"
-    onclick="nabidnoutPresunOdlozenehoPredmetu(${indexZavazadla}, 'obsah', ${indexPredmetu})"
-    title="Přesunout do nasazeného zavazadla"
->➜</button>
-
-<button
-    type="button"
-    class="tlacitko-inventare"
-    onclick="odstranitOdlozenyPredmet(${indexZavazadla}, 'obsah', ${indexPredmetu})"
-    title="Odstranit předmět"
->×</button>
-</div>
-                        `).join("")}
-                </div>
-
-                ${poutka.length > 0 ? `
-                    <div style="
-                        margin-top: 18px;
-                        padding-top: 12px;
-                        border-top: 1px solid rgba(190, 165, 125, 0.55);
-                    ">
-                        <strong style="color: #d8c29d;">Vnější poutka:</strong>
-
-                        ${poutka.map((predmet, index) => `
-    <div style="
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 6px;
-    ">
-        <span style="flex: 1;">
-            ${index + 1}. ${predmet
-                ? `
-                    ${escapovatHTML(predmet.predmet || "Neznámý předmět")}
-                    ${htmlUkazatelVody(predmet)}
-                    ${predmet.poznamka ? `
-                        <div style="margin: 4px 0 0 18px; color: #cbbda7; font-style: italic;">
-                            ${escapovatHTML(predmet.poznamka)}
-                        </div>
-                    ` : ""}
-                `
-                : "Volné poutko"}
-        </span>
-
-        ${predmet ? `
-            <button
-    type="button"
-    class="tlacitko-inventare"
-    onclick="nabidnoutPresunOdlozenehoPredmetu(${indexZavazadla}, 'poutko', ${index})"
-    title="Přesunout do nasazeného zavazadla"
->➜</button>
-
-<button
-    type="button"
-    class="tlacitko-inventare"
-    onclick="odstranitOdlozenyPredmet(${indexZavazadla}, 'poutko', ${index})"
-    title="Odstranit předmět"
->×</button>
-        ` : ""}
-    </div>
-`).join("")}
-                    </div>
-                ` : ""}
-            `;
-
-            kontejnerOdlozenych.appendChild(karta);
-        });
-    }
 }
 
 function nabidnoutZavazadlo(umisteni) {
@@ -2593,421 +2481,16 @@ function odebratSamostatnyVak(idVaku) {
     zobrazitZavazadla();
 }
 
-function smazatOdlozeneZavazadlo(index) {
-    const odlozene = postava?.inventar?.odlozeneVeci || [];
-    const zavazadlo = odlozene[index];
 
-    if (!zavazadlo) return;
 
-    const pozadi = document.getElementById("vlastniOknoPozadi");
-    const nadpis = document.getElementById("vlastniOknoNadpis");
-    const text = document.getElementById("vlastniOknoText");
-    const tlacitka = document.getElementById("vlastniOknoTlacitka");
 
-    nadpis.textContent = "Odstranit odložené zavazadlo?";
-    text.textContent =
-        `Opravdu chceš odstranit ${zavazadlo.predmet || "odložené zavazadlo"} včetně všech předmětů a věcí na poutkách?`;
 
-    tlacitka.innerHTML = "";
 
-    const potvrdit = document.createElement("button");
-    potvrdit.type = "button";
-    potvrdit.textContent = "Odstranit";
-    potvrdit.onclick = async function() {
-        odlozene.splice(index, 1);
-        pozadi.style.display = "none";
-        zobrazitZavazadla();
-        await ulozitInventar();
-    };
-    tlacitka.appendChild(potvrdit);
 
-    const zrusit = document.createElement("button");
-    zrusit.type = "button";
-    zrusit.textContent = "Zrušit";
-    zrusit.onclick = function() {
-        pozadi.style.display = "none";
-    };
-    tlacitka.appendChild(zrusit);
 
-        pozadi.style.display = "flex";
-}
 
 
-function nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, typ, indexPredmetu) {
-    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
 
-    if (!zdroj) return;
-
-    const polozka = typ === "obsah"
-        ? zdroj.obsah[indexPredmetu]
-        : zdroj.vnejsi_poutka[indexPredmetu];
-
-    if (!polozka) return;
-
-    const tlacitka = document.getElementById("vlastniOknoTlacitka");
-    const pozadi = document.getElementById("vlastniOknoPozadi");
-
-    tlacitka.innerHTML = "";
-
-    document.getElementById("vlastniOknoNadpis").textContent =
-        "Přesunout předmět";
-
-    if (typ === "poutko") {
-        const volnaPoutka = [];
-
-        postava.inventar.zavazadla.forEach(zavazadlo => {
-            if (
-                zavazadlo.nedostupne ||
-                (zavazadlo.umisteni !== "zada" &&
-                 zavazadlo.umisteni !== "opasek") ||
-                jeVakNaVodu(zavazadlo.predmet)
-            ) return;
-
-            const udaje = najitPredmetVCeniku(zavazadlo.predmet);
-            const pocetPoutek = Number(
-                udaje?.pocet_poutek ?? zavazadlo.pocet_poutek
-            ) || 0;
-
-            if (!Array.isArray(zavazadlo.vnejsi_poutka)) {
-                zavazadlo.vnejsi_poutka = [];
-            }
-
-            for (let i = 0; i < pocetPoutek; i++) {
-                if (!zavazadlo.vnejsi_poutka[i]) {
-                    volnaPoutka.push({
-                        zavazadlo,
-                        indexPoutka: i
-                    });
-                }
-            }
-        });
-
-        document.getElementById("vlastniOknoText").textContent =
-            `Předmět: ${polozka.predmet}\nVyber volné vnější poutko:`;
-
-        if (volnaPoutka.length === 0) {
-            zobrazitHlasku(
-                "Žádné volné vnější poutko na nasazených zavazadlech není k dispozici.",
-                "Přesun předmětu"
-            );
-            return;
-        }
-
-        volnaPoutka.forEach(cil => {
-            const tlacitko = document.createElement("button");
-            tlacitko.type = "button";
-            tlacitko.textContent =
-                `${cil.zavazadlo.predmet} – poutko ${cil.indexPoutka + 1}`;
-
-            tlacitko.onclick = function() {
-                presunoutOdlozenyPredmetNaPoutko(
-                    indexZavazadla,
-                    indexPredmetu,
-                    cil.zavazadlo.id,
-                    cil.indexPoutka
-                );
-            };
-
-            tlacitka.appendChild(tlacitko);
-        });
-
-    } else {
-        const cile = postava.inventar.zavazadla.filter(zavazadlo =>
-            (zavazadlo.umisteni === "zada" || zavazadlo.umisteni === "opasek") &&
-            !zavazadlo.nedostupne &&
-            !jeVakNaVodu(zavazadlo.predmet)
-        );
-
-        if (cile.length === 0) {
-            zobrazitHlasku(
-                "Nemáš žádné dostupné nasazené zavazadlo, do kterého by šel předmět přesunout.",
-                "Přesun předmětu"
-            );
-            return;
-        }
-
-        document.getElementById("vlastniOknoText").textContent =
-            `Předmět: ${polozka.predmet}\nVyber cílové zavazadlo:`;
-
-        cile.forEach(zavazadlo => {
-            const tlacitko = document.createElement("button");
-            tlacitko.type = "button";
-            tlacitko.textContent = zavazadlo.predmet;
-
-            tlacitko.onclick = function() {
-                presunoutOdlozenyPredmet(
-                    indexZavazadla,
-                    typ,
-                    indexPredmetu,
-                    zavazadlo.id
-                );
-            };
-
-            tlacitka.appendChild(tlacitko);
-        });
-    }
-
-    const zrusit = document.createElement("button");
-    zrusit.type = "button";
-    zrusit.textContent = "Zrušit";
-
-    zrusit.onclick = function() {
-        pozadi.style.display = "none";
-    };
-
-    tlacitka.appendChild(zrusit);
-    pozadi.style.display = "flex";
-}
-
-async function presunoutOdlozenyPredmetNaPoutko(
-    indexZavazadla,
-    indexPredmetu,
-    idCile,
-    indexPoutka
-) {
-    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
-    const cil = postava.inventar.zavazadla.find(z => z.id === idCile);
-
-    if (!zdroj || !cil || cil.nedostupne) {
-        zobrazitHlasku(
-            "Vybrané zavazadlo už není dostupné.",
-            "Přesun předmětu"
-        );
-        return;
-    }
-
-    const polozka = zdroj.vnejsi_poutka[indexPredmetu];
-
-    if (!polozka || cil.vnejsi_poutka[indexPoutka]) return;
-
-    cil.vnejsi_poutka[indexPoutka] = polozka;
-    zdroj.vnejsi_poutka[indexPredmetu] = null;
-
-    document.getElementById("vlastniOknoPozadi").style.display = "none";
-
-    zobrazitZavazadla();
-    await ulozitInventar();
-}
-
-function nabidnoutPresunCelehoOdlozenehoZavazadla(indexZavazadla) {
-    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
-
-    if (!zdroj) return;
-
-    const obsah = Array.isArray(zdroj.obsah) ? zdroj.obsah : [];
-    const poutka = Array.isArray(zdroj.vnejsi_poutka)
-        ? zdroj.vnejsi_poutka
-        : [];
-
-    // Přesunout lze pouze úplně prázdné zavazadlo.
-    if (obsah.length > 0 || poutka.some(Boolean)) {
-        zobrazitHlasku("Zavazadlo musí být prázdné.");
-        return;
-    }
-
-    const cile = postava.inventar.zavazadla.filter(zavazadlo =>
-        (zavazadlo.umisteni === "zada" || zavazadlo.umisteni === "opasek") &&
-        !zavazadlo.nedostupne &&
-        !jeVakNaVodu(zavazadlo.predmet)
-    );
-
-    if (cile.length === 0) {
-        zobrazitHlasku("Nemáš žádné dostupné zavazadlo, do kterého by šlo toto zavazadlo vložit.");
-        return;
-    }
-
-    const tlacitka = document.getElementById("vlastniOknoTlacitka");
-    const pozadi = document.getElementById("vlastniOknoPozadi");
-
-    tlacitka.innerHTML = "";
-
-    document.getElementById("vlastniOknoNadpis").textContent =
-        "Vložit zavazadlo";
-
-    document.getElementById("vlastniOknoText").textContent =
-        `Zavazadlo: ${zdroj.predmet}\nVyber cílové zavazadlo:`;
-
-    cile.forEach(cil => {
-        const tlacitko = document.createElement("button");
-        tlacitko.type = "button";
-        tlacitko.className = "tlacitko-inventare";
-        tlacitko.textContent = cil.predmet;
-
-        tlacitko.onclick = () =>
-            presunoutCeleOdlozeneZavazadlo(indexZavazadla, cil.id);
-
-        tlacitka.appendChild(tlacitko);
-    });
-
-    const zrusit = document.createElement("button");
-    zrusit.type = "button";
-    zrusit.className = "tlacitko-inventare";
-    zrusit.textContent = "Zrušit";
-    zrusit.onclick = () => {
-        pozadi.style.display = "none";
-    };
-
-    tlacitka.appendChild(zrusit);
-
-    pozadi.style.display = "flex";
-}
-
-async function presunoutCeleOdlozeneZavazadlo(indexZavazadla, idCile) {
-    const inventar = postava.inventar;
-    const zdroj = inventar.odlozeneVeci[indexZavazadla];
-    const cil = inventar.zavazadla.find(z => z.id === idCile);
-
-    if (!zdroj || !cil) return;
-
-    // Znovu ověříme, že odložené zavazadlo je prázdné.
-    const obsah = Array.isArray(zdroj.obsah) ? zdroj.obsah : [];
-    const poutka = Array.isArray(zdroj.vnejsi_poutka)
-        ? zdroj.vnejsi_poutka
-        : [];
-
-    if (obsah.length > 0 || poutka.some(Boolean)) {
-        zobrazitHlasku("Zavazadlo už není prázdné a nelze ho takto přesunout.");
-        return;
-    }
-
-    if (
-        cil.nedostupne ||
-        (cil.umisteni !== "zada" && cil.umisteni !== "opasek") ||
-        jeVakNaVodu(cil.predmet)
-    ) {
-        zobrazitHlasku("Do tohoto zavazadla nelze předmět vložit.");
-        return;
-    }
-
-    const udaje = najitPredmetVCeniku(zdroj.predmet);
-    const kbel = Number(udaje?.kbel) || 0;
-
-    if (kbel <= 0) {
-        zobrazitHlasku("U tohoto zavazadla není v ceníku nastaven jeho objem.");
-        return;
-    }
-
-    const obsahCile = Array.isArray(cil.obsah) ? cil.obsah : [];
-
-    const obsazenyObjem = obsahCile.reduce((soucet, predmet) => {
-        if (jeVakNaVodu(predmet.predmet)) {
-            return soucet + mnozstviVodyVeVaku(predmet);
-        }
-
-        return soucet +
-            (Number(predmet.kbel) || 0) *
-            (Number(predmet.pocet) || 1);
-    }, 0);
-
-    const volnyObjem = Number(cil.kapacita_kbel) - obsazenyObjem;
-
-    if (kbel > volnyObjem) {
-        zobrazitHlasku("V cílovém zavazadle není dostatek volného místa.");
-        return;
-    }
-
-    // Vložíme zavazadlo jako jednu položku.
-    cil.obsah.push({
-        id: zdroj.id,
-        predmet: zdroj.predmet,
-        kbel: kbel,
-        pocet: 1
-    });
-
-    inventar.odlozeneVeci.splice(indexZavazadla, 1);
-
-    document.getElementById("vlastniOknoPozadi").style.display = "none";
-
-    zobrazitZavazadla();
-    await ulozitInventar();
-}
-
-async function presunoutOdlozenyPredmet(indexZavazadla, typ, indexPredmetu, idCile) {
-    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
-    const cil = postava.inventar.zavazadla.find(z => z.id === idCile);
-
-    if (!zdroj || !cil || cil.nedostupne || jeVakNaVodu(cil.predmet)) {
-        zobrazitHlasku("Vybrané zavazadlo už není dostupné.", "Přesun předmětu");
-        return;
-    }
-
-    const polozka = typ === "obsah"
-        ? zdroj.obsah[indexPredmetu]
-        : zdroj.vnejsi_poutka[indexPredmetu];
-
-    if (!polozka) return;
-
-    const jeVak = jeVakNaVodu(polozka.predmet);
-
-    let kbel = Number(polozka.kbel);
-
-    if (!jeVak && !(kbel > 0)) {
-        const katalogovaPolozka = najitPredmetVCeniku(polozka.predmet);
-        kbel = Number(katalogovaPolozka?.kbel);
-    }
-
-    if (!jeVak && !(kbel > 0)) {
-       zobrazitHlasku("U tohoto předmětu není známá objemová kapacita. Nelze ho přesunout dovnitř zavazadla.", "Přesun předmětu");
-        return;
-    }
-
-    const obsazeno = (cil.obsah || []).reduce((soucet, predmet) => {
-        if (jeVakNaVodu(predmet.predmet)) {
-            return soucet + mnozstviVodyVeVaku(predmet);
-        }
-
-        return soucet +
-            (Number(predmet.kbel) || 0) *
-            (Number(predmet.pocet) || 1);
-    }, 0);
-
-    const objemPredmetu = jeVak
-        ? mnozstviVodyVeVaku(polozka)
-        : kbel * (Number(polozka.pocet) || 1);
-
-    const kapacita = Number(cil.kapacita_kbel) || 0;
-
-    if (obsazeno + objemPredmetu > kapacita) {
-    zobrazitHlasku("V cílovém zavazadle není dost místa.", "Přesun předmětu");
-    return;
-}
-
-    const presouvanaPolozka = {
-        ...polozka,
-        ...(!jeVak && !(Number(polozka.kbel) > 0) ? { kbel } : {})
-    };
-
-    if (typ === "obsah") {
-        zdroj.obsah.splice(indexPredmetu, 1);
-    } else {
-        zdroj.vnejsi_poutka[indexPredmetu] = null;
-    }
-
-    cil.obsah.push(presouvanaPolozka);
-
-document.getElementById("vlastniOknoPozadi").style.display = "none";
-
-zobrazitZavazadla();
-await ulozitInventar();
-}
-
-async function odstranitOdlozenyPredmet(indexZavazadla, typ, indexPredmetu) {
-    const zavazadlo = postava?.inventar?.odlozeneVeci?.[indexZavazadla];
-    if (!zavazadlo) return;
-
-    if (typ === "obsah") {
-        if (!Array.isArray(zavazadlo.obsah)) return;
-        zavazadlo.obsah.splice(indexPredmetu, 1);
-    } else if (typ === "poutko") {
-        if (!Array.isArray(zavazadlo.vnejsi_poutka)) return;
-        zavazadlo.vnejsi_poutka[indexPredmetu] = null;
-    } else {
-        return;
-    }
-
-    zobrazitZavazadla();
-    await ulozitInventar();
-}
 
 function escapovatHTML(text) {
     return String(text)

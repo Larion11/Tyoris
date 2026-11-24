@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Odložené věci</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url("pozadi-inventar.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #eee4d2;
+            font-family: Georgia, serif;
+        }
+
+        .page {
+            width: min(1240px, 96vw);
+            margin: 40px auto;
+            padding: 40px;
+            box-sizing: border-box;
+            background: rgba(20, 17, 14, 0.9);
+            border: 2px solid #6f5a3e;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #d8c29d;
+        }
+
+        h2, h3 {
+            margin-top: 0;
+            color: #d8c29d;
+        }
+
+        .info-hlavicka {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #eee4d2;
+        }
+
+        .sekce {
+            padding: 20px;
+            border: 1px solid #6f5a3e;
+            background: rgba(30, 25, 20, 0.8);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .inventar-sekce {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 17px 34px;
+            font-family: inherit;
+            font-size: 17px;
+            color: #eee4d2;
+            background: linear-gradient(
+                180deg,
+                #403222 0%,
+                #241b13 100%
+            );
+            border: 1px solid #8a704d;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 230, 180, 0.08);
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        button:hover {
+            background: #473827;
+            border-color: #b39468;
+        }
+
+        .tlacitko-inventare {
+            height: 32px;
+            min-height: 32px;
+            min-width: 34px;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            margin: 0;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Vlastní vyskakovací okno */
+        .vlastni-okno-pozadi {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vlastni-okno {
+            width: min(450px, 90vw);
+            max-height: 85vh;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background: rgba(25, 21, 17, 0.98);
+            border: 1px solid #8a704d;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .vlastni-okno h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #d8c29d;
+            font-size: 22px;
+        }
+
+        .vlastni-okno-text {
+            margin-bottom: 25px;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .vlastni-okno-tlacitka {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vlastni-okno-tlacitka button {
+            width: 80%;
+            max-width: 280px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .zavazadlo-nazev {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 12px;
+            color: #d8c29d;
+            font-size: 23px;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .zavazadlo-hlavicka-tlacitka {
+            display: flex;
+            gap: 8px;
+        }
+
+        .inventar-radek {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(111, 90, 62, 0.3);
+        }
+
+        .inventar-radek:last-child {
+            border-bottom: none;
+        }
+
+        /* Ukazatel naplnění vaku vodou */
+        .voda-obsazenost {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .voda-ukazatel {
+            flex: 1;
+            height: 12px;
+            background: rgba(0, 15, 30, 0.8);
+            border: 1px solid #477b91;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .voda-ukazatel-vypln {
+            height: 100%;
+            background: linear-gradient(90deg, #287b9c, #8bdcf2);
+            border-radius: 10px;
+            box-shadow: 0 0 6px rgba(91, 190, 225, 0.5);
+            transition: width 0.2s;
+        }
+
+        .voda-cislo {
+            white-space: nowrap;
+            font-size: 15px;
+            color: #a9dff0;
+        }
+
+        #ulozeno {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #d8c29d;
+        }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+    </script>
+</head>
+<body>
+
+<div class="vlastni-okno-pozadi" id="vlastniOknoPozadi">
+    <div class="vlastni-okno">
+        <h3 id="vlastniOknoNadpis">Odložené věci</h3>
+        <div class="vlastni-okno-text" id="vlastniOknoText"></div>
+        <div class="vlastni-okno-tlacitka" id="vlastniOknoTlacitka"></div>
+    </div>
+</div>
+
+<div class="page">
+
+    <h1>Odložené věci</h1>
+
+    <div class="info-hlavicka" id="info"></div>
+
+    <div id="predmetyMimoZavazadla">
+        Načítání odložených věcí…
+    </div>
+
+    <div id="ulozeno"></div>
+
+</div>
+
+<script>
+const parametry = new URLSearchParams(window.location.search);
+const idPostavy = parametry.get("id");
+
+let postava = null;
+let cenikData = {};
+
+async function nacistCenik() {
+    const { data, error } = await supabaseClient
+        .from("cenik")
+        .select("obsah")
+        .eq("id", 1)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání ceníku:", error);
+        return;
+    }
+
+    cenikData = data.obsah || {};
+}
+
+async function nacistPostavu() {
+    if (!idPostavy) {
+        document.getElementById("info").textContent = "Chybí ID postavy.";
+        return;
+    }
+
+    const { data: radek, error } = await supabaseClient
+        .from("postavy")
+        .select("*")
+        .eq("id", idPostavy)
+        .single();
+
+    if (error) {
+        console.error("Chyba při načítání postavy:", error);
+        document.getElementById("info").textContent = "Postavu se nepodařilo načíst.";
+        return;
+    }
+
+    postava = {
+        ...(radek.data || {}),
+        id: String(radek.id),
+        jmeno: radek.jmeno,
+        popis: radek.popis
+    };
+
+    document.getElementById("info").textContent = postava.jmeno || "Bez jména";
+
+    await nacistCenik();
+    zobrazitOdlozeneVeci();
+}
+
+async function ulozitInventar() {
+    if (!postava || !idPostavy) return;
+
+    if (!postava.inventar) {
+        postava.inventar = {};
+    }
+
+    if (!Array.isArray(postava.inventar.odlozeneVeci)) {
+        postava.inventar.odlozeneVeci = [];
+    }
+
+    const { error } = await supabaseClient
+        .from("postavy")
+        .update({ data: postava })
+        .eq("id", idPostavy);
+
+    if (error) {
+        console.error("Chyba při ukládání inventáře:", error);
+        document.getElementById("ulozeno").textContent = "Uložení se nepodařilo.";
+        return;
+    }
+
+    document.getElementById("ulozeno").textContent = "Uloženo.";
+
+    setTimeout(function() {
+        document.getElementById("ulozeno").textContent = "";
+    }, 2000);
+}
+
+function smazatOdlozeneZavazadlo(index) {
+    const odlozene = postava?.inventar?.odlozeneVeci || [];
+    const zavazadlo = odlozene[index];
+
+    if (!zavazadlo) return;
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    document.getElementById("vlastniOknoNadpis").textContent = "Odstranit odložené zavazadlo?";
+    document.getElementById("vlastniOknoText").textContent =
+        `Opravdu chceš odstranit ${zavazadlo.predmet || "odložené zavazadlo"} včetně všech předmětů a věcí na poutkách?`;
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    tlacitka.innerHTML = "";
+
+    const potvrdit = document.createElement("button");
+    potvrdit.type = "button";
+    potvrdit.textContent = "Odstranit";
+    potvrdit.onclick = async function() {
+        odlozene.splice(index, 1);
+        pozadi.style.display = "none";
+        zobrazitOdlozeneVeci();
+        await ulozitInventar();
+    };
+    tlacitka.appendChild(potvrdit);
+
+    const zrusit = document.createElement("button");
+    zrusit.type = "button";
+    zrusit.textContent = "Zrušit";
+    zrusit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+    tlacitka.appendChild(zrusit);
+
+    pozadi.style.display = "flex";
+}
+
+function zobrazitOdlozeneVeci() {
+    const kontejner = document.getElementById("predmetyMimoZavazadla");
+    const odlozene = postava.inventar.odlozeneVeci || [];
+
+    kontejner.innerHTML = "";
+
+    if (odlozene.length === 0) {
+        kontejner.textContent = "Zatím žádné odložené věci.";
+        kontejner.style.textAlign = "center";
+        kontejner.style.opacity = "0.7";
+        return;
+    }
+
+    kontejner.style.textAlign = "left";
+    kontejner.style.opacity = "1";
+
+    odlozene.forEach((zavazadlo, indexZavazadla) => {
+        const karta = document.createElement("div");
+        karta.className = "sekce inventar-sekce";
+
+        const nadpis = document.createElement("div");
+        nadpis.className = "zavazadlo-nazev";
+        
+        const nazevText = document.createElement("span");
+        nazevText.textContent = zavazadlo.predmet || "Odložené zavazadlo";
+        nadpis.appendChild(nazevText);
+
+        const tlacitkaDiv = document.createElement("div");
+        tlacitkaDiv.className = "zavazadlo-hlavicka-tlacitka";
+
+        const presunCeleho = document.createElement("button");
+        presunCeleho.type = "button";
+        presunCeleho.className = "tlacitko-inventare";
+        presunCeleho.textContent = "➜";
+        presunCeleho.title = "Přesunout celé zavazadlo";
+        presunCeleho.onclick = () =>
+            nabidnoutPresunCelehoOdlozenehoZavazadla(indexZavazadla);
+        tlacitkaDiv.appendChild(presunCeleho);
+
+        const tlacitkoSmazat = document.createElement("button");
+        tlacitkoSmazat.type = "button";
+        tlacitkoSmazat.className = "tlacitko-inventare";
+        tlacitkoSmazat.textContent = "×";
+        tlacitkoSmazat.title = "Odstranit celé zavazadlo";
+        tlacitkoSmazat.onclick = () =>
+            smazatOdlozeneZavazadlo(indexZavazadla);
+        tlacitkaDiv.appendChild(tlacitkoSmazat);
+
+        nadpis.appendChild(tlacitkaDiv);
+        karta.appendChild(nadpis);
+
+        // Vizuální ukazatel vody pro samotný vak, pokud je odložený
+        if (jeVakNaVodu(zavazadlo.predmet)) {
+            const vakDiv = document.createElement("div");
+            vakDiv.style.marginBottom = "15px";
+            vakDiv.innerHTML = htmlUkazatelVody(zavazadlo);
+            karta.appendChild(vakDiv);
+        }
+
+        const obsah = document.createElement("div");
+        obsah.style.marginTop = "15px";
+        
+        const obsahNadpis = document.createElement("strong");
+        obsahNadpis.style.color = "#d8c29d";
+        obsahNadpis.textContent = "Obsah:";
+        obsah.appendChild(obsahNadpis);
+
+        const seznamObsahu = document.createElement("div");
+        seznamObsahu.style.marginTop = "8px";
+
+        if (zavazadlo.obsah && zavazadlo.obsah.length > 0) {
+            zavazadlo.obsah.forEach((polozka, indexPredmetu) => {
+                const radek = document.createElement("div");
+                radek.className = "inventar-radek";
+                
+                const infoDiv = document.createElement("div");
+                infoDiv.style.flex = "1";
+
+                const spanInfo = document.createElement("span");
+                spanInfo.textContent = `${polozka.predmet || "Neznámý předmět"} – ${polozka.mnozstvi || polozka.pocet || 1} ks`;
+                infoDiv.appendChild(spanInfo);
+
+                if (jeVakNaVodu(polozka.predmet)) {
+                    const vakVnitrni = document.createElement("div");
+                    vakVnitrni.innerHTML = htmlUkazatelVody(polozka);
+                    infoDiv.appendChild(vakVnitrni);
+                }
+
+                if (polozka.poznamka) {
+                    const poznamkaDiv = document.createElement("div");
+                    poznamkaDiv.style.fontSize = "14px";
+                    poznamkaDiv.style.color = "#b39468";
+                    poznamkaDiv.style.marginTop = "3px";
+                    poznamkaDiv.style.fontStyle = "italic";
+                    poznamkaDiv.textContent = polozka.poznamka;
+                    infoDiv.appendChild(poznamkaDiv);
+                }
+
+                radek.appendChild(infoDiv);
+
+                const ovladani = document.createElement("span");
+                ovladani.style.display = "flex";
+                ovladani.style.gap = "5px";
+
+                const presun = document.createElement("button");
+                presun.type = "button";
+                presun.className = "tlacitko-inventare";
+                presun.textContent = "➜";
+                presun.title = "Přesunout do nasazeného zavazadla";
+                presun.onclick = () =>
+                    nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, "obsah", indexPredmetu);
+
+                const smazat = document.createElement("button");
+                smazat.type = "button";
+                smazat.className = "tlacitko-inventare";
+                smazat.textContent = "×";
+                smazat.title = "Odstranit předmět";
+                smazat.onclick = () =>
+                    odstranitOdlozenyPredmet(indexZavazadla, "obsah", indexPredmetu);
+
+                ovladani.append(presun, smazat);
+                radek.appendChild(ovladani);
+                seznamObsahu.appendChild(radek);
+            });
+        } else {
+            const prazdne = document.createElement("div");
+            prazdne.style.marginTop = "6px";
+            prazdne.style.opacity = "0.7";
+            prazdne.textContent = "Zavazadlo je prázdné.";
+            seznamObsahu.appendChild(prazdne);
+        }
+
+        obsah.appendChild(seznamObsahu);
+        karta.appendChild(obsah);
+
+        if (zavazadlo.vnejsi_poutka && zavazadlo.vnejsi_poutka.length > 0) {
+            const poutkaDiv = document.createElement("div");
+            poutkaDiv.style.marginTop = "18px";
+            poutkaDiv.style.paddingTop = "12px";
+            poutkaDiv.style.borderTop = "1px solid rgba(190, 165, 125, 0.55)";
+
+            const poutkaNadpis = document.createElement("strong");
+            poutkaNadpis.style.color = "#d8c29d";
+            poutkaNadpis.textContent = "Vnější poutka:";
+            poutkaDiv.appendChild(poutkaNadpis);
+
+            zavazadlo.vnejsi_poutka.forEach((predmet, index) => {
+                const radek = document.createElement("div");
+                radek.className = "inventar-radek";
+                radek.style.marginTop = "6px";
+
+                const infoDiv = document.createElement("div");
+                infoDiv.style.flex = "1";
+
+                const spanInfo = document.createElement("span");
+                spanInfo.textContent = `${index + 1}. ${predmet ? predmet.predmet : "Volné poutko"}`;
+                if (!predmet) spanInfo.style.opacity = "0.5";
+                infoDiv.appendChild(spanInfo);
+
+                if (predmet && jeVakNaVodu(predmet.predmet)) {
+                    const vakPoutko = document.createElement("div");
+                    vakPoutko.innerHTML = htmlUkazatelVody(predmet);
+                    infoDiv.appendChild(vakPoutko);
+                }
+
+                if (predmet && predmet.poznamka) {
+                    const poznamkaDiv = document.createElement("div");
+                    poznamkaDiv.style.fontSize = "14px";
+                    poznamkaDiv.style.color = "#b39468";
+                    poznamkaDiv.style.marginTop = "3px";
+                    poznamkaDiv.style.fontStyle = "italic";
+                    poznamkaDiv.textContent = predmet.poznamka;
+                    infoDiv.appendChild(poznamkaDiv);
+                }
+
+                radek.appendChild(infoDiv);
+
+                if (predmet) {
+                    const ovladani = document.createElement("span");
+                    ovladani.style.display = "flex";
+                    ovladani.style.gap = "5px";
+
+                    const presun = document.createElement("button");
+                    presun.type = "button";
+                    presun.className = "tlacitko-inventare";
+                    presun.textContent = "➜";
+                    presun.title = "Přesunout poutko";
+                    presun.onclick = () =>
+                        nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, "poutko", index);
+
+                    const smazat = document.createElement("button");
+                    smazat.type = "button";
+                    smazat.className = "tlacitko-inventare";
+                    smazat.textContent = "×";
+                    smazat.title = "Odstranit předmět z poutka";
+                    smazat.onclick = () =>
+                        odstranitOdlozenyPredmet(indexZavazadla, "poutko", index);
+
+                    ovladani.append(presun, smazat);
+                    radek.appendChild(ovladani);
+                }
+
+                poutkaDiv.appendChild(radek);
+            });
+
+            karta.appendChild(poutkaDiv);
+        }
+
+        kontejner.appendChild(karta);
+    });
+}
+
+async function odstranitOdlozenyPredmet(indexZavazadla, typ, indexPredmetu) {
+    const zavazadlo = postava?.inventar?.odlozeneVeci?.[indexZavazadla];
+    if (!zavazadlo) return;
+
+    if (typ === "obsah") {
+        if (!Array.isArray(zavazadlo.obsah)) return;
+        zavazadlo.obsah.splice(indexPredmetu, 1);
+    } else if (typ === "poutko") {
+        if (!Array.isArray(zavazadlo.vnejsi_poutka)) return;
+        zavazadlo.vnejsi_poutka[indexPredmetu] = null;
+    } else {
+        return;
+    }
+
+    zobrazitOdlozeneVeci();
+    await ulozitInventar();
+}
+
+function jeVakNaVodu(nazev) {
+    return /^Vak na vodu (3|6) l$/i.test(String(nazev || "").trim());
+}
+
+function kapacitaVaku(nazev) {
+    const shoda = String(nazev || "").match(/^Vak na vodu (3|6) l$/i);
+    return shoda ? Number(shoda[1]) : 0;
+}
+
+function mnozstviVodyVeVaku(vak) {
+    if (!vak || !jeVakNaVodu(vak.predmet)) {
+        return 0;
+    }
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = Number(vak.voda_litru) || 0;
+    return Math.max(0, Math.min(kapacita, voda));
+}
+
+function htmlUkazatelVody(vak) {
+    if (!jeVakNaVodu(vak?.predmet)) return "";
+
+    const kapacita = kapacitaVaku(vak.predmet);
+    const voda = mnozstviVodyVeVaku(vak);
+    const procenta = kapacita > 0
+        ? (voda / kapacita) * 100
+        : 0;
+
+    return `
+        <div class="voda-obsazenost">
+            <div class="voda-ukazatel">
+                <div class="voda-ukazatel-vypln"
+                    style="width: ${procenta}%">
+                </div>
+            </div>
+            <span class="voda-cislo">
+                ${voda} / ${kapacita} l
+            </span>
+        </div>
+    `;
+}
+
+function zobrazitHlasku(text, nadpis = "Inventář") {
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpisPrvku = document.getElementById("vlastniOknoNadpis");
+    const textPrvku = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpisPrvku.textContent = nadpis;
+    textPrvku.textContent = text;
+    tlacitka.innerHTML = "";
+
+    const ok = document.createElement("button");
+    ok.type = "button";
+    ok.textContent = "OK";
+    ok.onclick = function() {
+        pozadi.style.display = "none";
+    };
+    tlacitka.appendChild(ok);
+
+    pozadi.style.display = "flex";
+}
+
+function najitPredmetVCeniku(nazev) {
+    function prohledat(objekt) {
+        if (!objekt || typeof objekt !== "object") {
+            return null;
+        }
+        if (Array.isArray(objekt)) {
+            for (const polozka of objekt) {
+                if (polozka && polozka.nazev === nazev) {
+                    return polozka;
+                }
+                const vysledek = prohledat(polozka);
+                if (vysledek) return vysledek;
+            }
+        } else {
+            for (const hodnota of Object.values(objekt)) {
+                const vysledek = prohledat(hodnota);
+                if (vysledek) return vysledek;
+            }
+        }
+        return null;
+    }
+    return prohledat(cenikData);
+}
+
+function nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, typ, indexPredmetu) {
+    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
+    if (!zdroj) return;
+
+    const polozka = typ === "obsah"
+        ? zdroj.obsah[indexPredmetu]
+        : zdroj.vnejsi_poutka[indexPredmetu];
+
+    if (!polozka) return;
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const text = document.getElementById("vlastniOknoText");
+
+    tlacitka.innerHTML = "";
+    document.getElementById("vlastniOknoNadpis").textContent = "Přesunout předmět";
+
+    const jeVak = jeVakNaVodu(polozka.predmet);
+    const zavazadla = (postava.inventar.zavazadla || [])
+        .filter(z =>
+            !z.nedostupne &&
+            (z.umisteni === "zada" || z.umisteni === "opasek") &&
+            !jeVakNaVodu(z.predmet)
+        );
+
+    if (jeVak) {
+        text.textContent = "Vyber, kam chceš vak přesunout:";
+
+        const volnaPoutka = [];
+        zavazadla.forEach(zavazadlo => {
+            const udaje = najitPredmetVCeniku(zavazadlo.predmet);
+            const pocetPoutek = Number(udaje?.pocet_poutek ?? zavazadlo.pocet_poutek) || 0;
+
+            if (!Array.isArray(zavazadlo.vnejsi_poutka)) {
+                zavazadlo.vnejsi_poutka = [];
+            }
+
+            for (let i = 0; i < pocetPoutek; i++) {
+                if (!zavazadlo.vnejsi_poutka[i]) {
+                    volnaPoutka.push({ zavazadlo, index: i });
+                }
+            }
+        });
+
+        volnaPoutka.forEach(({ zavazadlo, index }) => {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = `${zavazadlo.predmet} – poutko ${index + 1}`;
+            tlacitko.onclick = () =>
+                presunoutOdlozenyPredmetNaPoutko(indexZavazadla, typ, indexPredmetu, zavazadlo.id, index);
+            tlacitka.appendChild(tlacitko);
+        });
+
+        zavazadla.forEach(zavazadlo => {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = `Dovnitř: ${zavazadlo.predmet}`;
+            tlacitko.onclick = () =>
+                presunoutOdlozenyPredmet(indexZavazadla, typ, indexPredmetu, zavazadlo.id);
+            tlacitka.appendChild(tlacitko);
+        });
+
+        const pocetNaOpasku = (postava.inventar.zavazadla || []).filter(z => z.umisteni === "opasek").length;
+        if (pocetNaOpasku < 4) {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = "Zavěsit přímo na opasek";
+            tlacitko.onclick = () =>
+                presunoutOdlozenyVakNaOpasek(indexZavazadla, typ, indexPredmetu);
+            tlacitka.appendChild(tlacitko);
+        }
+
+    } else if (typ === "poutko") {
+        text.textContent = "Vyber volné poutko:";
+        const volnaPoutka = [];
+        zavazadla.forEach(zavazadlo => {
+            const udaje = najitPredmetVCeniku(zavazadlo.predmet);
+            const pocetPoutek = Number(udaje?.pocet_poutek ?? zavazadlo.pocet_poutek) || 0;
+
+            if (!Array.isArray(zavazadlo.vnejsi_poutka)) {
+                zavazadlo.vnejsi_poutka = [];
+            }
+
+            for (let i = 0; i < pocetPoutek; i++) {
+                if (!zavazadlo.vnejsi_poutka[i]) {
+                    volnaPoutka.push({ zavazadlo, index: i });
+                }
+            }
+        });
+
+        volnaPoutka.forEach(({ zavazadlo, index }) => {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = `${zavazadlo.predmet} – poutko ${index + 1}`;
+            tlacitko.onclick = () =>
+                presunoutOdlozenyPredmetNaPoutko(indexZavazadla, typ, indexPredmetu, zavazadlo.id, index);
+            tlacitka.appendChild(tlacitko);
+        });
+
+        if (volnaPoutka.length === 0) {
+            text.textContent = "Žádné volné poutko na nasazených zavazadlech.";
+        }
+    } else {
+        text.textContent = zavazadla.length ? "Vyber zavazadlo, do kterého chceš předmět přesunout:" : "Nemáš žádné dostupné zavazadlo.";
+        zavazadla.forEach(zavazadlo => {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = zavazadlo.predmet;
+            tlacitko.onclick = () =>
+                presunoutOdlozenyPredmet(indexZavazadla, typ, indexPredmetu, zavazadlo.id);
+            tlacitka.appendChild(tlacitko);
+        });
+    }
+
+    const zrusit = document.createElement("button");
+    zrusit.type = "button";
+    zrusit.textContent = "Zrušit";
+    zrusit.onclick = () => pozadi.style.display = "none";
+    tlacitka.appendChild(zrusit);
+
+    pozadi.style.display = "flex";
+}
+
+async function presunoutOdlozenyPredmetNaPoutko(indexZavazadla, typ, indexPredmetu, idCile, indexPoutka) {
+    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
+    const cil = postava.inventar.zavazadla.find(z => z.id === idCile);
+
+    if (!zdroj || !cil || cil.nedostupne || (cil.umisteni !== "zada" && cil.umisteni !== "opasek") || jeVakNaVodu(cil.predmet)) {
+        zobrazitHlasku("Vybrané zavazadlo už není dostupné.");
+        return;
+    }
+
+    const polozka = typ === "obsah" ? zdroj.obsah?.[indexPredmetu] : zdroj.vnejsi_poutka?.[indexPredmetu];
+    if (!polozka) return;
+
+    if (!Array.isArray(cil.vnejsi_poutka)) {
+        cil.vnejsi_poutka = [];
+    }
+
+    if (cil.vnejsi_poutka[indexPoutka]) return;
+
+    cil.vnejsi_poutka[indexPoutka] = polozka;
+
+    if (typ === "obsah") {
+        zdroj.obsah.splice(indexPredmetu, 1);
+    } else {
+        zdroj.vnejsi_poutka[indexPredmetu] = null;
+    }
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+    zobrazitOdlozeneVeci();
+    await ulozitInventar();
+}
+
+async function presunoutOdlozenyPredmet(indexZavazadla, typ, indexPredmetu, idCile) {
+    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
+    const cil = postava.inventar.zavazadla.find(z => z.id === idCile);
+
+    if (!zdroj || !cil || cil.nedostupne || jeVakNaVodu(cil.predmet)) {
+        zobrazitHlasku("Vybrané zavazadlo už není dostupné.", "Přesun předmětu");
+        return;
+    }
+
+    const polozka = typ === "obsah" ? zdroj.obsah[indexPredmetu] : zdroj.vnejsi_poutka[indexPredmetu];
+    if (!polozka) return;
+
+    const jeVak = jeVakNaVodu(polozka.predmet);
+    let kbel = Number(polozka.kbel);
+
+    if (!jeVak && !(kbel > 0)) {
+        const katalogovaPolozka = najitPredmetVCeniku(polozka.predmet);
+        kbel = Number(katalogovaPolozka?.kbel);
+    }
+
+    if (!jeVak && !(kbel > 0)) {
+        zobrazitHlasku("U tohoto předmětu není známá objemová kapacita. Nelze ho přesunout dovnitř zavazadla.", "Přesun předmětu");
+        return;
+    }
+
+    const obsazeno = (cil.obsah || []).reduce((soucet, predmet) => {
+        if (jeVakNaVodu(predmet.predmet)) {
+            return soucet + mnozstviVodyVeVaku(predmet);
+        }
+        return soucet + (Number(predmet.kbel) || 0) * (Number(predmet.mnozstvi || predmet.pocet) || 1);
+    }, 0);
+
+    const objemPredmetu = jeVak ? mnozstviVodyVeVaku(polozka) : kbel * (Number(polozka.mnozstvi || polozka.pocet) || 1);
+    const kapacita = Number(cil.kapacita_kbel) || 0;
+
+    if (obsazeno + objemPredmetu > kapacita) {
+        zobrazitHlasku("V cílovém zavazadle není dost místa.", "Přesun předmětu");
+        return;
+    }
+
+    const presouvanaPolozka = {
+        ...polozka,
+        ...(!jeVak && !(Number(polozka.kbel) > 0) ? { kbel } : {})
+    };
+
+    cil.obsah = Array.isArray(cil.obsah) ? cil.obsah : [];
+    cil.obsah.push(presouvanaPolozka);
+
+    if (typ === "obsah") {
+        zdroj.obsah.splice(indexPredmetu, 1);
+    } else {
+        zdroj.vnejsi_poutka[indexPredmetu] = null;
+    }
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+    zobrazitOdlozeneVeci();
+    await ulozitInventar();
+}
+
+async function presunoutOdlozenyVakNaOpasek(indexZavazadla, typ, indexPredmetu) {
+    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
+    const zavazadla = postava.inventar.zavazadla;
+
+    if (!zdroj || !Array.isArray(zavazadla)) return;
+
+    const polozka = typ === "obsah" ? zdroj.obsah?.[indexPredmetu] : zdroj.vnejsi_poutka?.[indexPredmetu];
+    if (!polozka || !jeVakNaVodu(polozka.predmet)) return;
+
+    const pocetNaOpasku = zavazadla.filter(z => z.umisteni === "opasek").length;
+    if (pocetNaOpasku >= 4) {
+        zobrazitHlasku("Na opasku můžeš mít maximálně čtyři zavazadla.", "Plné místo");
+        return;
+    }
+
+    polozka.umisteni = "opasek";
+    zavazadla.push(polozka);
+
+    if (typ === "obsah") {
+        zdroj.obsah.splice(indexPredmetu, 1);
+    } else {
+        zdroj.vnejsi_poutka[indexPredmetu] = null;
+    }
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+    zobrazitOdlozeneVeci();
+    await ulozitInventar();
+}
+
+function nabidnoutPresunCelehoOdlozenehoZavazadla(indexZavazadla) {
+    const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
+    if (!zdroj) return;
+
+    const obsah = zdroj.obsah || [];
+    const poutka = zdroj.vnejsi_poutka || [];
+
+    if (obsah.length > 0 || poutka.some(Boolean)) {
+        zobrazitHlasku("Zavazadlo musí být prázdné.");
+        return;
+    }
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const text = document.getElementById("vlastniOknoText");
+
+    tlacitka.innerHTML = "";
+    document.getElementById("vlastniOknoNadpis").textContent = "Přesunout zavazadlo";
+    text.textContent = `Zavazadlo: ${zdroj.predmet}\nVyber, kam ho chceš přesunout:`;
+
+    const isVak = jeVakNaVodu(zdroj.predmet);
+
+    if (isVak) {
+        const cileNaPoutka = (postava.inventar.zavazadla || []).filter(z =>
+            (z.umisteni === "zada" || z.umisteni === "opasek") &&
+            !z.nedostupne &&
+            !jeVakNaVodu(z.predmet)
+        );
+
+        const volnaPoutka = [];
+        cileNaPoutka.forEach(cil => {
+            const udaje = najitPredmetVCeniku(cil.predmet);
+            const pocetPoutek = Number(udaje?.pocet_poutek ?? cil.pocet_poutek) || 0;
+
+            if (!Array.isArray(cil.vnejsi_poutka)) {
+                cil.vnejsi_poutka = [];
+            }
+
+            for (let i = 0; i < pocetPoutek; i++) {
+                if (!cil.vnejsi_poutka[i]) {
+                    volnaPoutka.push({ cil, index: i });
+                }
+            }
+        });
+
+        volnaPoutka.forEach(({ cil, index }) => {
+            const tlacitko = document.createElement("button");
+            tlacitko.type = "button";
+            tlacitko.textContent = `${cil.predmet} – poutko ${index + 1}`;
+            tlacitko.onclick = async () => {
+                cil.vnejsi_poutka[index] = zdroj;
+                postava.inventar.odlozeneVeci.splice(indexZavazadla, 1);
+                pozadi.style.display = "none";
+                zobrazitOdlozeneVeci();
+                await ulozitInventar();
+            };
+            tlacitka.appendChild(tlacitko);
+        });
+    }
+
+    const udajeZdroj = najitPredmetVCeniku(zdroj.predmet);
+    const kbelZavazadla = Number(udajeZdroj?.kbel) || 0;
+
+    if (kbelZavazadla > 0) {
+        const dostpunyCileDovnitr = (postava.inventar.zavazadla || []).filter(z =>
+            (z.umisteni === "zada" || z.umisteni === "opasek") &&
+            !z.nedostupne &&
+            !jeVakNaVodu(z.predmet)
+        );
+
+        dostpunyCileDovnitr.forEach(cil => {
+            const obsazeno = (cil.obsah || []).reduce((soucet, predmet) => {
+                if (jeVakNaVodu(predmet.predmet)) {
+                    return soucet + mnozstviVodyVeVaku(predmet);
+                }
+                return soucet + (Number(predmet.kbel) || 0) * (Number(predmet.mnozstvi || predmet.pocet) || 1);
+            }, 0);
+
+            const kapacitaCile = Number(cil.kapacita_kbel) || 0;
+
+            if (obsazeno + kbelZavazadla <= kapacitaCile) {
+                const tlacitko = document.createElement("button");
+                tlacitko.type = "button";
+                tlacitko.textContent = `Dovnitř: ${cil.predmet}`;
+                tlacitko.onclick = async () => {
+                    cil.obsah = Array.isArray(cil.obsah) ? cil.obsah : [];
+                    cil.obsah.push({
+                        ...zdroj,
+                        kbel: kbelZavazadla
+                    });
+                    postava.inventar.odlozeneVeci.splice(indexZavazadla, 1);
+                    pozadi.style.display = "none";
+                    zobrazitOdlozeneVeci();
+                    await ulozitInventar();
+                };
+                tlacitka.appendChild(tlacitko);
+            }
+        });
+    }
+
+    const zrusit = document.createElement("button");
+    zrusit.type = "button";
+    zrusit.textContent = "Zrušit";
+    zrusit.onclick = () => pozadi.style.display = "none";
+    tlacitka.appendChild(zrusit);
+
+    pozadi.style.display = "flex";
+}
+
+nacistPostavu();
+</script>
+</body>
+</html>
