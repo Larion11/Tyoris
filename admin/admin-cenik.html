@@ -496,8 +496,9 @@ const kategorieDef = [
         label: "Alchymistické suroviny",
         groups: true
     },
-    { key: "alchymie_vyrobky", label: "Alchymistické výrobky" },
-    { key: "mzdy", label: "Mzdy" }
+        { key: "alchymie_vyrobky", label: "Alchymistické výrobky" },
+    { key: "mzdy", label: "Mzdy" },
+    { key: "ostatni", label: "Ostatní" }
 ];
 
 const poznamkyDef = [
@@ -623,8 +624,13 @@ async function inicializace() {
         return;
     }
 
-   puvodniData = kopie(data.obsah || {});
+puvodniData = kopie(data.obsah || {});
 cenikData = kopie(puvodniData);
+
+if (!Array.isArray(cenikData.ostatni)) {
+    cenikData.ostatni = [];
+}
+
 
 doplnitPoleKbel(cenikData);
 
