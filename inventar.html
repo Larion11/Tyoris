@@ -378,24 +378,19 @@
     color: #a9dff0;
 }
 
-/* Celkový ukazatel vody */
-
-#voda .voda-obsazenost {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 7px;
-    margin-top: 10px;
+.horni-odkazy {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
 }
 
-#voda .voda-ukazatel {
-    width: 100%;
-    height: 22px;
-    box-sizing: border-box;
+.horni-odkazy .odkaz-cenik {
+    margin: 0;
 }
 
-#voda .voda-cislo {
-    text-align: center;
-    font-size: 17px;
+.info-hlavicka {
+    margin-bottom: 15px;
 }
 
 .checkbox-nedostupne {
@@ -461,17 +456,21 @@ const supabaseClient = window.supabase.createClient(
 <div class="page">
 
     <h1>Inventář</h1>
-<a href="cenik.html" target="_blank" class="odkaz-cenik">
-    Ceník království
-</a>
-<a
-    href="#"
-    class="odkaz-cenik"
-    onclick="window.open('odlozene.html?id=' + encodeURIComponent(idPostavy), '_blank'); return false;"
->
-    Odložené věci
-</a>
-    <div class="info-hlavicka" id="info"></div>
+<div class="info-hlavicka" id="info"></div>
+
+<div class="horni-odkazy">
+    <a href="cenik.html" target="_blank" class="odkaz-cenik">
+        Ceník království
+    </a>
+
+    <a
+        href="#"
+        class="odkaz-cenik"
+        onclick="window.open('odlozene.html?id=' + encodeURIComponent(idPostavy), '_blank'); return false;"
+    >
+        Odložené věci
+    </a>
+</div>
 
     <div class="horni-cast">
 
