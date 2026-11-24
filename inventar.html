@@ -1130,6 +1130,88 @@ function zobrazitHlasku(text, nadpis = "Inventář") {
 
     pozadi.style.display = "flex";
 }
+
+function potvrditOdstraneniZavazadla(idZavazadla) {
+
+    const zavazadla = postava.inventar.zavazadla;
+
+    const zavazadlo = zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) {
+        zobrazitHlasku(
+            "Toto zavazadlo už není dostupné.",
+            "Odstranění zavazadla"
+        );
+        return;
+    }
+
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+    const nadpis = document.getElementById("vlastniOknoNadpis");
+    const text = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+
+    nadpis.textContent = "Odstranit zavazadlo?";
+    text.textContent =
+        `Opravdu chceš odstranit „${zavazadlo.predmet}“ včetně jeho obsahu?`;
+
+    tlacitka.innerHTML = "";
+
+    const odstranit = document.createElement("button");
+    odstranit.type = "button";
+    odstranit.textContent = "Odstranit";
+
+    odstranit.onclick = function() {
+
+        const index = zavazadla.findIndex(
+            z => z.id === idZavazadla
+        );
+
+        if (index === -1) {
+            pozadi.style.display = "none";
+            zobrazitHlasku(
+                "Toto zavazadlo už není dostupné.",
+                "Odstranění zavazadla"
+            );
+            return;
+        }
+
+        const aktivniVak = postava.inventar.aktivniVakNaVodu;
+
+        const obsahujeAktivniVak =
+            zavazadla[index].id === aktivniVak ||
+            (zavazadla[index].obsah || []).some(
+                p => p.id === aktivniVak
+            ) ||
+            (zavazadla[index].vnejsi_poutka || []).some(
+                p => p?.id === aktivniVak
+            );
+
+        if (obsahujeAktivniVak) {
+            postava.inventar.aktivniVakNaVodu = null;
+        }
+
+        zavazadla.splice(index, 1);
+
+        pozadi.style.display = "none";
+        zobrazitZavazadla();
+    };
+
+    const zrusit = document.createElement("button");
+    zrusit.type = "button";
+    zrusit.textContent = "Zrušit";
+
+    zrusit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(odstranit);
+    tlacitka.appendChild(zrusit);
+
+    pozadi.style.display = "flex";
+}
+
 /* Smazání celého řádku */
 
 function smazatRadek(tlacitko) {
@@ -1482,11 +1564,13 @@ karta.innerHTML = `
             gap: 10px;
             margin-bottom: 12px;
         ">
-            <div style="flex: 1;"></div>
+           
 
             <h3 class="zavazadlo-nazev" style="flex: 1; margin: 0;">
                 ${zavazadlo.predmet}
             </h3>
+
+            <div style="flex: 1;"></div>
 
             <label style="
                 flex: 1;
@@ -1657,14 +1741,28 @@ ${poutkaHTML}
 
 
 ${zavazadlo.umisteni === "zada" || zavazadlo.umisteni === "opasek" ? `
-    <div style="text-align: center; margin-top: 12px;">
+    <div style="
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 12px;
+    ">
         <button
-    type="button"
-    class="tlacitko-inventare"
-    style="padding: 4px 12px; font-size: 13px;"
-    onclick="vymenitZavazadlo('${zavazadlo.id}')"
->
+            type="button"
+            class="tlacitko-inventare"
+            style="padding: 4px 12px; font-size: 13px;"
+            onclick="vymenitZavazadlo('${zavazadlo.id}')"
+        >
             Vyměnit zavazadlo
+        </button>
+
+        <button
+            type="button"
+            class="tlacitko-inventare"
+            style="padding: 4px 12px; font-size: 13px;"
+            onclick="potvrditOdstraneniZavazadla('${zavazadlo.id}')"
+        >
+            × Odstranit
         </button>
     </div>
 ` : ""}
