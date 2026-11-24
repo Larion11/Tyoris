@@ -346,6 +346,15 @@
     color: #eee4d2;
 }     
 
+.inventar-radek {
+    padding: 6px 0;
+    border-bottom: 1px solid #8a704d;
+}
+
+.inventar-radek:last-child {
+    border-bottom: none;
+}
+
 /* Ukazatel naplnění vaku vodou */
 
 .voda-obsazenost {
@@ -1660,13 +1669,12 @@ karta.innerHTML = `
         obsah.length === 0
             ? "Zatím prázdné."
             : obsah.map((polozka, index) => `
-    <div style="
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 8px;
-    ">
+    <div class="inventar-radek" style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+">
         <span style="flex: 1;">
             <strong>${polozka.predmet}</strong>
 ${!jeVakNaVodu(polozka.predmet)
