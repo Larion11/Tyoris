@@ -525,13 +525,13 @@ const supabaseClient = window.supabase.createClient(
             <h2>Jídlo</h2>
 
             <div class="radek">
-                <span>Jídlo</span>
-                <div class="mnozstvi">
-                    <button type="button" onclick="zmenitMnozstvi('jidlo', -1)">−</button>
-                    <span class="cislo" id="jidlo">0</span>
-                    <button type="button" onclick="zmenitMnozstvi('jidlo', 1)">+</button>
-                </div>
-            </div>
+    <span>Cestovní porce trvanlivého jídla</span>
+    <div class="mnozstvi">
+        <button type="button" onclick="zmenitCestovniJidlo(-1)">−</button>
+        <span class="cislo" id="jidlo">0</span>
+        <button type="button" onclick="zmenitCestovniJidlo(1)">+</button>
+    </div>
+</div>
             
            <div class="radek" style="align-items: stretch;">
     <span>Voda celkem</span>
@@ -910,6 +910,197 @@ async function napitSe() {
     await ulozitInventar();
 }
 
+function pocetCestovnihoJidla() {
+    const zavazadla = postava?.inventar?.zavazadla || [];
+
+    return zavazadla.reduce((celkem, zavazadlo) => {
+        const obsah = zavazadlo.obsah || [];
+
+        return celkem + obsah.reduce((soucet, polozka) => {
+            if (polozka.predmet !== "Cestovní porce trvanlivého jídla") {
+                return soucet;
+            }
+
+            return soucet + (Number(polozka.pocet) || 1);
+        }, 0);
+    }, 0);
+}
+
+function obnovitUkazatelJidla() {
+    document.getElementById("jidlo").textContent =
+        pocetCestovnihoJidla();
+}
+
+async function zmenitCestovniJidlo(smer) {
+
+    const zavazadla = postava.inventar.zavazadla || [];
+    const nazevJidla = "Cestovní porce trvanlivého jídla";
+
+    if (smer < 0) {
+
+        for (const zavazadlo of zavazadla) {
+
+            if (zavazadlo.nedostupne) continue;
+
+            const index = (zavazadlo.obsah || []).findIndex(
+                p => p.predmet === nazevJidla
+            );
+
+            if (index === -1) continue;
+
+            const polozka = zavazadlo.obsah[index];
+
+            if ((Number(polozka.pocet) || 1) > 1) {
+                polozka.pocet--;
+            } else {
+                zavazadlo.obsah.splice(index, 1);
+            }
+
+            zobrazitZavazadla();
+            await ulozitInventar();
+            return;
+        }
+
+        zobrazitHlasku(
+            "V žádném dostupném zavazadle nemáš žádnou cestovní porci jídla.",
+            "Žádné jídlo"
+        );
+
+        return;
+    }
+
+const zavazadloSJidlem = zavazadla.find(z =>
+    !z.nedostupne &&
+    (z.obsah || []).some(p => p.predmet === nazevJidla)
+);
+
+if (zavazadloSJidlem) {
+    await pridatCestovniJidloDoZavazadla(zavazadloSJidlem.id);
+    return;
+}
+
+    const moznosti = zavazadla.filter(
+        z => !z.nedostupne && !jeVakNaVodu(z.predmet)
+    );
+
+    if (moznosti.length === 0) {
+        zobrazitHlasku(
+            "Nemáš žádné dostupné zavazadlo, do kterého by bylo možné jídlo uložit.",
+            "Žádné dostupné zavazadlo"
+        );
+        return;
+    }
+
+    const nadpis = document.getElementById("vlastniOknoNadpis");
+    const text = document.getElementById("vlastniOknoText");
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    nadpis.textContent = "Přidat cestovní jídlo";
+    text.textContent = "Vyber zavazadlo, do kterého chceš přidat jednu porci:";
+
+    tlacitka.innerHTML = "";
+
+    moznosti.forEach(zavazadlo => {
+
+        const tlacitko = document.createElement("button");
+        tlacitko.type = "button";
+        tlacitko.textContent = zavazadlo.predmet;
+
+        tlacitko.onclick = function() {
+            pridatCestovniJidloDoZavazadla(zavazadlo.id);
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zrusit = document.createElement("button");
+    zrusit.type = "button";
+    zrusit.textContent = "Zrušit";
+
+    zrusit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zrusit);
+
+    pozadi.style.display = "flex";
+}
+
+
+async function pridatCestovniJidloDoZavazadla(idZavazadla) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo || zavazadlo.nedostupne) {
+        zobrazitHlasku(
+            "Toto zavazadlo není dostupné.",
+            "Nedostupné zavazadlo"
+        );
+        return;
+    }
+
+    const nazevJidla = "Cestovní porce trvanlivého jídla";
+    const udaje = najitPredmetVCeniku(nazevJidla);
+
+    if (!udaje) {
+        zobrazitHlasku(
+            "Cestovní porci trvanlivého jídla se nepodařilo najít v ceníku.",
+            "Chyba"
+        );
+        return;
+    }
+
+    const velikost = Number(udaje.kbel) || 0;
+    const obsah = zavazadlo.obsah || [];
+
+    const obsazeno = obsah.reduce(
+        (soucet, polozka) => {
+            const velikostPolozky = jeVakNaVodu(polozka.predmet)
+                ? mnozstviVodyVeVaku(polozka)
+                : (Number(polozka.kbel) || 0) *
+                  (Number(polozka.pocet) || 1);
+
+            return soucet + velikostPolozky;
+        },
+        0
+    );
+
+    const kapacita = Number(zavazadlo.kapacita_kbel) || 0;
+
+    if (obsazeno + velikost > kapacita + 0.000000001) {
+        zobrazitHlasku(
+            "Do tohoto zavazadla se další porce jídla nevejde.",
+            "Nedostatek místa"
+        );
+        return;
+    }
+
+    zavazadlo.obsah = obsah;
+
+    const existujici = obsah.find(
+        p => p.predmet === nazevJidla
+    );
+
+    if (existujici) {
+        existujici.pocet = (Number(existujici.pocet) || 1) + 1;
+    } else {
+        obsah.push({
+            id: crypto.randomUUID(),
+            predmet: nazevJidla,
+            kbel: velikost,
+            pocet: 1
+        });
+    }
+
+    document.getElementById("vlastniOknoPozadi").style.display = "none";
+
+    zobrazitZavazadla();
+    await ulozitInventar();
+}
+
 function jeZavazadlo(nazev) {
 
     const zavazadla = cenikData.zavazadla || [];
@@ -1250,8 +1441,7 @@ async function ulozitInventar() {
     postava.inventar.stribro = Math.floor((celkemPenez % 100) / 10);
     postava.inventar.med = celkemPenez % 10;
 
-    postava.inventar.jidlo =
-        parseInt(document.getElementById("jidlo").textContent) || 0;
+    postava.inventar.jidlo = pocetCestovnihoJidla();
 
     if (!Array.isArray(postava.inventar.zavazadla)) {
         postava.inventar.zavazadla = [];
@@ -1312,8 +1502,7 @@ if (inventar.aktivniVakNaVodu === undefined) {
 
     zobrazitPenize(celkemPenez);
 
-    document.getElementById("jidlo").textContent =
-        inventar.jidlo || 0;
+    obnovitUkazatelJidla();
 
     if (!Array.isArray(inventar.zavazadla)) {
         inventar.zavazadla = [];
@@ -1781,7 +1970,7 @@ ${zavazadlo.umisteni === "zada" || zavazadlo.umisteni === "opasek" ? `
         });
     });
 
-
+obnovitUkazatelJidla()
 }
 
 function nabidnoutZavazadlo(umisteni) {
