@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lutavské království</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    background: #120f0c;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    font-family: Georgia, serif;
+    color: #e8dfd0;
+}
+
+
+/* HLAVNÍ STRÁNKA */
+
+.page {
+    
+    width: min(1000px, 94vw);
+    margin: 40px auto;
+    padding: 30px;
+
+    background: rgba(18, 15, 12, 0.94);
+
+    border: 2px solid #6f5a3e;
+    border-radius: 8px;
+}
+
+
+/* NADPIS */
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    color: #d8c29d;
+    font-size: 36px;
+}
+
+
+/* DVA SLOUPCE */
+
+.lore-layout {
+    display: block;
+}
+
+
+/* LEVÝ INFOBOX */
+
+.infobox {
+    float: left;
+    width: 300px;
+    margin: 0 30px 20px 0;
+    border: 1px solid #6f5a3e;
+    background: rgba(30, 25, 20, 0.9);
+    padding: 15px;
+}
+
+
+/* NADPIS INFOBOXU */
+
+.infobox h2 {
+    margin: -15px -15px 15px -15px;
+    padding: 12px;
+
+    text-align: center;
+
+    background: rgba(70, 55, 40, 0.8);
+
+    color: #d8c29d;
+    font-size: 20px;
+}
+
+
+/* ŘÁDKY INFOBOXU */
+
+.infobox-row {
+    display: grid;
+    grid-template-columns: 105px 1fr;
+
+    padding: 8px 0;
+
+    border-bottom: 1px solid rgba(111, 90, 62, 0.4);
+}
+
+.infobox-row:last-child {
+    border-bottom: none;
+}
+
+.infobox-label {
+    font-weight: bold;
+    color: #c8ae83;
+}
+
+.infobox-value {
+    color: #e8dfd0;
+}
+
+
+/* HLAVNÍ TEXT */
+
+.article {
+    line-height: 1.65;
+    font-size: 17px;
+}
+
+.article h2 {
+    margin-top: 0;
+    padding-bottom: 8px;
+
+    color: #d8c29d;
+
+    border-bottom: 1px solid #6f5a3e;
+}
+
+.article h3 {
+    color: #c8ae83;
+}
+
+.article p {
+    margin-bottom: 18px;
+}
+
+
+/* CITÁT */
+
+.quote {
+    margin: 0 0 25px 0;
+    padding: 15px 20px;
+
+    border-left: 4px solid #6f5a3e;
+
+    background: rgba(40, 32, 25, 0.7);
+
+    font-style: italic;
+    color: #cfc3b2;
+}
+
+
+/* MOBIL */
+
+@media (max-width: 800px) {
+
+    .page {
+        width: 96%;
+        padding: 20px;
+    }
+
+    .lore-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .infobox {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <h1>Lutavské království</h1>
+
+
+    <div class="lore-layout">
+
+
+        <!-- LEVÝ SLOUPEC -->
+
+        <aside class="infobox">
+
+            <h2>Lutavské království</h2>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Název</div>
+                <div class="infobox-value">Lutavské království</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Zkratka</div>
+                <div class="infobox-value">LT</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Hlavní město</div>
+                <div class="infobox-value">Toseděv</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Zřízení</div>
+                <div class="infobox-value">Dědičná monarchie</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Panovník</div>
+                <div class="infobox-value">Král / královna</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Vojvodství</div>
+                <div class="infobox-value">
+                    Živské<br>
+                    Lánské<br>
+                    Věnské<br>
+                    Žalské
+                </div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Víra</div>
+                <div class="infobox-value">Cesta</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Významný nápoj</div>
+                <div class="infobox-value">
+                    Ječmenek<br>
+                    Lučava
+                </div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Armáda</div>
+                <div class="infobox-value">Železná fúrie</div>
+            </div>
+
+            <div class="infobox-row">
+                <div class="infobox-label">Dekret</div>
+                <div class="infobox-value">441 II. věku</div>
+            </div>
+
+        </aside>
+
+
+        <!-- PRAVÝ SLOUPEC -->
+
+        <main class="article">
+
+            <div class="quote">
+                Když každý spisovatel dobrodružných románů, pověstí nebo pohádek začíná svou knihu slovy
+                 " Bylo nebylo jedno obyčejné království " tak si ani neuvědomuje že vlastně píše o Lutavsku. 												
+                <br><br>
+                — cestopravec Michal „Písař“ z Borova
+            </div>
+
+
+
+          
+<h2>Historie</h2>
+
+<p>
+    Dávno před uznáním Pětiměstských dekretů žil v oblasti kolem Červených hor
+    (dnešní Lutavské středohoří) barbarský národ zvaný Lůtové. Zřejmě se jedná
+    o pozměněné slovo <i>luutá</i>, které se dá přeložit jako „nájezd“.
+</p>
+
+<p>
+    Lůtové byli, proč to neříct, nájezdníci, plenitelé a vrazi, kteří podnikali
+    své výpravy do všech světových stran za kořistí. Když na severu pod Kledbou
+    lidé začínali nacházet společnou řeč a vznikaly první náznaky pozdějších
+    království, zde v dnešním Lutavsku bylo jen několik primitivních městysů,
+    jejichž barbarští obyvatelé ohněm a sekerou okrádali své sousedy a stále
+    podnikali nájezdy pro to, co nedokázali vyrobit či vypěstovat.
+</p>
+
+<p>
+    Dlouho byli tito zločinci trnem v oku okolním národům. Jakmile tedy nastal
+    II. věk a lidé popsaní Cestou uzřeli směr, jakým se vydat, jejich zrak se
+    ihned stočil tímto směrem, aby se snažili přivést na pravou cestu další
+    zaostalé národy, jakými byli před pár chvílemi oni sami. Ale hlavně aby
+    konečně skoncovali s tou nenasytnou banditskou verbeží.
+</p>
+
+<p>
+    Lůtové byli poraženi a jejich zem přivlastněna pod země Dekretů. Dnešní
+    Lutavsko tak bylo postupně pod správou Jižní koruny, Lažanu a nově vzniklých
+    Mitrav.
+</p>
+
+<p>
+    Jak už to tak v historii bývá, z bývalých barbarů se rychle stal dokonalý
+    příklad Dekretů a zákona Cesty. Je ale nutno říci, že i přesto, že Lůtové
+    po tom, co byli „obrozeni“ z divochů na lid, nikdy se úplně nedokázali stát
+    plnohodnotnými členy svých zemí.
+</p>
+
+<p>
+    Ano, je to tak. Jeden národ, kdysi divoký a nebojácný, nyní trpěl pod
+    symbolickými okovy svých nynějších pánů a ti jim to často nechávali dávat
+    najevo. Nemohlo to tedy dopadnout jinak než tak, že Lůtové stále více tíhli
+    k sobě. Hranice zemí pro ně byly na překážku a povahově, zvykově a hlavně
+    historií se pomalu začínalo blížit povstání.
+</p>
+
+
+<h3>Povstání Lůtů</h3>
+
+<p>
+    Roku 431 II. věku povstal tento národ a začal jako malý, nepříjemný,
+    bodavý hmyz otravovat své krále.
+</p>
+
+<p>
+    Jižní koruna, Lažan a Mitravy začaly proti těmto vzbouřencům bojovat, ale
+    nikdy se nedokázaly dohodnout na koordinovaném útoku mezi sebou. Každé
+    království totiž mělo své choutky zabrat místa rebélií za hranicemi a
+    ospravedlnit to bojem za „mír“.
+</p>
+
+<p>
+    Nakonec se království začala vojensky napadat mezi sebou. To jen dalo
+    Lůtům čas na sjednocení a nalezení toho správného okamžiku, kdy „bodnout“
+    do toho správného místa.
+</p>
+
+
+<h3>Válka tří proti třem</h3>
+
+<p>
+    Mezi roky 438 až 440 II. věku se Lůtům podařilo vyhrát čtyři rozhodující
+    bitvy nad mezi sebou znepřátelenými královstvími:
+</p>
+
+<ul>
+    <li>Bitva pod Dorskou bránou</li>
+    <li>Bitva o Bory</li>
+    <li>Bitva o živské mosty</li>
+    <li>takzvaná Jednohodinová bitva</li>
+</ul>
+
+<p>
+    Jelikož tato válka, známá pod názvem <b>Válka tří proti třem</b>, začínala
+    přitahovat pozornost Vojvodska a Torýnska, které zahlédly možnost také na
+    ní něco získat, bylo nutno s ní skončit dříve, než by se její ohně rozhořely
+    do všech krajin.
+</p>
+
+
+<h3>Lutavský dekret</h3>
+
+<p>
+    Roku 441 II. věku byl uznán <b>Lutavský dekret</b>, jenž dával Lůtům vlastní
+    zemi. Hranice byly uznány podle historických pramenů, které dokládaly,
+    kde Lůtové žili.
+</p>
+
+<div class="quote">
+    Dalo by se toho napsat mnohem více, ale na to si musíte zajít do
+    Toseděvské knihovny a nalézt knihu <i>Rytíř bandita</i>, která pojednává
+    o celé této válce.
+</div>
+
+
+<h2>Státní zřízení</h2>
+
+<p>
+    V čele země stojí královská rodina, která od roku 610 II. věku sídlí
+    v Toseděvu. Název města vznikl zkomolením slov <i>posed</i> nebo
+    <i>posedět</i>. Na tomto místě totiž stávala malinkatá pevnost, která
+    sloužila jako hláska před nájezdníky.
+</p>
+
+<p>
+    Hlavní moc má v rukou ten, jenž je královské krve. Pokud si například
+    princezna vezme někoho za manžela, její muž nemá takovou moc jako ona.
+    Přivdaný nebo přiženěný člověk se nikdy nestane hlavním vládcem země,
+    nehledě na své pohlaví.
+</p>
+
+<p>
+    Pod králem či královnou jsou vojvodové druhou největší světskou mocí.
+    Název <i>vojvoda</i> pochází od slova <i>vojsko</i>. Pod nimi pokračuje
+    klasická hierarchie šlechty – rytíři, Loníři, Jošti, Amani a další vazalové.
+</p>
+
+<h3>Vojvodové</h3>
+
+<p>
+    Celá země je rozdělena na čtyři vojvodství: Živské, Lánské, Věnské
+    a Žalské. Každé z nich náleží příslušnému vojvodskému rodu a královské
+    rodině, které patří Věnské vojvodství.
+</p>
+
+<p>
+    Vojvoda je lením pánem svého území. Jeho povinností je platit vrchnosti
+    daně ze svého léna a poskytovat jí vojenskou pomoc.
+</p>
+
+<p>
+    Vojvodský titul je vždy dědičný a spolu s ním se dědí i postavení u dvora.
+    Ne každý vojvoda má totiž u krále či královny stejné léno, tedy úřad.
+</p>
+
+<h3>Nižší šlechta</h3>
+
+<p>
+    Pod vojvody stojí ostatní vazalové, mezi které patří nižší šlechta,
+    rytíři, Loníři, Jošti a Amani.
+</p>
+
+<h3>Označování šlechty</h3>
+
+<p>
+    Lutavská šlechta používá ke jménu označení podle místa původu. Na rozdíl
+    od jiných krajin se však nepoužívá spojení typu „Petr z Brodu“, ale
+    například <i>Miroslav Borovský</i>.
+</p>
+
+<h2>Národ</h2>
+
+
+
+<div class="quote">
+    „Každý národ v krajinách je jiný a svým způsobem zvláštní.
+    Lutavané jsou zvláštní tím, že nejsou ničím zvláštní.“
+    <br><br>
+    — cestopravec Michal „Písař“ z Borova
+</div>
+
+<p>
+    Na chvíli zapomeňte na to, že Lutavané byli dříve nájezdníci.
+    „Co bylo, to bylo, nemá cenu dívat se cestou zpět,“ jak praví jedno
+    lutavské přísloví.
+</p>
+
+<p>
+    Lutavané jsou opravdu dokonalí krajané se vším, co k tomu slovu patří.
+    Jsou pracovití a šikovní, jen se jim občas něco nepovede. Jsou nebojácní,
+    hrdí a pověrčiví strašpitlové.
+</p>
+
+<p>
+    Cesta určuje jejich směr a cíl, i když se občas musíte k tomuto cíli
+    probojovat mečem a silou.
+</p>
+
+<p>
+    Typický Lutavan má rád svou rodinu, svůj dům, svého vojvodu a krále.
+    Rád se po perném dni nechá pobavit v hostinci u hudby a dobrého moku.
+</p>
+
+<p>
+    Občas, když to na něj přijde, popadne tornu a zajde do přírody hledat
+    sám sebe. Nebo, když na jeho kroky padl stín zákrutu Cesty, vydá se
+    k památníkům pout – slavným bitvám, událostem a dalším místům, aby
+    znovu osvětlen skutky svých předků pokračoval ve svém tak krásně
+    obyčejném životě.
+</p>
+
+<h3>Vztah k ostatním národům</h3>
+
+<p>
+    V jednom jsou ale přece jen Lutavané trošku jiní. Jsou to vlastně
+    v jádru dobráci a rádi pomohou neznámému v nouzi. Aby se s nimi však
+    člověk spřátelil, musí být takzvaně „jejich“.
+</p>
+
+<p>
+    Neznamená to, že musí být Lutavan. To ne. Musí být vlastně obyčejný.
+    Lutavané nemají moc rádi změny a výstřednosti.
+</p>
+
+<p>
+    Z Torýnska jim připadají zvláštní umělecké hry nebo předměty.
+    Armádní morálka Vojvodska jim přijde zbytečně komplikovaná a pracovní
+    píle Sářanů zase až moc zbytečná.
+</p>
+
+<p>
+    Na druhou stranu v Lažanu podle nich panuje až moc uvolněná morálka
+    a pít každý den Dálavský Lažan leze do peněz. A příliš ukecaného
+    Lutavana nemá nikdo rád.
+</p>
+
+<p>
+    Jak vidíte, drazí čtenáři, je to přesně tak, jak jsem vám říkal.
+    Lutavan je prostě Lutavan, protože člověk je prostě člověk.
+</p>
+
+
+<h3>Dětské drancování</h3>
+
+<p>
+    Ze své temné a zlé minulosti si Lutavané odnesli jeden zvyk.
+    Když má dítě, zhruba od sedmi do dvanácti let, narozeniny, nedostává
+    dárky jako jinde, ale jde na „loupežnou“.
+</p>
+
+<p>
+    To znamená, že obchází okolní domy nebo domy svých příbuzných a dává
+    lidem na vybranou. Buď mu dají dárek – zpravidla ovoce, mlsky, hračky,
+    jídlo a podobně – a nebo je jinak nepozve na „usmíření“.
+</p>
+
+<p>
+    Usmíření je hostina, kam jsou zváni všichni „oloupení“, aby se jim mohl
+    malý lupič omluvit a společně pak všichni hodovali z jídla, které bylo
+    „odcizeno“.
+</p>
+
+<p>
+    Je to takový úsměvný zvyk. Vlastně každý oloupený dává to, co chce,
+    aby mohl jíst, pokud byl pozván, nebo aby předvedl své bohatství.
+    Tyto hostiny proto bývají velmi různorodé, co do občerstvení i dárků.
+</p>
+
+<p>
+    Tato dětská hra má, jak asi každý čtenář dovtípil, svůj původ v dobách,
+    kdy Lůtové kradli okolním lidem jídlo a věci. Později však byli napraveni
+    na pravou Cestu a začali se kát.
+</p>
+
+
+
+<h3>Sféristé v Lutavsku</h3>
+
+<p>
+    V Lutavsku není žádná sférická škola. Na sféristy se zde lidé dívají
+    skrz prsty a tolerují je jako nutné zlo.
+</p>
+
+<p>
+    Nejsou zde však čarodějové postaveni mimo zákon ani jinak perzekvováni.
+    Jen je prostě mnoho lidí nemusí.
+</p>
+
+<h2>Armáda</h2>
+
+<p>
+    V lutavské krvi je stále vzpomínka na dravou bojovnost, která jim mimo
+    jiné zaručila nezávislost, a také malá, zastrčená vzpomínka na dobu
+    plenění a drancování. Proto má Lutavsko poměrně dobrou, i když ne příliš
+    početnou armádu.
+</p>
+
+<h3>Vojvodská vojska</h3>
+
+<p>
+    Každý vojvoda má svůj oddíl zvaný <b>Železná fúrie</b>. Jedná se o jednotku
+    vybraných bojovníků, která v armádě zastupuje elitu.
+</p>
+
+<p>
+    Jejich výzbroj tvoří v základu kroužkové zbroje doplňované pláty nebo kůží.
+    Zbytek vojáků, tedy vojáci z povolání mimo Železnou fúrii, má výstroj,
+    jakou si může ze svého žoldu dovolit.
+</p>
+
+<h3>Domobrana a městské stráže</h3>
+
+<p>
+    Běžná je v každém městě domobrana a také lutavské stráže mají dobrou
+    průpravu. Výbavou stráží je běžná „ropuší kůže a šipčák“ doplněná
+    kroužkovými částmi zbroje.
+</p>
+
+<h3>Jízda a střelci</h3>
+
+<p>
+    Lutavané jsou obstojnými střelci a jezdci. Nemají však těžkou jízdu.
+</p>
+
+<h3>Sekera – zbraň Lutavanů</h3>
+
+<p>
+    V čem lutavský voják skutečně vyniká, je jeho dovednost se sekerou.
+    Jinde platí za rytířskou zbraň meč, zde jeho místo zastoupila sekera.
+</p>
+
+<p>
+    Lutavské sekery jsou všech možných tvarů a délek, nejvíce je zde však
+    zastoupena takzvaná <b>klínovnice</b>, nebo také <b>klínovka</b>.
+</p>
+
+<p>
+    Jedná se o sekeru s tři stopy dlouhým toporem a mohutnou hlavicí ve tvaru
+    klínu. Z jedné strany je ostří, z druhé kladívko.
+</p>
+
+<h3>Vojenská služba</h3>
+
+<p>
+    Přestože v Lutavsku není povinná vojenská služba, mladí muži bývají často
+    posíláni na zkušenou do armády, domobrany a podobných složek.
+</p>
+
+<p>
+    Ve službě zůstávají zpravidla jeden až dva roky. Poté se vrací ke svým
+    rodinám a začínají se učit řemeslu a běžnému životu.
+</p>
+<h2>Výroba, dovoz a řemesla</h2>
+
+<p>
+    Jako všechno lutavské i zde je všechno obyčejně obyčejné.
+    Lutavsko vyrábí výrobky ze dřeva, kovů, látek a kůží a pěstuje ovoce,
+    obilí, ječmen a další plodiny.
+</p>
+
+<p>
+    Všechny výrobky jsou dělány účelově a hlavně tak, aby dlouho vydržely.
+    Lutavské zboží má proto v ostatních krajinách pověst poctivé a dobře
+    odvedené práce. Díru do světa, nebo do ženského srdce, pokud se týká
+    šperků a šatstva, s ním ale prostě neuděláte.
+</p>
+
+<h3>Dovoz</h3>
+
+<p>
+    Hlavní dovoz tvoří různé druhy koření, barviva, drahé kovy a především
+    sůl, protože ta v Lutavsku nemá vlastní zdroj.
+</p>
+
+<h3>Ječmenek</h3>
+
+<p>
+    V Lutavsku se vyrábí také poměrně slavné pivo <b>ječmenek</b>.
+    Jedná se o nasládlé, lehce kořeněné pivo se nažloutlou pěnou.
+</p>
+
+<h3>Lučava</h3>
+
+<p>
+    Ještě známější je lutavský kvas <b>lučava</b>.
+    Vyrábí se z vykvašených polních plodů podobných ostružinám, přičemž
+    hlavní přísadou je odvar z bylin neznámého složení.
+</p>
+
+<p>
+    Lučava má uzdravující účinky podobně jako rudolažské víno. Kvůli své
+    složitosti na výrobu a tajnému receptu se však nikdy nezačala užívat
+    jako léčivo, ale především jako dobré a drahé pití.
+</p>
+
+<p>
+    Různé kvasny mají vlastní recepty, které se dědí z generace na generaci.
+    Jednotlivé receptury se proto mohou mírně lišit, základ je však vždy stejný:
+    ovoce a byliny.
+</p>
+
+<h2>Víra</h2>
+
+<p>
+    Cesta je pro všechny krajince stejná, avšak každý po ní jde jiným tempem.
+    Najít ta správná pouta vyžaduje dobrou a trpělivou mysl, ale směr je dán.
+</p>
+
+<p>
+    Lutavané doslova uctívají Cestu, po které kráčejí. Jako všichni krajinci
+    mají za své Dekrety, které považují za ukazatel do neznámých koutů světů
+    za naším krokem. Otázkou však zůstává, kde hledat dál.
+</p>
+
+<p>
+    Jako Torýňané našli svá pouta v rodině a cti a jako Sářané v tvrdé práci,
+    věrnosti sami sobě a svým obyčejům, tak i Lutavané nalezli to své.
+</p>
+
+<h3>Staré zvyky a pověry</h3>
+
+<p>
+    Lutavané, stejně jako většina lidí z hvozdů, udržují staré zvyky svých
+    předků a často si povídají o zjeveních, která během svého života spatřili.
+    Jsou poměrně pověrčiví, pokud jde o znamení, a provozují nejrůznější
+    drobné rituály.
+</p>
+
+<p>
+    Například v Borově existuje zvyk, podle kterého každý mladý hoch dává
+    své vyvolené při svatbě jeden zlatý. Má tím ukázat, že je schopen postarat
+    se o rodinu.
+</p>
+
+<h3>Poutní místa</h3>
+
+<p>
+    Lutavané především navštěvují poutní místa, kde se stala nějaká zvláštní
+    nebo důležitá událost. Jsou jimi pomníky bitev, odpočívadla na cestách
+    a spousta dalších míst, kam si Lutavan zajde v klidu popřemýšlet nad
+    svými budoucími kroky.
+</p>
+
+<p>
+    Lutavané jsou velmi přemýšliví lidé a rádi relaxují právě na těchto místech.
+</p>
+
+<h3>Pomníky prohraných bitev</h3>
+
+<p>
+    Existuje však jedna malá vzácnost. Pomníky bitev jsou rozesety všude
+    po krajinách a spousta poutníků je navštěvuje, aby si připomněli jejich
+    události.
+</p>
+
+<p>
+    Lutavané ale mají dokonce i pomníky bitev, které prohráli.
+</p>
+
+<p>
+    Možná to někomu přijde podivné – navštěvovat místa, kde byli Lůtové
+    kdysi poraženi. Místní však vědí proč.
+</p>
+
+<p>
+    Je třeba se nejen nasytit slávou, jež na místě vznikla, ale i nalézt
+    v místech slavných proher nějaké ponaučení.
+</p>
+
+<div class="quote">
+    „Člověk se nejlépe učí z vlastních chyb.“
+</div>
+
+<p>
+    A těch budou lidé nacházet stále dost.
+</p>
+
+<h2>Drobné zajímavosti</h2>
+
+<h3>Pomník bitvy u Dorské brány</h3>
+
+<p>
+    Pomník připomínající jednu z nejvýznamnějších bitev Lůtovského povstání.
+    Bitva pod Dorskou bránou patřila mezi čtyři rozhodující vítězství, která
+    Lůtům mezi lety 438 až 440 II. věku pomohla získat jejich vlastní zemi.
+</p>
+
+<h3>Dětské drancování</h3>
+
+<p>
+    Každé dítě mezi přibližně sedmi a dvanácti lety může při svých narozeninách
+    vyrazit na tradiční „loupežnou“. Obchází příbuzné a sousedy a symbolicky
+    je „oloupí“ o dárky, jídlo nebo sladkosti.
+</p>
+
+<p>
+    Později následuje usmíření, tedy hostina pro všechny oloupené. Tradice
+    připomíná dávnou minulost Lůtů, kteří kdysi skutečně získávali potravu
+    a další věci nájezdy na okolní národy.
+</p>
+
+
+<h2>Lutavská rčení</h2>
+
+<p>
+    Lutavština je plná jednoduchých rčení a ustálených obratů, které často
+    odkazují na historii, Cestu nebo běžný život.
+</p>
+
+<h3>„Klidnou cestu.“</h3>
+
+<p>
+    Běžné lutavské přání na rozloučenou. Používá se také ve významech
+    „příteli“ nebo „přeji ti šťastnou cestu“.
+</p>
+
+<h3>„Ty lůto.“</h3>
+
+<p>
+    Hanlivé označení zloděje. Připomíná původní význam slova Lůt a dobu,
+    kdy byli Lůtové známí svými nájezdy a loupežemi.
+</p>
+
+<h3>„Stojí tam jak hřeb.“</h3>
+
+<p>
+    Označení člověka, který stojí nehybně na stráži. Přirovnání vzniklo
+    podle strážných v pevnostech v Mlhovinách.
+</p>
+
+<h3>„Poražený vyhrál.“</h3>
+
+<p>
+    Říká se o člověku, který sice prohrál, ale ze své porážky se poučil.
+    Odkazuje na lutavskou tradici připomínání vlastních porážek.
+</p>
+
+<h3>„Když prší, tak padají kapky.“</h3>
+
+<p>
+    Označuje stav, kdy je všechno při starém a nic zvláštního se neděje.
+</p>
+
+
+
+
+
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>
