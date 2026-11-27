@@ -2233,15 +2233,8 @@ function najitVsechnyPredmetyVCeniku() {
     return vysledky;
 }
 
-function nabidnoutPredmetDoZavazadla(idZavazadla) {
-
-    const zavazadlo = postava.inventar.zavazadla.find(
-        z => z.id === idZavazadla
-    );
-
-    if (!zavazadlo) return;
-
-    const kategorie = [
+function ziskatKategoriePredmetu() {
+    return [
         { klic: "zavazadla", nazev: "Vaky na vodu" },
         { klic: "jidlo_suroviny", nazev: "Jídlo / suroviny" },
         { klic: "zbrane", nazev: "Zbraně" },
@@ -2256,6 +2249,17 @@ function nabidnoutPredmetDoZavazadla(idZavazadla) {
         { klic: "alchymie_vyrobky", nazev: "Alchymistické výrobky" },
         { klic: "ostatni", nazev: "Ostatní" }
     ];
+}
+
+function nabidnoutPredmetDoZavazadla(idZavazadla) {
+
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => z.id === idZavazadla
+    );
+
+    if (!zavazadlo) return;
+
+    const kategorie = ziskatKategoriePredmetu();
 
     zobrazitKategoriePredmetu(idZavazadla, zavazadlo, kategorie);
 }
@@ -2383,21 +2387,7 @@ const jeKategorieVaku = kategorie.klic === "zavazadla";
     zpet.textContent = "← Zpět na kategorie";
 
     zpet.onclick = function() {
-        const kategorieVse = [
-            { klic: "zavazadla", nazev: "Vaky na vodu" },
-            { klic: "jidlo_suroviny", nazev: "Jídlo / suroviny" },
-            { klic: "zbrane", nazev: "Zbraně" },
-            { klic: "zbroje", nazev: "Zbroje" },
-            { klic: "predmety_vybaveni", nazev: "Předměty / vybavení" },
-            { klic: "preprava", podkategorie: "vystroj_pro_kone", nazev: "Výstroj pro koně" },
-            { klic: "materialy", nazev: "Materiály" },
-            { klic: "drahokamy", nazev: "Drahokamy" },
-            { klic: "hudebni_nastroje", nazev: "Hudební nástroje" },
-            { klic: "sperky", nazev: "Šperky" },
-            { klic: "alchymie_suroviny", nazev: "Alchymistické suroviny" },
-            { klic: "alchymie_vyrobky", nazev: "Alchymistické výrobky" },
-            { klic: "ostatni", nazev: "Ostatní" }
-        ];
+        const kategorieVse = ziskatKategoriePredmetu();
 
         zobrazitKategoriePredmetu(
             idZavazadla,
@@ -2781,17 +2771,6 @@ function odebratSamostatnyVak(idVaku) {
     zobrazitZavazadla();
 }
 
-
-
-
-
-
-
-
-
-
-
-
 function escapovatHTML(text) {
     return String(text)
         .replace(/&/g, "&amp;")
@@ -2799,6 +2778,48 @@ function escapovatHTML(text) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+function maZavesitelnePredmety(kategorie) {
+
+    const seznam = kategorie.podkategorie
+        ? cenikData[kategorie.klic]?.[kategorie.podkategorie]
+        : cenikData[kategorie.klic];
+
+    let nalezeno = false;
+
+    function jeZavesitelny(predmet) {
+        return predmet &&
+            (
+                predmet.zavesitelne === true ||
+                predmet.zavesitelne === "true" ||
+                predmet.zavesitelne === 1 ||
+                predmet.zavesitelne === "1"
+            );
+    }
+
+    function projit(objekt) {
+
+        if (!objekt || nalezeno) return;
+
+        if (Array.isArray(objekt)) {
+
+            objekt.forEach(predmet => {
+                if (jeZavesitelny(predmet)) {
+                    nalezeno = true;
+                }
+            });
+
+        } else if (typeof objekt === "object") {
+
+            Object.values(objekt).forEach(projit);
+
+        }
+    }
+
+    projit(seznam);
+
+    return nalezeno;
 }
 
 function nabidnoutVakNaPoutko(idZavazadla, indexPoutka) {
@@ -2817,14 +2838,7 @@ function nabidnoutVakNaPoutko(idZavazadla, indexPoutka) {
         return;
     }
 
-    const predmety = najitVsechnyPredmetyVCeniku()
-        .filter(predmet =>
-            predmet.zavesitelne === true ||
-            predmet.zavesitelne === "true" ||
-            predmet.zavesitelne === 1 ||
-            predmet.zavesitelne === "1"
-        )
-        .sort((a, b) => a.nazev.localeCompare(b.nazev, "cs"));
+    const kategorie = ziskatKategoriePredmetu();
 
     const tlacitka = document.getElementById("vlastniOknoTlacitka");
     const pozadi = document.getElementById("vlastniOknoPozadi");
@@ -2833,24 +2847,24 @@ function nabidnoutVakNaPoutko(idZavazadla, indexPoutka) {
         "Zavěsit předmět";
 
     document.getElementById("vlastniOknoText").textContent =
-        predmety.length
-            ? "Vyber předmět, který chceš zavěsit:"
-            : "V ceníku nejsou žádné předměty označené jako zavěsitelné.";
+        "Vyber kategorii předmětu:";
 
     tlacitka.innerHTML = "";
 
-    predmety.forEach(predmet => {
+    kategorie.forEach(kat => {
+    
+        if (!maZavesitelnePredmety(kat)) return;
 
         const tlacitko = document.createElement("button");
 
         tlacitko.type = "button";
-        tlacitko.textContent = predmet.nazev;
+        tlacitko.textContent = kat.nazev;
 
         tlacitko.onclick = function() {
-            zavesitVakNaPoutko(
+            zobrazitPredmetyKategorieNaPoutko(
                 idZavazadla,
                 indexPoutka,
-                predmet.nazev
+                kat
             );
         };
 
@@ -2869,6 +2883,104 @@ function nabidnoutVakNaPoutko(idZavazadla, indexPoutka) {
 
     pozadi.style.display = "flex";
 }
+
+function zobrazitPredmetyKategorieNaPoutko(
+    idZavazadla,
+    indexPoutka,
+    kategorie
+) {
+
+    const tlacitka = document.getElementById("vlastniOknoTlacitka");
+    const pozadi = document.getElementById("vlastniOknoPozadi");
+
+    const seznam = kategorie.podkategorie
+        ? cenikData[kategorie.klic]?.[kategorie.podkategorie]
+        : cenikData[kategorie.klic];
+
+    const moznosti = [];
+
+    function jeZavesitelny(predmet) {
+        return predmet &&
+            (
+                predmet.zavesitelne === true ||
+                predmet.zavesitelne === "true" ||
+                predmet.zavesitelne === 1 ||
+                predmet.zavesitelne === "1"
+            );
+    }
+
+    function projit(objekt) {
+
+        if (!objekt) return;
+
+        if (Array.isArray(objekt)) {
+
+            objekt.forEach(predmet => {
+                if (jeZavesitelny(predmet)) {
+                    moznosti.push(predmet);
+                }
+            });
+
+        } else if (typeof objekt === "object") {
+
+            Object.values(objekt).forEach(projit);
+
+        }
+    }
+
+    projit(seznam);
+
+    document.getElementById("vlastniOknoNadpis").textContent =
+        kategorie.nazev;
+
+    document.getElementById("vlastniOknoText").textContent =
+        moznosti.length
+            ? "Vyber předmět k zavěšení:"
+            : "V této kategorii nejsou žádné zavěsitelné předměty.";
+
+    tlacitka.innerHTML = "";
+
+    moznosti.forEach(predmet => {
+
+        const tlacitko = document.createElement("button");
+
+        tlacitko.type = "button";
+        tlacitko.textContent = predmet.nazev;
+
+        tlacitko.onclick = function() {
+            zavesitVakNaPoutko(
+                idZavazadla,
+                indexPoutka,
+                predmet.nazev
+            );
+        };
+
+        tlacitka.appendChild(tlacitko);
+    });
+
+    const zpet = document.createElement("button");
+    zpet.type = "button";
+    zpet.textContent = "← Zpět na kategorie";
+
+    zpet.onclick = function() {
+        nabidnoutVakNaPoutko(idZavazadla, indexPoutka);
+    };
+
+    tlacitka.appendChild(zpet);
+
+    const zavrit = document.createElement("button");
+    zavrit.type = "button";
+    zavrit.textContent = "Zrušit";
+
+    zavrit.onclick = function() {
+        pozadi.style.display = "none";
+    };
+
+    tlacitka.appendChild(zavrit);
+
+    pozadi.style.display = "flex";
+}
+
 function zavesitVakNaPoutko(idZavazadla, indexPoutka, nazev) {
     const zavazadlo = postava.inventar.zavazadla.find(
         z => z.id === idZavazadla
