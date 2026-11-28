@@ -693,6 +693,28 @@ function najitPredmetVCeniku(nazev) {
     return prohledat(cenikData);
 }
 
+function jeAlchymistickaSurovina(nazev) {
+    const suroviny = cenikData?.alchymie_suroviny;
+
+    function hledat(objekt) {
+        if (!objekt || typeof objekt !== "object") return false;
+
+        if (Array.isArray(objekt)) {
+            return objekt.some(polozka =>
+                polozka &&
+                (
+                    polozka.nazev === nazev ||
+                    hledat(polozka)
+                )
+            );
+        }
+
+        return Object.values(objekt).some(hledat);
+    }
+
+    return hledat(suroviny);
+}
+
 function nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, typ, indexPredmetu) {
     const zdroj = postava.inventar.odlozeneVeci[indexZavazadla];
     if (!zdroj) return;
@@ -711,12 +733,32 @@ function nabidnoutPresunOdlozenehoPredmetu(indexZavazadla, typ, indexPredmetu) {
     document.getElementById("vlastniOknoNadpis").textContent = "Přesunout předmět";
 
     const jeVak = jeVakNaVodu(polozka.predmet);
+    const jeZavazadlo = !!najitPredmetVCeniku(polozka.predmet);
+
+const jePrazdneZavazadlo =
+    jeZavazadlo &&
+    (!polozka.obsah || polozka.obsah.length === 0) &&
+    (!polozka.vnejsi_poutka || polozka.vnejsi_poutka.length === 0);
     const zavazadla = (postava.inventar.zavazadla || [])
-        .filter(z =>
-            !z.nedostupne &&
-            (z.umisteni === "zada" || z.umisteni === "opasek") &&
-            !jeVakNaVodu(z.predmet)
-        );
+    .filter(z => {
+        if (z.nedostupne || jeVakNaVodu(z.predmet)) return false;
+
+        const jeTornaNaByliny = [
+            "Torna na byliny",
+            "Torna na byliny ( Velká )"
+        ].includes(z.predmet);
+
+        if (jePrazdneZavazadlo) {
+            return !jeTornaNaByliny;
+        }
+
+        if (jeAlchymistickaSurovina(polozka.predmet)) {
+            return jeTornaNaByliny;
+        }
+
+        return !jeTornaNaByliny &&
+            (z.umisteni === "zada" || z.umisteni === "opasek");
+    });
 
     if (jeVak) {
         text.textContent = "Vyber, kam chceš vak přesunout:";
@@ -860,6 +902,7 @@ async function presunoutOdlozenyPredmet(indexZavazadla, typ, indexPredmetu, idCi
     if (!polozka) return;
 
     const jeVak = jeVakNaVodu(polozka.predmet);
+
     let kbel = Number(polozka.kbel);
 
     if (!jeVak && !(kbel > 0)) {
@@ -1000,10 +1043,13 @@ function nabidnoutPresunCelehoOdlozenehoZavazadla(indexZavazadla) {
 
     if (kbelZavazadla > 0) {
         const dostpunyCileDovnitr = (postava.inventar.zavazadla || []).filter(z =>
-            (z.umisteni === "zada" || z.umisteni === "opasek") &&
-            !z.nedostupne &&
-            !jeVakNaVodu(z.predmet)
-        );
+    !z.nedostupne &&
+    !jeVakNaVodu(z.predmet) &&
+    ![
+        "Torna na byliny",
+        "Torna na byliny ( Velká )"
+    ].includes(z.predmet)
+);
 
         dostpunyCileDovnitr.forEach(cil => {
             const obsazeno = (cil.obsah || []).reduce((soucet, predmet) => {
@@ -1014,6 +1060,8 @@ function nabidnoutPresunCelehoOdlozenehoZavazadla(indexZavazadla) {
             }, 0);
 
             const kapacitaCile = Number(cil.kapacita_kbel) || 0;
+            
+            console.log(cil.obsah.filter(p => jeVakNaVodu(p.predmet)));
 
             if (obsazeno + kbelZavazadla <= kapacitaCile) {
                 const tlacitko = document.createElement("button");

@@ -870,7 +870,45 @@ async function naplnitVakNaVodu(idVaku) {
 
     if (!vak) return;
 
-    vak.voda_litru = kapacitaVaku(vak.predmet);
+    const kapacitaVakuLitry = kapacitaVaku(vak.predmet);
+
+    // Zjistíme, jestli je vak uvnitř nějakého zavazadla
+    const zavazadlo = postava.inventar.zavazadla.find(
+        z => Array.isArray(z.obsah) &&
+        z.obsah.some(p => p.id === idVaku)
+    );
+
+    // Pokud vak není uvnitř zavazadla, naplníme ho celý
+    if (!zavazadlo) {
+        vak.voda_litru = kapacitaVakuLitry;
+    } else {
+        const obsazenoBezVaku = zavazadlo.obsah.reduce(
+            (soucet, polozka) => {
+                if (polozka.id === idVaku) return soucet;
+
+                return soucet + (
+                    jeVakNaVodu(polozka.predmet)
+                        ? mnozstviVodyVeVaku(polozka)
+                        : (Number(polozka.kbel) || 0) *
+                          (Number(polozka.pocet) || 1)
+                );
+            },
+            0
+        );
+
+        const kapacitaZavazadla =
+            Number(zavazadlo.kapacita_kbel) || 0;
+
+        const volnaKapacita = Math.max(
+            0,
+            kapacitaZavazadla - obsazenoBezVaku
+        );
+
+        vak.voda_litru = Math.min(
+            kapacitaVakuLitry,
+            volnaKapacita
+        );
+    }
 
     zobrazitZavazadla();
     await ulozitInventar();
@@ -2506,7 +2544,9 @@ if (zavazadlo.nedostupne) {
     );
     return;
 }
-    const velikost = Number(predmet.kbel) || 0;
+    const velikost = jeVakNaVodu(predmet.nazev)
+    ? 0
+    : (Number(predmet.kbel) || 0);
     const kapacita = Number(zavazadlo.kapacita_kbel) || 0;
 
     const obsah = Array.isArray(zavazadlo.obsah)
