@@ -979,9 +979,15 @@ if (zavazadloSJidlem) {
     return;
 }
 
-    const moznosti = zavazadla.filter(
-        z => !z.nedostupne && !jeVakNaVodu(z.predmet)
-    );
+   const moznosti = zavazadla.filter(
+    z =>
+        !z.nedostupne &&
+        !jeVakNaVodu(z.predmet) &&
+        ![
+            "Torna na byliny",
+            "Torna na byliny ( Velká )"
+        ].includes(z.predmet)
+);
 
     if (moznosti.length === 0) {
         zobrazitHlasku(
@@ -1038,6 +1044,17 @@ async function pridatCestovniJidloDoZavazadla(idZavazadla) {
         zobrazitHlasku(
             "Toto zavazadlo není dostupné.",
             "Nedostupné zavazadlo"
+        );
+        return;
+    }
+    
+        if ([
+        "Torna na byliny",
+        "Torna na byliny ( Velká )"
+    ].includes(zavazadlo.predmet)) {
+        zobrazitHlasku(
+            "Do torny na byliny lze ukládat pouze alchymistické suroviny.",
+            "Nevhodné zavazadlo"
         );
         return;
     }
@@ -2279,6 +2296,14 @@ function zobrazitKategoriePredmetu(idZavazadla, zavazadlo, kategorie) {
     tlacitka.innerHTML = "";
 
     kategorie.forEach(kat => {
+    
+    const jeTornaNaByliny = [
+    "Torna na byliny",
+    "Torna na byliny ( Velká )"
+].includes(zavazadlo.predmet);
+
+if (jeTornaNaByliny && kat.klic !== "alchymie_suroviny") return;
+if (!jeTornaNaByliny && kat.klic === "alchymie_suroviny") return;
 
         const tlacitko = document.createElement("button");
 
@@ -2411,6 +2436,36 @@ const jeKategorieVaku = kategorie.klic === "zavazadla";
     pozadi.style.display = "flex";
 }
 
+function jeAlchymistickaSurovina(nazev) {
+
+    let nalezeno = false;
+
+    function projit(objekt) {
+
+        if (!objekt || nalezeno) return;
+
+        if (Array.isArray(objekt)) {
+
+            objekt.forEach(predmet => {
+                if (
+                    predmet &&
+                    predmet.nazev === nazev
+                ) {
+                    nalezeno = true;
+                }
+            });
+
+        } else if (typeof objekt === "object") {
+
+            Object.values(objekt).forEach(projit);
+
+        }
+    }
+
+    projit(cenikData.alchymie_suroviny);
+
+    return nalezeno;
+}
 
 function pridatPredmetDoZavazadla(idZavazadla, predmet) {
 
@@ -2419,6 +2474,29 @@ function pridatPredmetDoZavazadla(idZavazadla, predmet) {
     );
 
     if (!zavazadlo) return;
+    
+    const jeTornaNaByliny = [
+    "Torna na byliny",
+    "Torna na byliny ( Velká )"
+].includes(zavazadlo.predmet);
+
+const jeSurovina = jeAlchymistickaSurovina(predmet.nazev);
+
+if (jeTornaNaByliny && !jeSurovina) {
+    zobrazitHlasku(
+        "Do torny na byliny lze ukládat pouze alchymistické suroviny.",
+        "Nevhodný předmět"
+    );
+    return;
+}
+
+if (!jeTornaNaByliny && jeSurovina) {
+    zobrazitHlasku(
+        "Alchymistické suroviny lze ukládat pouze do torny na byliny.",
+        "Nevhodné zavazadlo"
+    );
+    return;
+}
     
 
 if (zavazadlo.nedostupne) {
