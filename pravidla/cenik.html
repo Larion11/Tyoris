@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceník</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url("pozadi-inventar.jpg");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #eee4d2;
+    font-family: Georgia, serif;
+}
+
+
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #d8c29d;
+    font-size: 36px;
+    font-weight: normal;
+}
+
+.uvod {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 17px;
+    color: #c8b99f;
+    line-height: 1.5;
+}
+
+h2 {
+    margin: 40px 0 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #6f5a3e;
+    color: #d8c29d;
+    font-size: 27px;
+    font-weight: normal;
+}
+
+h3 {
+    margin: 25px 0 12px;
+    color: #d6c19e;
+    font-size: 21px;
+    font-weight: normal;
+}
+
+.vyber-ceniku {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px auto 30px;
+    flex-wrap: wrap;
+}
+
+.vyber-ceniku select {
+    min-width: 240px;
+    max-width: 100%;
+    padding: 11px 14px;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: #eee4d2;
+    background: #211a13;
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.vyber-ceniku select:focus {
+    outline: 1px solid #c5a575;
+    border-color: #c5a575;
+}
+
+.tabulka-obal {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.cenik-tabulka {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 450px;
+}
+
+.cenik-tabulka th {
+    background: linear-gradient(
+        180deg,
+        rgba(210, 190, 155, 0.85) 0%,
+        rgba(190, 165, 125, 0.75) 50%,
+        rgba(145, 120, 85, 0.75) 100%
+    );
+    color: #1a1510;
+    border: 1px solid #6f5a3e;
+    padding: 11px 10px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.cenik-tabulka td {
+    border: 1px solid #6f5a3e;
+    padding: 9px 10px;
+    vertical-align: top;
+    line-height: 1.4;
+}
+
+.cenik-tabulka tbody tr:nth-child(even) {
+    background: rgba(60, 48, 35, 0.35);
+}
+
+.cenik-tabulka tbody tr:hover {
+    background: rgba(120, 95, 60, 0.2);
+}
+
+.poznamka {
+    margin: 10px 0 25px;
+    padding: 12px 15px;
+    border-left: 3px solid #8a704d;
+    background: rgba(50, 40, 29, 0.65);
+    color: #d8c29d;
+    line-height: 1.5;
+}
+
+.chyba {
+    text-align: center;
+    padding: 30px;
+    color: #e0b9a0;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.nacitani {
+    text-align: center;
+    padding: 30px;
+    color: #d8c29d;
+    font-size: 18px;
+}
+
+.zpet {
+    display: block;
+    margin: 40px auto 0;
+    padding: 14px 28px;
+    font-family: inherit;
+    font-size: 19px;
+    color: #eee4d2;
+    background: linear-gradient(
+        180deg,
+        #403222 0%,
+        #241b13 100%
+    );
+    border: 1px solid #8a704d;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+
+.zpet:hover {
+    background: #473827;
+    border-color: #b39468;
+}
+
+@media (max-width: 700px) {
+    .page {
+        padding: 20px 14px;
+        margin: 15px auto;
+    }
+
+    h1 {
+        font-size: 29px;
+    }
+
+    h2 {
+        font-size: 23px;
+    }
+
+    .cenik-tabulka {
+        font-size: 14px;
+    }
+
+    .cenik-tabulka th,
+    .cenik-tabulka td {
+        padding: 7px;
+    }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://xahjqqyjaxbhdmairkfr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OBIbH7JzU_A96jXlht_2FA_Yadsooqu";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+</head>
+
+<body>
+
+<div class="page">
+
+    <h1>Ceník</h1>
+
+    <div class="uvod">
+        Orientační ceny zboží, služeb a vybavení.
+        Skutečné ceny se mohou v jednotlivých obchodech lišit.
+    </div>
+
+    <div class="vyber-ceniku">
+
+    <select id="vyberKategorie" onchange="zmenitKategorii()">
+        <option value="">Vyber kategorii</option>
+    </select>
+
+    <select id="vyberPodkategorie"
+            onchange="zmenitPodkategorii()"
+            style="display:none;">
+    </select>
+
+</div>
+
+<div id="obsahCeniku">
+    <div class="nacitani">Načítám ceník...</div>
+</div>
+
+    <button class="zpet" type="button" onclick="window.close()">
+        Zavřít
+    </button>
+
+</div>
+
+<script>
+
+const nazvySloupcu = {
+    nazev: "Název",
+    cena: "Cena",
+    mnozstvi: "Množství",
+    hmotnost: "Hmotnost",
+    mzda: "Mzda",
+    typ: "Typ",
+    zpusob_drzeni: "Způsob držení",
+    druh_poskozeni: "Druh poškození",
+    vaha: "Váha",
+    utok: "Útok",
+    kryt: "Kryt",
+    poskozeni: "Poškození",
+    vzdalenost: "Vzdálenost",
+    hodnota: "Hodnota zbroje",
+    hodnota_zbroje: "Hodnota zbroje",
+    poznamka: "Poznámka",
+    bonus: "Bonus"
+};
+
+
+
+function vytvoritTabulku(polozky) {
+
+    if (!Array.isArray(polozky) || polozky.length === 0) {
+        return "";
+    }
+
+    // Zachováme pořadí sloupců podle prvního výskytu v datech.
+    const klice = [];
+
+    polozky.forEach(polozka => {
+        Object.keys(polozka).forEach(klic => {
+            if (!klice.includes(klic)) {
+                klice.push(klic);
+            }
+        });
+    });
+
+    // Kapacitu kbelíku ve veřejném ceníku nezobrazujeme.
+    const indexKapacity = klice.indexOf("kapacita_kbel");
+    if (indexKapacity !== -1) {
+        klice.splice(indexKapacity, 1);
+    }
+
+    // Název bude vždy první a cena poslední.
+    if (klice.includes("nazev")) {
+        klice.splice(klice.indexOf("nazev"), 1);
+        klice.unshift("nazev");
+    }
+
+    if (klice.includes("cena")) {
+        klice.splice(klice.indexOf("cena"), 1);
+        klice.push("cena");
+    }
+
+    let html = `
+        <div class="tabulka-obal">
+            <table class="cenik-tabulka">
+                <thead>
+                    <tr>
+    `;
+
+    klice.forEach(klic => {
+        const nazevSloupce = klic === "zavesitelne"
+            ? "Zavěsit"
+            : (nazvySloupcu[klic] || klic);
+
+        html += `<th>${escapeHtml(nazevSloupce)}</th>`;
+    });
+
+    html += `
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    polozky.forEach(polozka => {
+
+        html += "<tr>";
+
+        klice.forEach(klic => {
+
+            let hodnota = polozka[klic] ?? "";
+
+            if (klic === "zavesitelne") {
+                hodnota = hodnota === true ? "Ano" : "Ne";
+            }
+
+            html += `<td>${escapeHtml(String(hodnota))}</td>`;
+
+        });
+
+        html += "</tr>";
+
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    return html;
+}
+
+
+
+function escapeHtml(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+function vytvoritSekci(nadpis, polozky, poznamka = "") {
+
+    if (!Array.isArray(polozky) || polozky.length === 0) {
+        return "";
+    }
+
+    let html = `<h2>${escapeHtml(nadpis)}</h2>`;
+
+    html += vytvoritTabulku(polozky);
+
+    if (poznamka) {
+        html += `
+            <div class="poznamka">
+                ${escapeHtml(poznamka)}
+            </div>
+        `;
+    }
+
+    return html;
+}
+
+
+function vytvoritPodsekce(nadpis, skupiny) {
+
+    if (!skupiny || typeof skupiny !== "object") {
+        return "";
+    }
+
+    let html = `<h2>${escapeHtml(nadpis)}</h2>`;
+
+    Object.entries(skupiny).forEach(([nazev, polozky]) => {
+
+        if (!Array.isArray(polozky) || polozky.length === 0) {
+            return;
+        }
+
+        html += `<h3>${escapeHtml(nazev)}</h3>`;
+        html += vytvoritTabulku(polozky);
+
+    });
+
+    return html;
+}
+
+
+let aktualniCenikData = null;
+
+const kategorieCeniku = [
+    { key: "jidlo_suroviny", label: "Jídlo / suroviny" },
+    { key: "sluzby", label: "Služby" },
+    { key: "zvirata", label: "Zvířata" },
+    { key: "zbrane", label: "Zbraně" },
+    { key: "zbroje", label: "Zbroje" },
+    { key: "predmety_vybaveni", label: "Předměty / vybavení" },
+    { key: "zavazadla", label: "Zavazadla" },
+    { key: "preprava", label: "Přeprava" },
+    { key: "materialy", label: "Materiály" },
+    { key: "drahokamy", label: "Drahokamy" },
+    { key: "hudebni_nastroje", label: "Hudební nástroje" },
+    { key: "sperky", label: "Šperky" },
+    { key: "kvalita_zpracovani", label: "Kvalita zpracování" },
+    { key: "alchymie_suroviny", label: "Alchymistické suroviny" },
+    { key: "alchymie_vyrobky", label: "Alchymistické výrobky" },
+    { key: "mzdy", label: "Mzdy" }
+];
+
+const nazvyPodkategorii = {
+    vystroj_pro_kone: "Výstroj pro koně",
+    dopravni_prostredky: "Dopravní prostředky"
+};
+
+
+function zobrazitCenik(data) {
+
+    aktualniCenikData = data;
+
+    const select = document.getElementById("vyberKategorie");
+
+    select.replaceChildren();
+
+    const prvni = document.createElement("option");
+    prvni.value = "";
+    prvni.textContent = "Vyber kategorii";
+    select.appendChild(prvni);
+
+    kategorieCeniku.forEach(kategorie => {
+
+        if (data[kategorie.key] == null) return;
+
+        const option = document.createElement("option");
+        option.value = kategorie.key;
+        option.textContent = kategorie.label;
+
+        select.appendChild(option);
+    });
+
+    document.getElementById("vyberPodkategorie").style.display = "none";
+
+    document.getElementById("obsahCeniku").innerHTML =
+        '<div class="nacitani">Vyber kategorii z nabídky.</div>';
+}
+
+
+function zmenitKategorii() {
+
+    const klic = document.getElementById("vyberKategorie").value;
+    const podSelect = document.getElementById("vyberPodkategorie");
+
+    podSelect.replaceChildren();
+    podSelect.style.display = "none";
+
+    if (!klic || !aktualniCenikData) {
+        document.getElementById("obsahCeniku").innerHTML =
+            '<div class="nacitani">Vyber kategorii z nabídky.</div>';
+        return;
+    }
+
+    const data = aktualniCenikData[klic];
+
+    if (!Array.isArray(data) && data && typeof data === "object") {
+
+        Object.keys(data).forEach((podkategorie, index) => {
+
+            const option = document.createElement("option");
+            option.value = podkategorie;
+
+            option.textContent =
+                nazvyPodkategorii[podkategorie] ||
+                podkategorie.replace(/_/g, " ");
+
+            podSelect.appendChild(option);
+
+        });
+
+        if (podSelect.options.length > 0) {
+            podSelect.style.display = "block";
+            podSelect.selectedIndex = 0;
+        }
+    }
+
+    zobrazitVybranouKategorii();
+}
+
+
+function zmenitPodkategorii() {
+    zobrazitVybranouKategorii();
+}
+
+
+function zobrazitVybranouKategorii() {
+
+    const klic = document.getElementById("vyberKategorie").value;
+    const podkategorie = document.getElementById("vyberPodkategorie").value;
+
+    const data = aktualniCenikData[klic];
+
+    const kategorie = kategorieCeniku.find(k => k.key === klic);
+
+    let html = `<h2>${escapeHtml(kategorie.label)}</h2>`;
+
+    if (Array.isArray(data)) {
+
+        html += vytvoritTabulku(data);
+
+    } else if (data && typeof data === "object") {
+
+        const polozky = data[podkategorie];
+
+        if (Array.isArray(polozky)) {
+
+            html += `<h3>${escapeHtml(
+                nazvyPodkategorii[podkategorie] ||
+                podkategorie.replace(/_/g, " ")
+            )}</h3>`;
+
+            html += vytvoritTabulku(polozky);
+
+        }
+
+    }
+
+    if (klic === "zbrane") {
+
+        if (aktualniCenikData.poznamka_zbrane) {
+            html += `
+                <div class="poznamka">
+                    ${escapeHtml(aktualniCenikData.poznamka_zbrane)}
+                </div>
+            `;
+        }
+
+        if (aktualniCenikData.poznamka_k_polozce_rypak) {
+            html += `
+                <div class="poznamka">
+                    ${escapeHtml(aktualniCenikData.poznamka_k_polozce_rypak)}
+                </div>
+            `;
+        }
+    }
+
+    if (klic === "zbroje" && aktualniCenikData.poznamka_zbroje) {
+        html += `
+            <div class="poznamka">
+                ${escapeHtml(aktualniCenikData.poznamka_zbroje)}
+            </div>
+        `;
+    }
+
+    if (!html || html.trim() === "") {
+        html = '<div class="chyba">Tato kategorie neobsahuje žádné položky.</div>';
+    }
+
+    document.getElementById("obsahCeniku").innerHTML = html;
+}
+
+
+async function nacistCenik() {
+
+    const obsah = document.getElementById("obsahCeniku");
+
+    const { data, error } = await supabaseClient
+        .from("cenik")
+        .select("obsah")
+        .eq("id", 1)
+        .single();
+
+console.log("CENÍK DATA:", data);
+console.log("CENÍK ERROR:", error);
+
+    if (error) {
+
+        console.error("Chyba při načítání ceníku:", error);
+
+        obsah.innerHTML = `
+            <div class="chyba">
+                Ceník se nepodařilo načíst.<br>
+                Zkontroluj připojení k Supabase a obsah databáze.
+            </div>
+        `;
+
+        return;
+    }
+
+    if (!data || !data.obsah) {
+
+        obsah.innerHTML = `
+            <div class="chyba">
+                V databázi nebyl nalezen žádný obsah ceníku.
+            </div>
+        `;
+
+        return;
+    }
+
+    zobrazitCenik(data.obsah);
+}
+
+
+nacistCenik();
+
+</script>
+
+</body>
+</html>
